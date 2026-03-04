@@ -1,0 +1,52 @@
+{
+    "name": "frontend-modules",
+    "version": "3.0.0",
+    "description": "Frontend modules",
+    "author": "Kuladeep Das",
+    "scripts": {
+        "clean": "npm run clean:dist && npm run clean:caches",
+        "clean:caches": "../craft cache/flush-all",
+        "clean:dist": "rm -f ../web/manifest.json && rm -rf ../web/css && rm -rf ../web/js && rm -rf ../web/images && rm -rf ../web/fonts",
+        "watch": "vite build --config vite.config.dev.mjs --watch --mode development",
+        "dev": "vite build --config vite.config.dev.mjs --mode development",
+        "prod": "vite build --mode production",
+        "build": "npm run clean && npm run prod",
+        "start": "npm run dev",
+        "lint:js": "eslint \"src/js/**/*.js\"",
+        "format": "prettier --write \"src/js/**/*.js\" \"src/css/**/*.scss\""
+    },
+    "dependencies": {
+        "@popperjs/core": "^2",
+        "autoprefixer": "^10",
+        "bootstrap": "^5",
+        "flatpickr": "^4",
+        "jquery": "^4",
+        "lazysizes": "^5",
+        "postcss": "^8",
+        "select2": "^4.1.0-rc.0",
+        "swiper": "^12",
+        "vite": "^7"
+    },
+    "devDependencies": {
+        "eslint": "^10",
+        "postcss-scss": "^4",
+        "prettier": "^3",
+        "sass": "^1",
+        "stylelint": "^17",
+        "stylelint-config-standard": "^40"
+    },
+    "engines": {
+        "node": ">=24",
+        "npm": ">=11"
+    },
+    "browserslist": [
+        "defaults",
+        "not dead",
+        "last 2 versions",
+        "> 0.2%",
+        "not ie 11"
+    ],
+    "remove": [
+        "@fancyapps/ui"
+    ]
+}

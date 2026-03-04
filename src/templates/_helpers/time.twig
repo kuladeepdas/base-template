@@ -1,0 +1,13 @@
+{% macro timeAgo(time) %}
+
+    {% set dateOneHourAgo = now.modify('- 1 hour') %}
+
+    {% set elapsedMinutes = time.diff(now).m %}
+
+    {% if not (time < dateOneHourAgo) %}
+        {{ time.diff(now) | duration | split('and') | first }} ago
+    {% else %}
+        {{ time.diff(now) | duration | split(',') | first }} ago
+    {% endif %}
+
+{% endmacro %}

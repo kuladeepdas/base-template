@@ -1,0 +1,18 @@
+{% extends "_layouts/entry" %}
+
+{% set entry = craft.entries().section('pageMaintenance').with('image').one() %}
+
+{% block headerBanner %}
+    {% set image = entry.image.0 ?? false %}
+    {% include "_includes/banner" %}
+{% endblock %}
+
+{% block content %}
+	{% cache %}
+
+    <div class="container">
+        {{ entry.contentIn }}
+    </div>
+
+    {% endcache %}
+{% endblock %}

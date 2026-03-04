@@ -1,0 +1,579 @@
+{% extends "_layouts/cp" %}
+
+{% set title = "Inspire Frontend Settings" %}
+{% set crumbs = [
+    { label: 'Settings'|t('app'), url: url('settings') }
+] %}
+{% set fullPageForm = false %}
+{% set selectedTab = selectedTab ?? craft.app.request.getQueryParam('tab') ?? 'rebuild-assets' %}
+{% set navItems = {
+    'rebuild-assets': { title: 'Rebuild Assets' },
+    'update-build-script': { title: 'Update Build Script' },
+    'git-status': { title: 'Git Status' },
+} %}
+
+{% block sidebar %}
+    <nav>
+        <ul>
+            {% for id, item in navItems %}
+                <li>
+                    <a href="{{ url('settings/plugins/inspire-frontend', { tab: id }) }}" class="tab {% if id == selectedTab %}sel{% endif %}">
+                        {{ item.title }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </nav>
+{% endblock %}
+
+{% block content %}
+    {% if selectedTab == 'rebuild-assets' %}
+        <h2>Rebuild Assets</h2>
+        <p class="light">Run common frontend maintenance tasks from one place.</p>
+        <hr>
+
+        <section class="frontend-task">
+            <header class="frontend-task__header">
+                <div>
+                    <h3>Update Packages</h3>
+                    <p class="light">Check dependency metadata and identify available package upgrades.</p>
+                    <p class="frontend-check-message" data-check-message="update"></p>
+                </div>
+                <div class="frontend-task__actions">
+                    <button type="button" class="btn submit" data-cli-action="update-check">Check for Updates</button>
+                    <button type="button" class="btn" data-cli-action="update-install" hidden disabled>Install Updates</button>
+                </div>
+            </header>
+            <div class="frontend-cli" data-cli-panel="update">
+                <div class="frontend-cli__topline">
+                    <code data-cli-command>Waiting for command...</code>
+                    <span data-cli-status>Idle</span>
+                </div>
+                <div class="frontend-cli__progress"><span data-cli-progress style="width: 0%"></span></div>
+                <pre data-cli-log>[ready] waiting for command...</pre>
+            </div>
+        </section>
+
+        <section class="frontend-task">
+            <header class="frontend-task__header">
+                <div>
+                    <h3>Reinstall Packages</h3>
+                    <p class="light">Reinstall dependencies to reset local package state.</p>
+                </div>
+                <button type="button" class="btn submit" data-cli-action="reinstall">Reinstall</button>
+            </header>
+            <div class="frontend-cli" data-cli-panel="reinstall">
+                <div class="frontend-cli__topline">
+                    <code data-cli-command>Waiting for command...</code>
+                    <span data-cli-status>Idle</span>
+                </div>
+                <div class="frontend-cli__progress"><span data-cli-progress style="width: 0%"></span></div>
+                <pre data-cli-log>[ready] waiting for command...</pre>
+            </div>
+        </section>
+
+        <section class="frontend-task">
+            <header class="frontend-task__header">
+                <div>
+                    <h3>Rebuild</h3>
+                    <p class="light">Compile fresh production assets using the configured build script.</p>
+                </div>
+                <button type="button" class="btn submit" data-cli-action="rebuild">Rebuild</button>
+            </header>
+            <div class="frontend-cli" data-cli-panel="rebuild">
+                <div class="frontend-cli__topline">
+                    <code data-cli-command>Waiting for command...</code>
+                    <span data-cli-status>Idle</span>
+                </div>
+                <div class="frontend-cli__progress"><span data-cli-progress style="width: 0%"></span></div>
+                <pre data-cli-log>[ready] waiting for command...</pre>
+            </div>
+        </section>
+    {% elseif selectedTab == 'update-build-script' %}
+        <section class="frontend-task">
+            <header class="frontend-task__header">
+                <div>
+                    <h2>Update Build Script</h2>
+                    <p class="light">Sync frontend build files from the plugin source into the project frontend directory.</p>
+                    <p class="frontend-check-message" data-check-message="build-script"></p>
+                </div>
+                <div class="frontend-task__actions">
+                    <button type="button" class="btn submit" data-cli-action="build-script-check">Check for Updates</button>
+                    <button type="button" class="btn" data-cli-action="build-script-apply" hidden disabled>Apply Updates</button>
+                </div>
+            </header>
+            <div class="frontend-cli" data-cli-panel="build-script">
+                <div class="frontend-cli__topline">
+                    <code data-cli-command>Waiting for command...</code>
+                    <span data-cli-status>Idle</span>
+                </div>
+                <div class="frontend-cli__progress"><span data-cli-progress style="width: 0%"></span></div>
+                <pre data-cli-log>[ready] waiting for command...</pre>
+            </div>
+        </section>
+    {% elseif selectedTab == 'git-status' %}
+        <section class="frontend-task">
+            <header class="frontend-task__header">
+                <div>
+                    <h2>Git Status</h2>
+                    <p class="light">Check repository status before running frontend operations.</p>
+                    <p class="frontend-check-message" data-check-message="git-status"></p>
+                </div>
+                <div class="frontend-task__actions">
+                    <button type="button" class="btn submit" data-cli-action="git-status-check">Check Status</button>
+                    <button type="button" class="btn" data-cli-action="git-status-commit" hidden disabled>Commit and Push</button>
+                </div>
+            </header>
+            <div class="frontend-cli" data-cli-panel="git-status">
+                <div class="frontend-cli__topline">
+                    <code data-cli-command>Waiting for command...</code>
+                    <span data-cli-status>Idle</span>
+                </div>
+                <div class="frontend-cli__progress"><span data-cli-progress style="width: 0%"></span></div>
+                <pre data-cli-log>[ready] waiting for command...</pre>
+            </div>
+        </section>
+    {% endif %}
+{% endblock %}
+
+{% css %}
+.frontend-task {
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.frontend-task:last-child {
+    border-bottom: 0;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.frontend-task__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.frontend-page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.frontend-page-header h2 {
+    margin: 0;
+}
+
+.frontend-task__actions {
+    display: inline-flex;
+    gap: 8px;
+}
+
+.frontend-task__actions [hidden] {
+    display: none !important;
+}
+
+.frontend-task__header h3 {
+    margin: 0 0 4px;
+}
+
+.frontend-check-message {
+    margin: 6px 0 0;
+    font-weight: 600;
+}
+
+.frontend-check-message.is-good {
+    color: #15803d;
+}
+
+.frontend-check-message.is-alert {
+    color: #b91c1c;
+}
+
+.frontend-cli {
+    background: #0b1220;
+    border-radius: 8px;
+    border: 1px solid #1f2937;
+    overflow: hidden;
+}
+
+.frontend-cli__topline {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    color: #cbd5e1;
+    background: #111827;
+    border-bottom: 1px solid #1f2937;
+    font-size: 12px;
+}
+
+.frontend-cli__progress {
+    height: 4px;
+    background: #111827;
+}
+
+.frontend-cli__progress span {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, #22c55e, #06b6d4);
+    transition: width 220ms ease;
+}
+
+.frontend-cli pre {
+    margin: 0;
+    padding: 12px;
+    min-height: 84px;
+    color: #d1d5db;
+    font-size: 12px;
+    line-height: 1.55;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+{% endcss %}
+
+{% js %}
+(() => {
+    const setCheckMessage = (key, text, isAlert = false) => {
+        const el = document.querySelector(`[data-check-message="${key}"]`);
+        if (!el) {
+            return;
+        }
+        el.textContent = text || '';
+        el.classList.remove('is-good', 'is-alert');
+        el.classList.add(isAlert ? 'is-alert' : 'is-good');
+    };
+
+    const triggerAutoCheck = (button) => {
+        if (!button || button.dataset.autoCheckRan === '1') {
+            return;
+        }
+        button.dataset.autoCheckRan = '1';
+        window.setTimeout(() => button.click(), 120);
+    };
+
+    const setPanelState = (panel, command, statusText, logs, progressPct) => {
+        if (!panel) {
+            return;
+        }
+        const status = panel.querySelector('[data-cli-status]');
+        const progress = panel.querySelector('[data-cli-progress]');
+        const output = panel.querySelector('[data-cli-log]');
+        const commandEl = panel.querySelector('[data-cli-command]');
+
+        if (commandEl && command) {
+            commandEl.textContent = `$ ${command}`;
+        }
+        if (status) {
+            status.textContent = statusText;
+        }
+        if (output && typeof logs === 'string') {
+            output.textContent = logs;
+        }
+        if (progress) {
+            progress.style.width = `${Math.max(0, Math.min(100, progressPct))}%`;
+        }
+    };
+
+    const withCwd = (data, fallbackLog) => {
+        const base = String(data?.logs || fallbackLog || '');
+        if (data?.cwd && !base.startsWith('[cwd]')) {
+            return `[cwd] ${data.cwd}\n${base}`;
+        }
+        return base;
+    };
+
+    const replayLogs = (panel, command, fullLog, finalStatus) => {
+        return new Promise((resolve) => {
+            const lines = String(fullLog || '').split(/\r?\n/);
+            const output = panel.querySelector('[data-cli-log]');
+            output.textContent = '';
+            setPanelState(panel, command, 'Running...', '', 8);
+
+            const total = Math.max(lines.length, 1);
+            lines.forEach((line, index) => {
+                setTimeout(() => {
+                    output.textContent += `${line}\n`;
+                    const pct = Math.max(8, Math.min(100, Math.round(((index + 1) / total) * 100)));
+                    setPanelState(panel, command, index === total - 1 ? finalStatus : 'Running...', output.textContent, pct);
+                    if (index === total - 1) {
+                        resolve();
+                    }
+                }, 24 * (index + 1));
+            });
+
+            if (lines.length === 0) {
+                setPanelState(panel, command, finalStatus, '[done]', 100);
+                resolve();
+            }
+        });
+    };
+
+    const checkButton = document.querySelector('[data-cli-action="update-check"]');
+    const installButton = document.querySelector('[data-cli-action="update-install"]');
+    const updatePanel = document.querySelector('[data-cli-panel="update"]');
+
+    if (installButton) {
+        installButton.hidden = true;
+        installButton.disabled = true;
+    }
+
+    if (checkButton && updatePanel) {
+        checkButton.addEventListener('click', async() => {
+            checkButton.disabled = true;
+            setPanelState(updatePanel, 'npm outdated', 'Running...', '[info] checking package metadata...\n', 20);
+
+            try {
+                const response = await Craft.sendActionRequest('POST', 'inspire-frontend/utility/check-npm-updates');
+                const data = response?.data || {};
+                if (!data.success) {
+                    await replayLogs(updatePanel, data.command || 'npm outdated', withCwd(data, '[error] unable to check updates'), 'Failed');
+                    setCheckMessage('update', 'Unable to check package updates.', true);
+                    return;
+                }
+
+                await replayLogs(updatePanel, data.command || 'npm outdated', withCwd(data, '[done] check complete'), 'Completed');
+
+                if (installButton) {
+                    if (data.updatesAvailable) {
+                        installButton.hidden = false;
+                        installButton.disabled = false;
+                        setCheckMessage('update', 'Package updates are available.', true);
+                    } else {
+                        installButton.hidden = true;
+                        installButton.disabled = true;
+                        setCheckMessage('update', 'No package updates available.', false);
+                    }
+                }
+            } catch (error) {
+                await replayLogs(updatePanel, 'npm outdated', '[error] request failed', 'Failed');
+                setCheckMessage('update', 'Unable to check package updates.', true);
+                if (installButton) {
+                    installButton.hidden = true;
+                    installButton.disabled = true;
+                }
+            } finally {
+                checkButton.disabled = false;
+            }
+        });
+    }
+
+    if (installButton && updatePanel) {
+        installButton.addEventListener('click', async() => {
+            installButton.disabled = true;
+            setPanelState(updatePanel, 'npm update', 'Running...', '[info] installing package updates...\n', 25);
+
+            try {
+                const response = await Craft.sendActionRequest('POST', 'inspire-frontend/utility/install-npm-updates');
+                const data = response?.data || {};
+                if (!data.success) {
+                    await replayLogs(updatePanel, data.command || 'npm update', withCwd(data, '[error] npm update failed'), 'Failed');
+                    return;
+                }
+
+                await replayLogs(updatePanel, data.command || 'npm update', withCwd(data, '[done] updates installed'), 'Completed');
+                installButton.hidden = true;
+                installButton.disabled = true;
+                setCheckMessage('update', 'No package updates available.', false);
+            } catch (error) {
+                await replayLogs(updatePanel, 'npm update', '[error] request failed', 'Failed');
+            } finally {
+                if (!installButton.hidden) {
+                    installButton.disabled = false;
+                }
+            }
+        });
+    }
+
+    const reinstallButton = document.querySelector('[data-cli-action="reinstall"]');
+    if (reinstallButton) {
+        const panel = document.querySelector('[data-cli-panel="reinstall"]');
+        reinstallButton.addEventListener('click', async() => {
+            if (!panel) {
+                return;
+            }
+            reinstallButton.disabled = true;
+            setPanelState(panel, 'npm ci', 'Running...', '[info] running reinstall...\n', 15);
+            try {
+                const response = await Craft.sendActionRequest('POST', 'inspire-frontend/utility/reinstall-packages');
+                const data = response?.data || {};
+                await replayLogs(panel, data.command || 'npm ci', withCwd(data, '[done] reinstall complete'), data.success ? 'Completed' : 'Failed');
+            } catch (error) {
+                await replayLogs(panel, 'npm ci', '[error] request failed', 'Failed');
+            } finally {
+                reinstallButton.disabled = false;
+            }
+        });
+    }
+
+    const rebuildButton = document.querySelector('[data-cli-action="rebuild"]');
+    if (rebuildButton) {
+        const panel = document.querySelector('[data-cli-panel="rebuild"]');
+        rebuildButton.addEventListener('click', async() => {
+            if (!panel) {
+                return;
+            }
+            rebuildButton.disabled = true;
+            setPanelState(panel, 'npm run dev', 'Running...', '[info] running rebuild...\n', 15);
+            try {
+                const response = await Craft.sendActionRequest('POST', 'inspire-frontend/utility/rebuild-assets');
+                const data = response?.data || {};
+                await replayLogs(panel, data.command || 'npm run dev', withCwd(data, '[done] rebuild complete'), data.success ? 'Completed' : 'Failed');
+            } catch (error) {
+                await replayLogs(panel, 'npm run dev', '[error] request failed', 'Failed');
+            } finally {
+                rebuildButton.disabled = false;
+            }
+        });
+    }
+
+    const buildScriptCheckButton = document.querySelector('[data-cli-action="build-script-check"]');
+    const buildScriptApplyButton = document.querySelector('[data-cli-action="build-script-apply"]');
+    const buildScriptPanel = document.querySelector('[data-cli-panel="build-script"]');
+
+    if (buildScriptApplyButton) {
+        buildScriptApplyButton.hidden = true;
+        buildScriptApplyButton.disabled = true;
+    }
+
+    if (buildScriptCheckButton && buildScriptPanel) {
+        buildScriptCheckButton.addEventListener('click', async() => {
+            buildScriptCheckButton.disabled = true;
+            setPanelState(buildScriptPanel, 'check build script updates', 'Running...', '[info] checking build-script differences...\n', 20);
+            try {
+                const response = await Craft.sendActionRequest('POST', 'inspire-frontend/utility/check-build-script-updates');
+                const data = response?.data || {};
+                if (!data.success) {
+                    await replayLogs(buildScriptPanel, data.command || 'check build script updates', withCwd(data, '[error] check failed'), 'Failed');
+                    setCheckMessage('build-script', 'Unable to check build script updates.', true);
+                    return;
+                }
+
+                await replayLogs(buildScriptPanel, data.command || 'check build script updates', withCwd(data, '[done] check complete'), 'Completed');
+                if (buildScriptApplyButton) {
+                    if (data.updatesAvailable) {
+                        buildScriptApplyButton.hidden = false;
+                        buildScriptApplyButton.disabled = false;
+                        setCheckMessage('build-script', 'Build script updates are available.', true);
+                    } else {
+                        buildScriptApplyButton.hidden = true;
+                        buildScriptApplyButton.disabled = true;
+                        setCheckMessage('build-script', 'Build scripts are up to date.', false);
+                    }
+                }
+            } catch (error) {
+                await replayLogs(buildScriptPanel, 'check build script updates', '[error] request failed', 'Failed');
+                setCheckMessage('build-script', 'Unable to check build script updates.', true);
+                if (buildScriptApplyButton) {
+                    buildScriptApplyButton.hidden = true;
+                    buildScriptApplyButton.disabled = true;
+                }
+            } finally {
+                buildScriptCheckButton.disabled = false;
+            }
+        });
+    }
+
+    if (buildScriptApplyButton && buildScriptPanel) {
+        buildScriptApplyButton.addEventListener('click', async() => {
+            buildScriptApplyButton.disabled = true;
+            setPanelState(buildScriptPanel, 'apply build script updates', 'Running...', '[info] applying build-script updates...\n', 25);
+            try {
+                const response = await Craft.sendActionRequest('POST', 'inspire-frontend/utility/apply-build-script-updates');
+                const data = response?.data || {};
+                await replayLogs(buildScriptPanel, data.command || 'apply build script updates', withCwd(data, '[done] apply complete'), data.success ? 'Completed' : 'Failed');
+                if (data.success) {
+                    buildScriptApplyButton.hidden = true;
+                    buildScriptApplyButton.disabled = true;
+                    setCheckMessage('build-script', 'Build scripts are up to date.', false);
+                }
+            } catch (error) {
+                await replayLogs(buildScriptPanel, 'apply build script updates', '[error] request failed', 'Failed');
+                buildScriptApplyButton.disabled = false;
+            } finally {
+                if (!buildScriptApplyButton.hidden) {
+                    buildScriptApplyButton.disabled = false;
+                }
+            }
+        });
+    }
+
+    const gitStatusCheckButton = document.querySelector('[data-cli-action="git-status-check"]');
+    const gitStatusCommitButton = document.querySelector('[data-cli-action="git-status-commit"]');
+    const gitStatusPanel = document.querySelector('[data-cli-panel="git-status"]');
+
+    if (gitStatusCommitButton) {
+        gitStatusCommitButton.hidden = true;
+        gitStatusCommitButton.disabled = true;
+    }
+
+    if (gitStatusCheckButton && gitStatusPanel) {
+        gitStatusCheckButton.addEventListener('click', async() => {
+            gitStatusCheckButton.disabled = true;
+            setPanelState(gitStatusPanel, 'git status --short', 'Running...', '[info] checking git status...\n', 20);
+            try {
+                const response = await Craft.sendActionRequest('POST', 'inspire-frontend/utility/check-git-status');
+                const data = response?.data || {};
+                if (!data.success) {
+                    await replayLogs(gitStatusPanel, data.command || 'git status --short', withCwd(data, '[error] git status failed'), 'Failed');
+                    setCheckMessage('git-status', 'Unable to check git status.', true);
+                    return;
+                }
+
+                await replayLogs(gitStatusPanel, data.command || 'git status --short', withCwd(data, '[done] status check complete'), 'Completed');
+                if (gitStatusCommitButton) {
+                    if (data.updatesAvailable) {
+                        gitStatusCommitButton.hidden = false;
+                        gitStatusCommitButton.disabled = false;
+                        setCheckMessage('git-status', 'Repository has changes to commit.', true);
+                    } else {
+                        gitStatusCommitButton.hidden = true;
+                        gitStatusCommitButton.disabled = true;
+                        setCheckMessage('git-status', 'Repository is clean.', false);
+                    }
+                }
+            } catch (error) {
+                await replayLogs(gitStatusPanel, 'git status --short', '[error] request failed', 'Failed');
+                setCheckMessage('git-status', 'Unable to check git status.', true);
+                if (gitStatusCommitButton) {
+                    gitStatusCommitButton.hidden = true;
+                    gitStatusCommitButton.disabled = true;
+                }
+            } finally {
+                gitStatusCheckButton.disabled = false;
+            }
+        });
+    }
+
+    if (gitStatusCommitButton && gitStatusPanel) {
+        gitStatusCommitButton.addEventListener('click', async() => {
+            gitStatusCommitButton.disabled = true;
+            setPanelState(gitStatusPanel, 'git add -A && git commit && git push', 'Running...', '[info] committing and pushing changes...\n', 20);
+            try {
+                const response = await Craft.sendActionRequest('POST', 'inspire-frontend/utility/commit-and-push');
+                const data = response?.data || {};
+                await replayLogs(gitStatusPanel, data.command || 'git add -A && git commit && git push', withCwd(data, '[done] commit and push complete'), data.success ? 'Completed' : 'Failed');
+                if (data.success) {
+                    gitStatusCommitButton.hidden = true;
+                    gitStatusCommitButton.disabled = true;
+                    setCheckMessage('git-status', 'Repository is clean.', false);
+                } else {
+                    gitStatusCommitButton.disabled = false;
+                }
+            } catch (error) {
+                await replayLogs(gitStatusPanel, 'git add -A && git commit && git push', '[error] request failed', 'Failed');
+                gitStatusCommitButton.disabled = false;
+            }
+        });
+    }
+
+    triggerAutoCheck(checkButton);
+    triggerAutoCheck(buildScriptCheckButton);
+    triggerAutoCheck(gitStatusCheckButton);
+})();
+{% endjs %}

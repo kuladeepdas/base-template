@@ -1,0 +1,36 @@
+{
+    "name": "inspire/frontend",
+    "version": "1.0.0",
+    "description": "Frontend assets and build management for Craft CMS.",
+    "type": "craft-plugin",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms"
+    ],
+    "require": {
+        "craftcms/cms": "^5.0",
+        "putyourlightson/craft-blitz-hints": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Inspire\\Frontend\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Kuladeep Das",
+            "email": "kuladeep@inspire.scot",
+            "homepage": "https://www.inspire.scot"
+        },
+        {
+            "name": "Andy Moreno",
+            "homepage": "https://www.inspire.scot"
+        }
+    ],
+    "extra": {
+        "name": "Inspire Frontend",
+        "handle": "inspire-frontend",
+        "class": "Inspire\\Frontend\\Frontend"
+    }
+}

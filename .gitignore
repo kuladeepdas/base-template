@@ -1,0 +1,13 @@
+# Frontend sub-project dependencies
+/src/frontend/node_modules/
+/src/frontend/package-lock.json
+
+# Frontend build artifacts
+/src/frontend/dist/
+/src/frontend/build/
+*.tgz
+*.tsbuildinfo
+
+# IDE/OS
+.idea/
+.DS_Store

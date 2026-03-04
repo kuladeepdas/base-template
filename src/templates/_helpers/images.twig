@@ -1,0 +1,160 @@
+{% macro responsiveImg(image, styles = [], options = {}, sizes = "100vw", classes = '') %}
+    {% if image %}
+        {# Default breakpoints if none supplied #}
+        {% if styles is empty %}
+            {% set styles = [
+                {width: 1920, ratio: image.width / image.height},
+                {width: 1400, ratio: image.width / image.height},
+                {width: 1024, ratio: image.width / image.height},
+                {width: 768, ratio: image.width / image.height}
+            ] %}
+        {% endif %}
+
+        {% set width = (styles[0].width|round(0, 'ceil'))|integer %}
+        {% set ratio = styles[0].ratio ?? (image.width / image.height) %}
+        {% set height = (styles[0].height ?? (width / ratio)|round(0, 'ceil'))|integer %}
+        {% set widths = styles|map(s => (s.width|round(0, 'ceil'))|integer)|filter(w => w > 0)|sort|unique %}
+
+        {% if image.getUrl({width: 1}) is not empty %}
+            {% if image.extension|lower not in ['jpeg', 'jpg', 'png'] %}
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
+                     data-src="{{ image.url }}"
+                     style="aspect-ratio: {{ ratio }}"
+                     class="{{ classes ~ ' lazyload' }}"
+                     width="{{ width }}"
+                     height="{{ height }}"
+                     alt="{{ image['alt']|default ? image['alt'] : image.title }}">
+            {% else %}
+                <picture>
+                    {% if image.extension|lower != 'png' %}
+                        {% set avifimg = image.setTransform({
+                            width: width,
+                            height: height,
+                            mode: 'crop',
+                            format: 'avif',
+                            quality:craft.app.config.general.defaultImageQuality - 20
+                        }) %}
+                        <source type="image/avif"
+                                data-srcset="{{ avifimg.getSrcset(widths) }}"
+                                sizes="{{ sizes }}">
+                    {% endif %}
+                    {% set webpimg = image.setTransform({
+                        width: width,
+                        height: height,
+                        mode: 'crop',
+                        format: 'webp',
+                        quality: craft.app.config.general.defaultImageQuality
+                    }) %}
+                    <source type="image/webp"
+                            data-srcset="{{ webpimg.getSrcset(widths) }}"
+                            sizes="{{ sizes }}">
+                    {% set defaultimg = image.setTransform({
+                        width: width,
+                        height: height,
+                        mode: 'crop',
+                        format: image.extension|lower,
+                        quality: craft.app.config.general.defaultImageQuality
+                    }) %}
+                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
+                         data-src="{{ image.getUrl({width: widths[0], height: ((widths[0] / ratio)|round(0, 'ceil'))|integer, mode:'crop', format:image.extension|lower, quality:craft.app.config.general.defaultImageQuality}) }}"
+                         style="aspect-ratio: {{ ratio }}"
+                         data-srcset="{{ defaultimg.getSrcset(widths) }}"
+                         sizes="{{ sizes }}"
+                         class="{{ classes ~ ' scale-with-grid lazyload' }}"
+                         width="{{ width }}"
+                         height="{{ height }}"
+                         alt="{{ image['alt']|default ? image['alt'] : image.title }}"
+                         loading="lazy">
+                </picture>
+            {% endif %}
+        {% else %}
+            {# Placeholder if URL is missing #}
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
+                 alt="placeholder"
+                 class="{{ classes }}"
+                 width="{{ width }}"
+                 height="{{ height }}"
+                 style="aspect-ratio: {{ ratio }}; background-color: #909090;">
+        {% endif %}
+
+    {% else %}
+        {# Placeholder if image is null #}
+        {% set width = styles.0.width ?? '100%' %}
+        {% set ratio = styles.0.ratio ?? 1 %}
+        {% set height = width != '100%' ? width / ratio : '100%' %}
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
+             alt="placeholder"
+             class="{{ classes }}"
+             width="{{ width }}"
+             height="{{ height }}"
+             style="aspect-ratio: {{ ratio }}; background-color: #909090;">
+    {% endif %}
+{% endmacro %}
+
+{% macro singleImg(image, size = 768, options = {}, classes = '') %}
+    {% if image %}
+        {% set ratio = options.ratio ?? (image.width / image.height) %}
+        {% set width = (size ?? (image.width < 768 ? image.width : 768))|round(0, 'ceil')|integer %}
+        {% set height = (width / ratio)|round(0, 'ceil')|integer %}
+
+        {% if image.getUrl({width: 1}) is not empty %}
+            {% if image.extension|lower not in ['jpeg', 'jpg', 'png'] %}
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
+                     data-src="{{ image.url }}"
+                     style="aspect-ratio: {{ ratio }}"
+                     class="{{ classes ~ ' lazyload' }}"
+                     width="{{ width }}"
+                     height="{{ height }}"
+                     alt="{{ image['alt']|default ? image['alt'] : image.title }}">
+            {% else %}
+                <picture>
+                    {% if image.extension|lower != 'png' %}
+                        {% set avifimg = image.setTransform({
+                            width: width,
+                            height: height,
+                            mode: 'crop',
+                            format: 'avif',
+                            quality:craft.app.config.general.defaultImageQuality - 20
+                        }) %}
+                        <source type="image/avif" data-srcset="{{ avifimg.getSrcset([width]) }}">
+                    {% endif %}
+                    {% set webpimg = image.setTransform({
+                        width: width,
+                        height: height,
+                        mode: 'crop',
+                        format: 'webp',
+                        quality: craft.app.config.general.defaultImageQuality
+                    }) %}
+                    <source type="image/webp" data-srcset="{{ webpimg.getSrcset([width]) }}">
+                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
+                         data-src="{{ image.getUrl({width: width, height: height, mode:'crop', format:image.extension|lower, quality:craft.app.config.general.defaultImageQuality}) }}"
+                         style="aspect-ratio: {{ ratio }}"
+                         class="{{ classes ~ ' scale-with-grid lazyload' }}"
+                         width="{{ width }}"
+                         height="{{ height }}"
+                         alt="{{ image['alt']|default ? image['alt'] : image.title }}"
+                         loading="lazy">
+                </picture>
+            {% endif %}
+        {% else %}
+            {# Placeholder if URL missing #}
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
+                 alt="placeholder"
+                 class="{{ classes }}"
+                 width="{{ width }}"
+                 height="{{ height }}"
+                 style="aspect-ratio: {{ ratio }}; background-color: #909090;">
+        {% endif %}
+    {% else %}
+        {# Placeholder if image is null #}
+        {% set ratio = options.ratio ?? 1 %}
+        {% set width = size ?? '100%' %}
+        {% set height = width != '100%' ? width / ratio : '100%' %}
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
+             alt="placeholder"
+             class="{{ classes }}"
+             width="{{ width }}"
+             height="{{ height }}"
+             style="aspect-ratio: {{ ratio }}; background-color: #909090;">
+    {% endif %}
+{% endmacro %}
