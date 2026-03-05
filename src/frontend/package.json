@@ -24,7 +24,6 @@
         "lazysizes": "^5",
         "postcss": "^8",
         "select2": "^4.1.0-rc.0",
-        "swiper": "^12",
         "vite": "^7"
     },
     "devDependencies": {
@@ -47,6 +46,5 @@
         "not ie 11"
     ],
     "remove": [
-        "@fancyapps/ui"
     ]
 }

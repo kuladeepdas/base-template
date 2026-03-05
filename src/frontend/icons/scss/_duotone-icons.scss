@@ -1,0 +1,7 @@
+@each $name, $icon in $fa-icons {
+    .fad.#{$fa-css-prefix}-#{$name}::after,
+    .#{$fa-css-prefix}-duotone.#{$fa-css-prefix}-#{$name}::after {
+        content: unquote("\"#{ $icon }#{ $icon }\"");
+    }
+}
+

@@ -296,7 +296,9 @@ class UtilityController extends Controller
         }
 
         $diffs = $this->collectBuildScriptDiffs($sourceRoot, $targetRoot);
-        $updatesAvailable = !empty($diffs);
+        $additionalIssues = $this->collectAdditionalBuildScriptIssues($sourceRoot, $targetRoot);
+        $allIssues = array_merge($diffs, $additionalIssues);
+        $updatesAvailable = !empty($allIssues);
 
         $logChunks = [];
         $logChunks[] = '[cwd] ' . $targetRoot;
@@ -304,13 +306,13 @@ class UtilityController extends Controller
         $logChunks[] = '[info] checking frontend build-script files';
 
         if ($updatesAvailable) {
-            $logChunks[] = '[ok] updates available: ' . count($diffs) . ' file(s)';
+            $logChunks[] = '[ok] updates available: ' . count($allIssues) . ' item(s)';
             $maxLines = 30;
-            foreach (array_slice($diffs, 0, $maxLines) as $diff) {
+            foreach (array_slice($allIssues, 0, $maxLines) as $diff) {
                 $logChunks[] = sprintf('- [%s] %s', $diff['reason'], $diff['relativePath']);
             }
-            if (count($diffs) > $maxLines) {
-                $logChunks[] = '[info] +' . (count($diffs) - $maxLines) . ' more file(s)';
+            if (count($allIssues) > $maxLines) {
+                $logChunks[] = '[info] +' . (count($allIssues) - $maxLines) . ' more item(s)';
             }
         } else {
             $logChunks[] = '[ok] build scripts are up to date';
@@ -322,7 +324,7 @@ class UtilityController extends Controller
             'command' => 'check build script updates',
             'cwd' => $targetRoot,
             'updatesAvailable' => $updatesAvailable,
-            'updatesCount' => count($diffs),
+            'updatesCount' => count($allIssues),
             'logs' => implode("\n", $logChunks),
         ]);
     }
@@ -334,87 +336,163 @@ class UtilityController extends Controller
         $this->requireCpRequest();
         $this->requireAdmin();
 
+        return $this->asJson($this->applyBuildScriptUpdatesInternal());
+    }
+
+    public function runBuildScriptAutoSync(bool $alwaysFinalize = false): array
+    {
+        return $this->applyBuildScriptUpdatesInternal($alwaysFinalize);
+    }
+
+    private function applyBuildScriptUpdatesInternal(bool $alwaysFinalize = false): array
+    {
         $targetRoot = $this->frontendPath();
         $sourceRoot = $this->pluginFrontendPath();
 
         if (!$targetRoot) {
-            return $this->asJson([
+            return [
                 'success' => false,
                 'message' => 'Frontend directory not found.',
-            ]);
+            ];
         }
         if (!$sourceRoot) {
-            return $this->asJson([
+            return [
                 'success' => false,
                 'message' => 'Plugin frontend source directory not found.',
-            ]);
+            ];
         }
 
         $diffs = $this->collectBuildScriptDiffs($sourceRoot, $targetRoot);
+        $additionalIssues = $this->collectAdditionalBuildScriptIssues($sourceRoot, $targetRoot);
+        $allIssues = array_merge($diffs, $additionalIssues);
         $logChunks = [];
         $logChunks[] = '[cwd] ' . $targetRoot;
         $logChunks[] = '[source] ' . $sourceRoot;
 
-        if (empty($diffs)) {
+        if (empty($allIssues) && !$alwaysFinalize) {
             $logChunks[] = '[ok] no updates to apply';
             $logChunks[] = '[done] apply complete';
-            return $this->asJson([
+            return [
                 'success' => true,
                 'command' => 'apply build script updates',
                 'cwd' => $targetRoot,
                 'logs' => implode("\n", $logChunks),
-            ]);
+            ];
         }
 
         $updated = 0;
         $failed = 0;
-        foreach ($diffs as $diff) {
-            $relativePath = $diff['relativePath'];
-            $sourcePath = $sourceRoot . DIRECTORY_SEPARATOR . $relativePath;
-            $targetPath = $targetRoot . DIRECTORY_SEPARATOR . $relativePath;
-            $targetDir = dirname($targetPath);
+        if (!empty($allIssues)) {
+            foreach ($diffs as $diff) {
+                $relativePath = $diff['relativePath'];
+                $sourcePath = $sourceRoot . DIRECTORY_SEPARATOR . $relativePath;
+                $targetPath = $targetRoot . DIRECTORY_SEPARATOR . $relativePath;
+                $targetDir = dirname($targetPath);
 
-            if (!is_dir($targetDir) && !@mkdir($targetDir, 0775, true) && !is_dir($targetDir)) {
-                $failed++;
-                $logChunks[] = '[error] failed to create directory: ' . $targetDir;
-                continue;
-            }
-
-            if ($relativePath === 'package.json') {
-                $mergeResult = $this->mergeBuildScriptPackageJson($sourcePath, $targetPath);
-                if (!$mergeResult['success']) {
+                if (!is_dir($targetDir) && !@mkdir($targetDir, 0775, true) && !is_dir($targetDir)) {
                     $failed++;
-                    $logChunks[] = '[error] failed to update: package.json (' . $mergeResult['message'] . ')';
+                    $logChunks[] = '[error] failed to create directory: ' . $targetDir;
+                    continue;
+                }
+
+                if ($relativePath === 'package.json') {
+                    $mergeResult = $this->mergeBuildScriptPackageJson($sourcePath, $targetPath);
+                    if (!$mergeResult['success']) {
+                        $failed++;
+                        $logChunks[] = '[error] failed to update: package.json (' . $mergeResult['message'] . ')';
+                        continue;
+                    }
+
+                    $updated++;
+                    $logChunks[] = '[ok] updated: package.json';
+                    continue;
+                }
+
+                if (!@copy($sourcePath, $targetPath)) {
+                    $failed++;
+                    $logChunks[] = '[error] failed to update: ' . $relativePath;
                     continue;
                 }
 
                 $updated++;
-                $logChunks[] = '[ok] updated: package.json';
-                continue;
+                $logChunks[] = '[ok] updated: ' . $relativePath;
             }
 
-            if (!@copy($sourcePath, $targetPath)) {
-                $failed++;
-                $logChunks[] = '[error] failed to update: ' . $relativePath;
-                continue;
+            foreach ($additionalIssues as $issue) {
+                if ($this->applyAdditionalBuildScriptIssue($issue, $sourceRoot, $targetRoot, $logChunks)) {
+                    $updated++;
+                } else {
+                    $failed++;
+                }
             }
-
-            $updated++;
-            $logChunks[] = '[ok] updated: ' . $relativePath;
+        } else {
+            $logChunks[] = '[ok] no file updates to apply';
         }
 
         $logChunks[] = '[info] updated files: ' . $updated;
         if ($failed > 0) {
             $logChunks[] = '[error] failed files: ' . $failed;
         }
+
+        // Finalize by forcing a clean local install context + rebuild.
+        $packageLockPath = $targetRoot . DIRECTORY_SEPARATOR . 'package-lock.json';
+        if (is_file($packageLockPath)) {
+            if (@unlink($packageLockPath)) {
+                $logChunks[] = '[ok] removed: package-lock.json';
+            } else {
+                $failed++;
+                $logChunks[] = '[error] failed to remove: package-lock.json';
+            }
+        }
+
+        $nodeModulesPath = $targetRoot . DIRECTORY_SEPARATOR . 'node_modules';
+        if (is_dir($nodeModulesPath)) {
+            if ($this->deleteDirectory($nodeModulesPath)) {
+                $logChunks[] = '[ok] removed: node_modules';
+            } else {
+                $failed++;
+                $logChunks[] = '[error] failed to remove: node_modules';
+            }
+        }
+
+        $isProd = $this->isProductionEnv();
+        $installCommand = $isProd ? ['npm', 'install', '--omit=dev'] : ['npm', 'install'];
+        $logChunks[] = '$ ' . $this->commandString($installCommand);
+        $installResult = $this->runCommand($installCommand, $targetRoot);
+        $installOutput = trim($installResult['stdout'] . "\n" . $installResult['stderr']);
+        if ($installOutput !== '') {
+            $logChunks[] = $installOutput;
+        }
+        if ($installResult['exitCode'] !== 0) {
+            $failed++;
+            $logChunks[] = '[error] npm install failed';
+        } else {
+            $logChunks[] = '[ok] npm install completed';
+        }
+
+        $script = $isProd ? 'prod' : 'dev';
+        $command = ['npm', 'run', $script];
+        $logChunks[] = '$ ' . $this->commandString($command);
+        $result = $this->runCommand($command, $targetRoot);
+        $commandOutput = trim($result['stdout'] . "\n" . $result['stderr']);
+        if ($commandOutput !== '') {
+            $logChunks[] = $commandOutput;
+        }
+        if ($result['exitCode'] !== 0) {
+            $failed++;
+            $logChunks[] = '[error] npm run ' . $script . ' failed';
+        } else {
+            $logChunks[] = '[ok] npm run ' . $script . ' completed';
+        }
+
         $logChunks[] = '[done] apply complete';
 
-        return $this->asJson([
+        return [
             'success' => $failed === 0,
             'command' => 'apply build script updates',
             'cwd' => $targetRoot,
             'logs' => implode("\n", $logChunks),
-        ]);
+        ];
     }
 
     public function actionCheckGitStatus(): Response
@@ -643,6 +721,14 @@ class UtilityController extends Controller
             if ($relativePath === '') {
                 continue;
             }
+            if (str_starts_with($relativePath, 'icons' . DIRECTORY_SEPARATOR)) {
+                // Handled as a dedicated directory parity check.
+                continue;
+            }
+            if ($relativePath === 'src' . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'base' . DIRECTORY_SEPARATOR . 'bootstrap.scss') {
+                // Handled as a dedicated bootstrap import check.
+                continue;
+            }
 
             $targetPath = $targetRoot . DIRECTORY_SEPARATOR . $relativePath;
             if (!is_file($targetPath)) {
@@ -684,6 +770,490 @@ class UtilityController extends Controller
 
         usort($diffs, static fn(array $a, array $b): int => strcmp($a['relativePath'], $b['relativePath']));
         return $diffs;
+    }
+
+    private function collectAdditionalBuildScriptIssues(string $sourceRoot, string $targetRoot): array
+    {
+        $issues = [];
+
+        // 1) Extra files in frontend root that do not exist in plugin frontend root.
+        $sourceRootFiles = $this->listRootFiles($sourceRoot);
+        $targetRootFiles = $this->listRootFiles($targetRoot);
+        $rootFileExceptions = ['package-lock.json'];
+        foreach ($targetRootFiles as $fileName) {
+            if (in_array($fileName, $rootFileExceptions, true)) {
+                continue;
+            }
+            if (!in_array($fileName, $sourceRootFiles, true)) {
+                $issues[] = [
+                    'relativePath' => $fileName,
+                    'reason' => 'extra-root-file',
+                    'kind' => 'remove-root-file',
+                ];
+            }
+        }
+
+        // 2) wpconfig directory should not exist.
+        $wpconfigPath = $targetRoot . DIRECTORY_SEPARATOR . 'wpconfig';
+        if (is_dir($wpconfigPath)) {
+            $issues[] = [
+                'relativePath' => 'wpconfig',
+                'reason' => 'wpconfig-present',
+                'kind' => 'remove-directory',
+            ];
+        }
+
+        // 3) icons directory parity.
+        $sourceIcons = $sourceRoot . DIRECTORY_SEPARATOR . 'icons';
+        $targetIcons = $targetRoot . DIRECTORY_SEPARATOR . 'icons';
+        if (!$this->directoriesAreSame($sourceIcons, $targetIcons)) {
+            $issues[] = [
+                'relativePath' => 'icons',
+                'reason' => 'icons-mismatch',
+                'kind' => 'sync-directory',
+                'sourcePath' => $sourceIcons,
+                'targetPath' => $targetIcons,
+            ];
+        }
+
+        // 4) bootstrap.scss parity + mandatory imports.
+        $bootstrapRelative = 'src/css/app/base/bootstrap.scss';
+        $bootstrapSource = $sourceRoot . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $bootstrapRelative);
+        $bootstrapTarget = $targetRoot . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $bootstrapRelative);
+        $bootstrapIssue = $this->classifyBootstrapScssIssue($bootstrapTarget, $bootstrapSource);
+        if ($bootstrapIssue !== null) {
+            $issues[] = [
+                'relativePath' => $bootstrapRelative,
+                'reason' => $bootstrapIssue['reason'],
+                'kind' => $bootstrapIssue['kind'],
+                'sourcePath' => $bootstrapSource,
+                'targetPath' => $bootstrapTarget,
+            ];
+        }
+
+        // 5) src/index.js mandatory icon/bootstrap imports.
+        $indexRelative = 'src/index.js';
+        $indexTarget = $targetRoot . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $indexRelative);
+        if (!$this->indexJsHasRequiredImports($indexTarget)) {
+            $issues[] = [
+                'relativePath' => $indexRelative,
+                'reason' => 'index-imports-missing',
+                'kind' => 'ensure-index-imports',
+            ];
+        }
+
+        // 6) Replace legacy class names in frontend/assets files.
+        $legacyRefs = $this->findLegacyAssetReferences($targetRoot . DIRECTORY_SEPARATOR . 'assets');
+        foreach ($legacyRefs as $path) {
+            $relativePath = ltrim(str_replace($targetRoot . DIRECTORY_SEPARATOR, '', $path), DIRECTORY_SEPARATOR);
+            $issues[] = [
+                'relativePath' => str_replace(DIRECTORY_SEPARATOR, '/', $relativePath),
+                'reason' => 'legacy-asset-reference',
+                'kind' => 'replace-legacy-references',
+                'targetPath' => $path,
+            ];
+        }
+
+        usort($issues, static fn(array $a, array $b): int => strcmp($a['relativePath'], $b['relativePath']));
+        return $issues;
+    }
+
+    private function applyAdditionalBuildScriptIssue(array $issue, string $sourceRoot, string $targetRoot, array &$logChunks): bool
+    {
+        $kind = (string)($issue['kind'] ?? '');
+        $relativePath = (string)($issue['relativePath'] ?? '');
+        $targetPath = $targetRoot . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $relativePath);
+
+        switch ($kind) {
+            case 'remove-root-file':
+                if (is_file($targetPath) && !@unlink($targetPath)) {
+                    $logChunks[] = '[error] failed to remove file: ' . $relativePath;
+                    return false;
+                }
+                $logChunks[] = '[ok] removed file: ' . $relativePath;
+                return true;
+
+            case 'remove-directory':
+                if (!$this->deleteDirectory($targetPath)) {
+                    $logChunks[] = '[error] failed to remove directory: ' . $relativePath;
+                    return false;
+                }
+                $logChunks[] = '[ok] removed directory: ' . $relativePath;
+                return true;
+
+            case 'sync-directory':
+                $sourcePath = (string)($issue['sourcePath'] ?? '');
+                if ($sourcePath === '' || !is_dir($sourcePath)) {
+                    $logChunks[] = '[error] missing source directory: ' . $relativePath;
+                    return false;
+                }
+                if (!$this->deleteDirectory($targetPath)) {
+                    $logChunks[] = '[error] failed to reset directory: ' . $relativePath;
+                    return false;
+                }
+                if (!$this->copyDirectory($sourcePath, $targetPath)) {
+                    $logChunks[] = '[error] failed to copy directory: ' . $relativePath;
+                    return false;
+                }
+                $logChunks[] = '[ok] synced directory: ' . $relativePath;
+                return true;
+
+            case 'copy-file':
+                $sourcePath = (string)($issue['sourcePath'] ?? '');
+                if ($sourcePath === '' || !is_file($sourcePath)) {
+                    $logChunks[] = '[error] missing source file: ' . $relativePath;
+                    return false;
+                }
+                $targetDir = dirname($targetPath);
+                if (!is_dir($targetDir) && !@mkdir($targetDir, 0775, true) && !is_dir($targetDir)) {
+                    $logChunks[] = '[error] failed to create directory: ' . $targetDir;
+                    return false;
+                }
+                if (!@copy($sourcePath, $targetPath)) {
+                    $logChunks[] = '[error] failed to update: ' . $relativePath;
+                    return false;
+                }
+                $logChunks[] = '[ok] updated: ' . $relativePath;
+                return true;
+
+            case 'ensure-bootstrap-imports':
+                if (!$this->ensureBootstrapTopImports($targetPath)) {
+                    $logChunks[] = '[error] failed to update top imports: ' . $relativePath;
+                    return false;
+                }
+                $logChunks[] = '[ok] updated top imports: ' . $relativePath;
+                return true;
+
+            case 'ensure-index-imports':
+                if (!$this->ensureIndexImports($targetPath)) {
+                    $logChunks[] = '[error] failed to update imports: ' . $relativePath;
+                    return false;
+                }
+                $logChunks[] = '[ok] updated imports: ' . $relativePath;
+                return true;
+
+            case 'replace-legacy-references':
+                $path = (string)($issue['targetPath'] ?? $targetPath);
+                if (!$this->replaceLegacyReferencesInFile($path)) {
+                    $logChunks[] = '[error] failed to replace legacy references: ' . $relativePath;
+                    return false;
+                }
+                $logChunks[] = '[ok] updated legacy references: ' . $relativePath;
+                return true;
+        }
+
+        return true;
+    }
+
+    private function listRootFiles(string $root): array
+    {
+        $items = @scandir($root);
+        if ($items === false) {
+            return [];
+        }
+
+        $files = [];
+        foreach ($items as $item) {
+            if ($item === '.' || $item === '..') {
+                continue;
+            }
+            $path = $root . DIRECTORY_SEPARATOR . $item;
+            if (is_file($path)) {
+                $files[] = $item;
+            }
+        }
+
+        sort($files);
+        return $files;
+    }
+
+    private function directoriesAreSame(string $sourceDir, string $targetDir): bool
+    {
+        if (!is_dir($sourceDir) || !is_dir($targetDir)) {
+            return false;
+        }
+
+        return $this->directorySignature($sourceDir) === $this->directorySignature($targetDir);
+    }
+
+    private function directorySignature(string $path): array
+    {
+        if (!is_dir($path)) {
+            return [];
+        }
+
+        $signature = [];
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($path, \FilesystemIterator::SKIP_DOTS)
+        );
+        foreach ($iterator as $fileInfo) {
+            if (!$fileInfo->isFile()) {
+                continue;
+            }
+            $fullPath = $fileInfo->getPathname();
+            $relative = ltrim(substr($fullPath, strlen($path)), DIRECTORY_SEPARATOR);
+            $hash = @hash_file('sha256', $fullPath);
+            $signature[str_replace(DIRECTORY_SEPARATOR, '/', $relative)] = $hash === false ? 'unreadable' : $hash;
+        }
+        ksort($signature);
+        return $signature;
+    }
+
+    private function classifyBootstrapScssIssue(string $targetPath, string $sourcePath): ?array
+    {
+        if (!is_file($targetPath)) {
+            if (!is_file($sourcePath)) {
+                return [
+                    'reason' => 'bootstrap-source-missing',
+                    'kind' => 'copy-file',
+                ];
+            }
+            return [
+                'reason' => 'bootstrap-scss-missing',
+                'kind' => 'copy-file',
+            ];
+        }
+
+        $target = @file_get_contents($targetPath);
+        if ($target === false) {
+            return [
+                'reason' => 'bootstrap-scss-unreadable',
+                'kind' => 'copy-file',
+            ];
+        }
+
+        if (!$this->bootstrapTopImportsPresent($target)) {
+            return [
+                'reason' => 'bootstrap-top-imports',
+                'kind' => 'ensure-bootstrap-imports',
+            ];
+        }
+
+        return null;
+    }
+
+    private function bootstrapTopImportsPresent(string $content): bool
+    {
+        $requiredImports = $this->requiredBootstrapImports();
+        $firstChunk = implode("\n", array_slice(preg_split('/\r?\n/', $content) ?: [], 0, 30));
+        foreach ($requiredImports as $importLine) {
+            if (!str_contains($firstChunk, $importLine)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private function ensureBootstrapTopImports(string $bootstrapPath): bool
+    {
+        if (!is_file($bootstrapPath)) {
+            return false;
+        }
+
+        $content = @file_get_contents($bootstrapPath);
+        if ($content === false) {
+            return false;
+        }
+
+        $required = $this->requiredBootstrapImports();
+        $lines = preg_split('/\r?\n/', $content) ?: [];
+        $cleanLines = $lines;
+
+        // Remove existing required imports anywhere so we can reinsert in canonical place.
+        $cleanLines = array_values(array_filter(
+            $cleanLines,
+            static fn(string $line): bool => !in_array(trim($line), $required, true)
+        ));
+
+        $configIndex = null;
+        foreach ($cleanLines as $i => $line) {
+            if (trim($line) === '// Configuration') {
+                $configIndex = $i;
+                break;
+            }
+        }
+
+        if ($configIndex === null) {
+            // Create section at top.
+            $newLines = array_merge(['// Configuration'], $required, [''], $cleanLines);
+        } else {
+            // Insert directly under existing section header.
+            array_splice($cleanLines, $configIndex + 1, 0, $required);
+            $newLines = $cleanLines;
+        }
+
+        $newContent = implode("\n", $newLines);
+        $newContent = preg_replace("/\n{3,}/", "\n\n", $newContent) ?? $newContent;
+        if (!str_ends_with($newContent, "\n")) {
+            $newContent .= "\n";
+        }
+
+        return @file_put_contents($bootstrapPath, $newContent) !== false;
+    }
+
+    private function requiredBootstrapImports(): array
+    {
+        return [
+            '@import "bootstrap/scss/_functions.scss";',
+            '@import "bootstrap/scss/_variables.scss";',
+            '@import "bootstrap/scss/_maps";',
+            '@import "bootstrap/scss/_utilities";',
+        ];
+    }
+
+    private function indexJsHasRequiredImports(string $indexPath): bool
+    {
+        if (!is_file($indexPath)) {
+            return false;
+        }
+
+        $content = @file_get_contents($indexPath);
+        if ($content === false) {
+            return false;
+        }
+
+        return str_contains($content, 'import "../icons/icons.scss";')
+            && str_contains($content, 'import "./css/app/base/bootstrap.scss";');
+    }
+
+    private function ensureIndexImports(string $indexPath): bool
+    {
+        if (!is_file($indexPath)) {
+            return false;
+        }
+
+        $content = @file_get_contents($indexPath);
+        if ($content === false) {
+            return false;
+        }
+
+        $required = [
+            'import "../icons/icons.scss";',
+            'import "./css/app/base/bootstrap.scss";',
+        ];
+
+        $lines = preg_split('/\r?\n/', $content) ?: [];
+        $cleanLines = [];
+        foreach ($lines as $line) {
+            $trim = trim($line);
+            if (in_array($trim, $required, true)) {
+                continue;
+            }
+            $cleanLines[] = $line;
+        }
+
+        $insertIndex = 0;
+        foreach ($cleanLines as $i => $line) {
+            if (preg_match('/^\s*import\s+[\'"]\.\/css\/app\//', trim($line)) === 1) {
+                $insertIndex = $i;
+                break;
+            }
+            $insertIndex = $i + 1;
+        }
+
+        array_splice($cleanLines, $insertIndex, 0, $required);
+        $newContent = implode("\n", $cleanLines);
+        if (!str_ends_with($newContent, "\n")) {
+            $newContent .= "\n";
+        }
+
+        return @file_put_contents($indexPath, $newContent) !== false;
+    }
+
+    private function findLegacyAssetReferences(string $assetsRoot): array
+    {
+        if (!is_dir($assetsRoot)) {
+            return [];
+        }
+
+        $paths = [];
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($assetsRoot, \FilesystemIterator::SKIP_DOTS)
+        );
+
+        foreach ($iterator as $fileInfo) {
+            if (!$fileInfo->isFile()) {
+                continue;
+            }
+
+            $path = $fileInfo->getPathname();
+            $contents = @file_get_contents($path);
+            if ($contents === false) {
+                continue;
+            }
+
+            if (
+                str_contains($contents, 'FrontendCore')
+                || str_contains($contents, 'WebpackAsset')
+                || str_contains($contents, '$webpackName')
+            ) {
+                $paths[] = $path;
+            }
+        }
+
+        sort($paths);
+        return $paths;
+    }
+
+    private function replaceLegacyReferencesInFile(string $path): bool
+    {
+        if (!is_file($path)) {
+            return false;
+        }
+
+        $contents = @file_get_contents($path);
+        if ($contents === false) {
+            return false;
+        }
+
+        $updated = str_replace(
+            ['FrontendCore', 'WebpackAsset', '$webpackName'],
+            ['Frontend', 'FrontendAsset', '$frontendName'],
+            $contents
+        );
+
+        if ($updated === $contents) {
+            return true;
+        }
+
+        return @file_put_contents($path, $updated) !== false;
+    }
+
+    private function copyDirectory(string $source, string $target): bool
+    {
+        if (!is_dir($source)) {
+            return false;
+        }
+
+        if (!is_dir($target) && !@mkdir($target, 0775, true) && !is_dir($target)) {
+            return false;
+        }
+
+        $items = scandir($source);
+        if ($items === false) {
+            return false;
+        }
+
+        foreach ($items as $item) {
+            if ($item === '.' || $item === '..') {
+                continue;
+            }
+            $sourcePath = $source . DIRECTORY_SEPARATOR . $item;
+            $targetPath = $target . DIRECTORY_SEPARATOR . $item;
+
+            if (is_dir($sourcePath)) {
+                if (!$this->copyDirectory($sourcePath, $targetPath)) {
+                    return false;
+                }
+                continue;
+            }
+
+            if (!@copy($sourcePath, $targetPath)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private function diffBuildScriptPackageJson(string $sourcePath, string $targetPath): array

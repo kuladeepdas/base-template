@@ -15,4 +15,7 @@ class Settings extends Model
 
     /** @var string */
     public string $manifestPath = '@webroot/manifest.json';
+
+    /** @var string */
+    public string $lastAutoBuildSyncVersion = '';
 }

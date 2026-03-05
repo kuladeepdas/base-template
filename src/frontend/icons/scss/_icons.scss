@@ -1,0 +1,4 @@
+@each $name, $icon in $fa-icons {
+    .#{$fa-css-prefix}-#{$name}::before { content: unquote("\"#{ $icon }\""); }
+}
+
