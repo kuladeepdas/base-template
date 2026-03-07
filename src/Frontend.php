@@ -7,20 +7,35 @@ use craft\web\Controller;
 use craft\web\Response;
 use craft\base\Model;
 use craft\base\Plugin;
-use craft\events\PluginEvent;
+use craft\base\Element;
+use craft\elements\Asset;
+use craft\elements\Entry;
 use craft\events\RegisterCpSettingsEvent;
+use craft\events\RegisterElementSourcesEvent;
 use craft\events\RegisterTemplateRootsEvent;
 use craft\events\TemplateEvent;
-use craft\services\Plugins;
+use craft\events\RegisterUserPermissionsEvent;
 use craft\web\twig\variables\Cp;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\View;
-use Inspire\Frontend\controllers\UtilityController;
+use craft\services\UserPermissions;
+use craft\ckeditor\events\DefineLinkOptionsEvent;
+use craft\ckeditor\Field as CkEditorField;
+use craft\redactor\events\RegisterLinkOptionsEvent;
+use craft\redactor\Field as RedactorField;
 use Inspire\Frontend\models\Settings;
+use Inspire\Frontend\services\Logs;
 use Inspire\Frontend\services\PrefetchService;
+use Inspire\Frontend\services\Resize;
+use Inspire\Frontend\services\SchemaSnapshotService;
+use Inspire\Frontend\services\Service;
+use Inspire\Frontend\services\SinglesList;
 use Inspire\Frontend\twig\ImagesHelper;
 use Inspire\Frontend\twig\ImagesTwigExtension;
 use Inspire\Frontend\variables\PrefetchVariable;
+use Inspire\Frontend\embeddedvideos\Integration as EmbeddedVideosIntegration;
+use Inspire\Frontend\embeddedvideos\Service as EmbeddedVideosService;
+use Inspire\Frontend\embeddedvideos\Controller as EmbeddedVideosController;
 use putyourlightson\blitzhints\BlitzHints;
 use yii\base\Event;
 use yii\base\InvalidConfigException;
@@ -57,7 +72,23 @@ class Frontend extends Plugin
          */
         $this->setComponents([
             'prefetch' => PrefetchService::class,
+            'schemaSnapshot' => SchemaSnapshotService::class,
+            'service' => Service::class,
+            'resize' => Resize::class,
+            'singlesList' => SinglesList::class,
+            'logs' => Logs::class,
+            'embeddedVideos' => EmbeddedVideosService::class,
         ]);
+
+        \Inspire\Frontend\embeddedvideos\Plugin::boot($this);
+        Craft::setAlias('@inspire/frontend/resources', $this->getBasePath() . '/resources');
+        Craft::setAlias('@inspire/embeddedvideos', $this->getBasePath() . '/embeddedvideos');
+        $this->controllerMap['embedded-videos'] = EmbeddedVideosController::class;
+
+        (new EmbeddedVideosIntegration($this))->register();
+        $this->registerFrontendFeatureHandlers();
+        $this->registerPermissions();
+        $this->migrateMovedFeatureSettingsFromBase();
 
         /**
          * register template root
@@ -88,18 +119,6 @@ class Frontend extends Plugin
                 }
             }
         );
-
-        Event::on(
-            Plugins::class,
-            Plugins::EVENT_AFTER_INSTALL_PLUGIN,
-            function(PluginEvent $event): void {
-                if ($event->plugin?->id !== $this->id) {
-                    return;
-                }
-                $this->runAutoBuildScriptSync(force: true);
-            }
-        );
-        $this->runAutoBuildScriptSync();
 
         /**
          * set up Blitz Hints
@@ -152,7 +171,17 @@ class Frontend extends Plugin
     public function getSettingsResponse(): Response
     {
         $tab = (string)Craft::$app->request->getQueryParam('tab', 'rebuild-assets');
-        $allowedTabs = ['rebuild-assets', 'update-build-script', 'git-status'];
+        $allowedTabs = [
+            'rebuild-assets',
+            'update-build-script',
+            'git-status',
+            'inspire-fields',
+            'expanded-singles',
+            'embedded-videos',
+            'image-resizer',
+            'resize-bulk',
+            'logs',
+        ];
         if (!in_array($tab, $allowedTabs, true)) {
             $tab = 'rebuild-assets';
         }
@@ -166,8 +195,19 @@ class Frontend extends Plugin
                 'plugin' => $this,
                 'settings' => $this->getSettings(),
                 'selectedTab' => $tab,
+                'snapshotTypes' => $this->getSchemaSnapshot()->getSnapshotTypeLabels(),
+                'logEntries' => $this->getLogs()->getLogEntries(),
+                'sourceOptions' => $this->getVolumeOptions(),
+                'folderOptions' => $this->getFolderOptions(),
             ]
         );
+    }
+
+    public function getSchemaSnapshot(): SchemaSnapshotService
+    {
+        /** @var SchemaSnapshotService $service */
+        $service = $this->get('schemaSnapshot');
+        return $service;
     }
 
     protected function registerSettingsLinks(): void
@@ -209,49 +249,161 @@ class Frontend extends Plugin
         Event::on(Cp::class, Cp::EVENT_REGISTER_READ_ONLY_CP_SETTINGS, $register);
     }
 
-    private function runAutoBuildScriptSync(bool $force = false): void
+    public function getService(): Service
     {
-        if (Craft::$app->getRequest()->getIsConsoleRequest() && !$force) {
-            return;
-        }
+        /** @var Service $service */
+        $service = $this->get('service');
+        return $service;
+    }
 
-        if (!Craft::$app->getIsInstalled()) {
-            return;
-        }
+    public function getResize(): Resize
+    {
+        /** @var Resize $service */
+        $service = $this->get('resize');
+        return $service;
+    }
 
-        $settings = $this->getSettings();
-        if (!$settings instanceof Settings) {
-            return;
-        }
+    public function getSinglesList(): SinglesList
+    {
+        /** @var SinglesList $service */
+        $service = $this->get('singlesList');
+        return $service;
+    }
 
-        $currentVersion = (string)$this->getVersion();
-        if ($currentVersion === '') {
-            return;
-        }
+    public function getLogs(): Logs
+    {
+        /** @var Logs $service */
+        $service = $this->get('logs');
+        return $service;
+    }
 
-        if (!$force && $settings->lastAutoBuildSyncVersion === $currentVersion) {
-            return;
-        }
+    public function getEmbeddedVideos(): EmbeddedVideosService
+    {
+        /** @var EmbeddedVideosService $service */
+        $service = $this->get('embeddedVideos');
+        return $service;
+    }
 
-        try {
-            $controller = new UtilityController('inspire-frontend-utility', Craft::$app);
-            $result = $controller->runBuildScriptAutoSync(true);
+    private function registerPermissions(): void
+    {
+        Event::on(UserPermissions::class, UserPermissions::EVENT_REGISTER_PERMISSIONS, function(RegisterUserPermissionsEvent $event): void {
+            $event->permissions[] = [
+                'heading' => Craft::t('inspire-frontend', 'Inspire Frontend'),
+                'permissions' => [
+                    'imageResizer-resizeImage' => ['label' => Craft::t('inspire-frontend', 'Resize images')],
+                ],
+            ];
+        });
+    }
 
-            if (!empty($result['success'])) {
-                Craft::info('Auto build-script sync completed for inspire-frontend v' . $currentVersion, __METHOD__);
-            } else {
-                $message = (string)($result['message'] ?? 'Auto build-script sync failed');
-                Craft::warning($message, __METHOD__);
+    private function registerFrontendFeatureHandlers(): void
+    {
+        Event::on(Asset::class, Asset::EVENT_BEFORE_HANDLE_FILE, [$this->getService(), 'beforeHandleAssetFile']);
+        Event::on(Asset::class, Element::EVENT_REGISTER_ACTIONS, [$this->getService(), 'registerAssetActions']);
+
+        Event::on(Entry::class, Element::EVENT_REGISTER_SOURCES, function(RegisterElementSourcesEvent $event): void {
+            if ($this->getSettings()->expandSingles) {
+                foreach ($event->sources as $source) {
+                    if (array_key_exists('key', $source) && $source['key'] === 'singles') {
+                        $this->getSinglesList()->createSinglesList($event);
+                    }
+                }
             }
-        } catch (\Throwable $exception) {
-            Craft::error('Auto build-script sync exception: ' . $exception->getMessage(), __METHOD__);
-        } finally {
-            $settings->lastAutoBuildSyncVersion = $currentVersion;
-            try {
-                Craft::$app->getPlugins()->savePluginSettings($this, $settings->toArray());
-            } catch (\Throwable $exception) {
-                Craft::warning('Unable to persist auto build-script sync version marker: ' . $exception->getMessage(), __METHOD__);
-            }
+        });
+
+        if (class_exists(RedactorField::class)) {
+            Event::on(RedactorField::class, RedactorField::EVENT_REGISTER_LINK_OPTIONS, function(RegisterLinkOptionsEvent $event): void {
+                if ($this->getSettings()->expandSingles) {
+                    foreach ($event->linkOptions as $i => $linkOption) {
+                        if ($linkOption['refHandle'] === 'entry' && in_array('singles', $linkOption['sources'])) {
+                            $modifiedSources = $this->getSinglesList()->createSectionedSinglesList($linkOption['sources']);
+                            if ($modifiedSources) {
+                                $event->linkOptions[$i]['sources'] = $modifiedSources;
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        if (class_exists(CkEditorField::class)) {
+            Event::on(CkEditorField::class, CkEditorField::EVENT_DEFINE_LINK_OPTIONS, function(DefineLinkOptionsEvent $event): void {
+                if ($this->getSettings()->expandSingles) {
+                    foreach ($event->linkOptions as $i => $linkOption) {
+                        if ($linkOption['refHandle'] === 'entry' && in_array('singles', $linkOption['sources'])) {
+                            $modifiedSources = $this->getSinglesList()->createSectionedSinglesList($linkOption['sources']);
+                            if ($modifiedSources) {
+                                $event->linkOptions[$i]['sources'] = $modifiedSources;
+                            }
+                        }
+                    }
+                }
+            });
         }
     }
+
+    private function getVolumeOptions(): array
+    {
+        $sourceOptions = [];
+        foreach (Craft::$app->getVolumes()->getAllVolumes() as $source) {
+            $sourceOptions[] = ['label' => $source->name, 'value' => $source->id];
+        }
+        return $sourceOptions;
+    }
+
+    private function getFolderOptions(): array
+    {
+        $folderOptions = [];
+        $assetTree = Craft::$app->getAssets()->getFolderTreeByVolumeIds(Craft::$app->getVolumes()->getAllVolumeIds());
+        $this->getService()->getAssetFolders($assetTree, $folderOptions);
+        return $folderOptions;
+    }
+
+    private function migrateMovedFeatureSettingsFromBase(): void
+    {
+        $settings = $this->getSettings();
+        if ($settings->movedFeatureSettingsMigrated) {
+            return;
+        }
+
+        $basePlugin = Craft::$app->getPlugins()->getPlugin('inspire-base');
+        if ($basePlugin === null) {
+            return;
+        }
+
+        $baseSettings = $basePlugin->getSettings();
+        $keys = [
+            'expandSingles',
+            'redirectToEntry',
+            'useGlobalSettings',
+            'enabled',
+            'imageWidth',
+            'imageHeight',
+            'imageQuality',
+            'assetSourceSettings',
+            'skipLarger',
+            'nonDestructiveResize',
+            'referer',
+            'parameters',
+            'whitelist',
+            'extraWhitelist',
+            'maxAssetNameLength',
+            'maxFileNameLength',
+            'cacheDuration',
+            'showThumbnailsInCp',
+            'useYouTubeNoCookie',
+            'disableVimeoTracking',
+            'preventNonWhitelistedUploads',
+        ];
+
+        foreach ($keys as $key) {
+            if (property_exists($baseSettings, $key)) {
+                $settings->{$key} = $baseSettings->{$key};
+            }
+        }
+
+        $settings->movedFeatureSettingsMigrated = true;
+        Craft::$app->getPlugins()->savePluginSettings($this, $settings->toArray());
+    }
+
 }

@@ -1,0 +1,8 @@
+{% set previewCss = view.getAssetManager().getPublishedUrl('@inspire/embeddedvideos/assets/preview/dist/styles/preview.css', true) %}
+<link rel="stylesheet" href="{{ previewCss }}">
+{% set previewJs = view.getAssetManager().getPublishedUrl('@inspire/embeddedvideos/assets/preview/dist/scripts/preview.js', true) %}
+<script src="{{ previewJs }}"></script>
+
+<div class="volume-preview">
+    {% include 'inspire-frontend/embedded-videos/_components/embedded_video_preview' with {embeddedVideo: embeddedVideo} only %}
+</div>

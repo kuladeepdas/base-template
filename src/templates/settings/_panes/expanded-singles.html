@@ -1,0 +1,21 @@
+{% import "_includes/forms" as forms %}
+{% import "inspire-frontend/_macros" as macros %}
+
+{{ forms.lightswitchField({
+    first: true,
+    id: 'expandSingles',
+    name: 'expandSingles',
+    label: 'Expand Singles' | t('inspire-frontend'),
+    on: settings.expandSingles,
+    instructions: 'Expands the Singles link on the Entries page to list them like Channels and Structures.' | t('inspire-frontend'),
+    warning: macros.configWarning('expandSingles', 'inspire-frontend'),
+}) }}
+
+{{ forms.lightswitchField({
+    id: 'redirectToEntry',
+    name: 'redirectToEntry',
+    label: 'Redirect to Entry' | t('inspire-frontend'),
+    on: settings.redirectToEntry,
+    instructions: 'Automatically redirects to edit the Single Entry when clicking on the item in the sidebar.' | t('inspire-frontend'),
+    warning: macros.configWarning('redirectToEntry', 'inspire-frontend'),
+}) }}

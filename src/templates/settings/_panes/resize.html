@@ -1,0 +1,53 @@
+{% import '_includes/forms' as forms %}
+{% import 'inspire-frontend/_macros' as macros %}
+
+{% set additionalSettings = {
+    sourceOptions: sourceOptions,
+} %}
+
+{{ forms.lightswitchField({
+    label: 'Manage Resize for All Volumes' | t('inspire-frontend'),
+    instructions: 'Whether you want to manage image resize settings for all asset volumes, or manage them individually for each volume.' | t('inspire-frontend'),
+    id: 'useGlobalSettings',
+    name: 'useGlobalSettings',
+    on: settings.useGlobalSettings,
+    warning: macros.configWarning('useGlobalSettings', 'inspire-frontend'),
+    toggle: 'all-volume-settings',
+    reverseToggle: 'volume-settings'
+}) }}
+
+{{ forms.lightswitchField({
+    label: 'Skip larger resulting images' | t('inspire-frontend'),
+    instructions: 'If the resizing process results in a larger image that the previous, do not replace with larger file.' | t('inspire-frontend'),
+    id: 'skipLarger',
+    name: 'skipLarger',
+    on: settings.skipLarger,
+    warning: macros.configWarning('skipLarger', 'inspire-frontend'),
+}) }}
+
+{{ forms.lightswitchField({
+    label: 'Non-destructive' | t('inspire-frontend'),
+    instructions: 'Image Resizer will save a copy of your original image, untouched. This will be in a folder called `originals`, relative to the source image.' | t('inspire-frontend'),
+    id: 'nonDestructiveResize',
+    name: 'nonDestructiveResize',
+    on: settings.nonDestructiveResize,
+    warning: macros.configWarning('nonDestructiveResize', 'inspire-frontend'),
+}) }}
+
+<hr>
+
+<div id="all-volume-settings">
+    <h2>{{ 'All Asset Volume Settings' | t('inspire-frontend') }}</h2>
+
+    {{ macros.resizeSetting(settings, additionalSettings) }}
+</div>
+
+<div id="volume-settings">
+    {% for item in sourceOptions %}
+        <h2>{{ "“{label}” Asset Volume Settings" | t('inspire-frontend', { label: item.label }) }}</h2>
+
+        {{ macros.resizeSetting(settings, additionalSettings, item) }}
+
+        {{ not loop.last ? '<hr>' }}
+    {% endfor %}
+</div>

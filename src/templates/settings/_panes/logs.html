@@ -1,0 +1,78 @@
+{% do view.registerAssetBundle('Inspire\\Frontend\\assetbundles\\ImageResizerAsset') %}
+{% import "inspire-frontend/_macros" as imageResizerMacro %}
+
+{% if logEntries is defined and logEntries|length %}
+    <table id="logs" class="data fullwidth collapsible image-resizer-logs-table">
+        <thead>
+            <tr>
+                <th scope="col">{{ "Filename" | t('inspire-frontend') }}</th>
+                <th scope="col">{{ "Result" | t('inspire-frontend') }}</th>
+                <th scope="col">{{ "Timestamp" | t('inspire-frontend') }}</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for entry in logEntries %}
+                <tr>
+                    <td class="col-label" data-title="{{ 'Filename' | t('inspire-frontend') }}">
+                        <span class="">{{ entry.filename }}</span>
+                    </td>
+
+                    <td class="col-label" data-title="{{ 'Result' | t('inspire-frontend') }}">
+                        <span class="log-result {{ entry.result }}">{{ entry.result }}</span>
+
+                        <span class="log-label {{ entry.result }}">
+                            {{ entry.description }}
+
+                            {% if entry.handle == 'success' %}
+                                {% set prevSize = entry.data.prev.size %}
+                                {% set currSize = entry.data.curr.size %}
+                                {% set saved = prevSize - currSize %}
+
+                                {% set filesize = imageResizerMacro.filesize(saved) %}
+                                {% set percentage = ((saved / prevSize) * 100) | number_format %}
+
+                                {{ "Saved {perc}% ({num})." | t('inspire-frontend', { num: filesize, perc: percentage }) }}
+                            {% endif %}
+
+                            {% if entry.handle == 'error' %}
+                                {{ entry.data.message }}
+                            {% endif %}
+                        </span>
+                    </td>
+
+                    <td data-title="{{ 'Timestamp' | t('inspire-frontend') }}">
+                        <code>
+                            {{ entry.dateTime | date('short') ~ ' ' ~ entry.dateTime | time('short') }}
+                        </code>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>{{ 'No logs yet.'|t('inspire-frontend') }}</p>
+{% endif %}
+
+{% js %}
+(() => {
+    const btn = document.getElementById('inspire-frontend-clear-logs');
+    if (!btn) {
+        return;
+    }
+
+    btn.addEventListener('click', async () => {
+        btn.classList.add('loading');
+        btn.disabled = true;
+
+        try {
+            await Craft.sendActionRequest('POST', 'inspire-frontend/logs/clear');
+            window.location = Craft.getCpUrl('settings/plugins/inspire-frontend', { tab: 'logs' });
+        } catch (error) {
+            btn.classList.remove('loading');
+            btn.disabled = false;
+            Craft.cp.displayError(Craft.t('app', 'Couldn’t clear logs.'));
+        }
+    });
+})();
+{% endjs %}

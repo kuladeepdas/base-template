@@ -1,0 +1,22 @@
+{% do view.registerAssetBundle('Inspire\\Frontend\\assetbundles\\ImageResizerAsset') %}
+
+<p>{{ 'For any Asset folder below, click on Bulk Resize to automatically resize all assets within.' | t('inspire-frontend') }}</p>
+
+<table class="data fullwidth bulk-resize-table">
+    <tbody>
+    {% for item in folderOptions %}
+        <tr>
+            <td>{{ item.label }}</td>
+            <td>
+                <button type="button" class="btn bulk-resize-btn" data-id="{{ item.value }}" data-name="{{ item.label | e('html_attr') }}">
+                    {{ 'Resize Bulk' | t('inspire-frontend') }}
+                </button>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% js %}
+    new Craft.InspireFrontend.BulkResizeAssetFolder('{{ settings.imageWidth }}', '{{ settings.imageHeight }}');
+{% endjs %}

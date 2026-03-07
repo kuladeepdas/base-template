@@ -1,0 +1,19 @@
+{% if embeddedVideo.isSafe() and embeddedVideo.code %}
+
+    {% if embeddedVideo.aspectRatio %}
+        <div id="code" class="code is-ratio" style="padding-top: {{ embeddedVideo.aspectRatio }}%">
+            {{ embeddedVideo.code }}
+        </div>
+    {% else %}
+        <div id="code" class="code">
+            {{ embeddedVideo.code }}
+        </div>
+    {% endif %}
+
+{% elseif embeddedVideo.image and (embeddedVideo.imageWidth >= 400 or embeddedVideo.imageHeight >= 200) %}
+
+    <div class="image">
+        <img src="{{ embeddedVideo.image }}" width="{{ embeddedVideo.imageWidth }}" height="{{ embeddedVideo.imageHeight }}">
+    </div>
+
+{% endif %}

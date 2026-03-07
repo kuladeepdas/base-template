@@ -1,0 +1,56 @@
+{% import '_includes/forms' as forms %}
+
+{{ forms.autosuggestField({
+    label: 'HTTP Referer'|t('embeddedvideos'),
+    instructions: 'Domain to set as HTTP Referer, e.g. `https://domain.com`'|t('embeddedvideos'),
+    id: 'referer',
+    name: 'referer',
+    value: settings.referer,
+    errors: settings.getErrors('referer'),
+    suggestEnvVars: true
+}) }}
+
+{{ forms.lightswitchField({
+    label: 'Use YouTube nocookie?'|t('embeddedvideos'),
+    instructions: 'Whether to force YouTube video iframes to use the `youtube-nocookie.com` domain.'|t('embeddedvideos'),
+    id: 'useYouTubeNoCookie',
+    name: 'useYouTubeNoCookie',
+    on: settings.useYouTubeNoCookie
+}) }}
+
+{{ forms.lightswitchField({
+    label: 'Disable tracking on Vimeo iframes?'|t('embeddedvideos'),
+    instructions: 'Whether to force Vimeo video iframes to use the query parameter `dnt=1` to prevent tracking.'|t('embeddedvideos'),
+    id: 'disableVimeoTracking',
+    name: 'disableVimeoTracking',
+    on: settings.disableVimeoTracking
+}) }}
+
+{{ forms.lightswitchField({
+    label: 'Show thumbnails in CP?'|t('embeddedvideos'),
+    id: 'showThumbnailsInCp',
+    name: 'showThumbnailsInCp',
+    on: settings.showThumbnailsInCp
+}) }}
+
+{{ forms.lightswitchField({
+    label: 'Prevent non-whitelisted uploads?'|t('embeddedvideos'),
+    id: 'preventNonWhitelistedUploads',
+    name: 'preventNonWhitelistedUploads',
+    on: settings.preventNonWhitelistedUploads
+}) }}
+
+{{ forms.editableTableField({
+    label: 'Parameters'|t('embeddedvideos'),
+    instructions: 'List of extra parameters and their values to be sent when retrieving embed data.'|t('embeddedvideos'),
+    id: 'parameters',
+    name: 'parameters',
+    rows: settings.parameters,
+    errors: settings.getErrors('parameters'),
+    cols: {
+        param: { type: 'singleline', heading: 'Parameter'|t('embeddedvideos'), class: 'code' },
+        value: { type: 'singleline', heading: 'Value'|t('embeddedvideos'), class: 'code' }
+    },
+    addRowLabel: 'Add a parameter'|t('embeddedvideos')
+}) }}
+

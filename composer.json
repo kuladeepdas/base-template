@@ -9,7 +9,13 @@
         "craftcms"
     ],
     "require": {
+        "php": "^8.2",
         "craftcms/cms": "^5.0",
+        "craftcms/ckeditor": "^5.0",
+        "inspire/auth": "^1.0",
+        "inspire/base": "^1.0",
+        "inspire/forms": "^1.0",
+        "inspire/seo": "^4.0",
         "putyourlightson/craft-blitz-hints": "*"
     },
     "autoload": {

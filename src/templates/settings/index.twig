@@ -1,4 +1,5 @@
 {% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
 
 {% set title = "Inspire Frontend Settings" %}
 {% set crumbs = [
@@ -10,6 +11,12 @@
     'rebuild-assets': { title: 'Rebuild Assets' },
     'update-build-script': { title: 'Update Build Script' },
     'git-status': { title: 'Git Status' },
+    'inspire-fields': { title: 'Inspire Fields' },
+    'expanded-singles': { title: 'Expanded Singles' },
+    'embedded-videos': { title: 'Embedded Videos' },
+    'image-resizer': { title: 'Image Resizer' },
+    'resize-bulk': { title: 'Bulk Image Resizer' },
+    'logs': { title: 'Image Resizer Logs' },
 } %}
 
 {% block sidebar %}
@@ -133,6 +140,101 @@
                 <pre data-cli-log>[ready] waiting for command...</pre>
             </div>
         </section>
+    {% elseif selectedTab == 'inspire-fields' %}
+        <h2>Inspire Fields</h2>
+        <p class="light">Create and sync fields, entry types, and sections used for Inspire Frontend content models.</p>
+        <hr>
+        <section class="frontend-task">
+            <header class="frontend-task__header">
+                <div>
+                    <h3>Default Template</h3>
+                    <p class="light">Apply the built-in Inspire Frontend field template to create and align core fields, entry types, and sections.</p>
+                    <p class="warning">This action is destructive and replaces existing related config.</p>
+                </div>
+            </header>
+            <form method="post" accept-charset="UTF-8">
+                {{ csrfInput() }}
+                {{ actionInput('inspire-frontend/snapshot/apply-default') }}
+                <button type="submit" class="btn submit">Apply Default Template</button>
+            </form>
+        </section>
+        <section class="frontend-task">
+            <header class="frontend-task__header">
+                <div>
+                    <h3>Export Snapshot</h3>
+                    <p class="light">Export the current site's fields, entry types, sections, CKEditor configs, and entry sidebar sources.</p>
+                </div>
+            </header>
+            <form method="post" accept-charset="UTF-8">
+                {{ csrfInput() }}
+                {{ actionInput('inspire-frontend/snapshot/export') }}
+                <button type="submit" class="btn submit">Export Snapshot</button>
+            </form>
+        </section>
+        <section class="frontend-task">
+            <header class="frontend-task__header">
+                <div>
+                    <h3>Import Snapshot</h3>
+                    <p class="light">Import a snapshot and apply it to replace the site's related field/section/entry-type configuration.</p>
+                    <p class="warning">This action is destructive and dependency checks run before apply.</p>
+                </div>
+            </header>
+            <form method="post" accept-charset="UTF-8" enctype="multipart/form-data">
+                {{ csrfInput() }}
+                {{ actionInput('inspire-frontend/snapshot/import') }}
+                <div style="max-width: 600px;">
+                    {{ forms.fileField({
+                        label: 'Snapshot JSON file',
+                        id: 'snapshotFile',
+                        name: 'snapshotFile',
+                        required: true
+                    }) }}
+                </div>
+                <button type="submit" class="btn submit" style="margin-top: 12px;">Apply Import</button>
+            </form>
+        </section>
+    {% elseif selectedTab in ['expanded-singles', 'embedded-videos', 'image-resizer', 'resize-bulk', 'logs'] %}
+        <form method="post" accept-charset="UTF-8">
+            {{ csrfInput() }}
+            {{ actionInput('plugins/save-plugin-settings') }}
+            {{ hiddenInput('pluginHandle', 'inspire-frontend') }}
+            {{ redirectInput('settings/plugins/inspire-frontend?tab=' ~ selectedTab) }}
+
+            {% if selectedTab == 'logs' %}
+                <div class="frontend-page-header">
+                    <h2>Image Resizer Logs</h2>
+                    <button type="button" class="btn" id="inspire-frontend-clear-logs">{{ 'Clear logs' | t('inspire-frontend') }}</button>
+                </div>
+                {% include 'inspire-frontend/settings/_panes/logs' ignore missing %}
+            {% elseif selectedTab == 'expanded-singles' %}
+                <h2>Expanded Singles</h2>
+                {% namespace 'settings' %}
+                    {% include 'inspire-frontend/settings/_panes/expanded-singles' ignore missing %}
+                {% endnamespace %}
+                <div style="margin-top: 16px;">
+                    <button type="submit" class="btn submit">{{ 'Save'|t('app') }}</button>
+                </div>
+            {% elseif selectedTab == 'embedded-videos' %}
+                <h2>Embedded Videos</h2>
+                {% namespace 'settings' %}
+                    {% include 'inspire-frontend/settings/_panes/embedded-videos' ignore missing %}
+                {% endnamespace %}
+                <div style="margin-top: 16px;">
+                    <button type="submit" class="btn submit">{{ 'Save'|t('app') }}</button>
+                </div>
+            {% elseif selectedTab == 'image-resizer' %}
+                <h2>Image Resizer</h2>
+                {% namespace 'settings' %}
+                    {% include 'inspire-frontend/settings/_panes/image-resizer' ignore missing %}
+                {% endnamespace %}
+                <div style="margin-top: 16px;">
+                    <button type="submit" class="btn submit">{{ 'Save'|t('app') }}</button>
+                </div>
+            {% elseif selectedTab == 'resize-bulk' %}
+                <h2>Bulk Image Resizer</h2>
+                {% include 'inspire-frontend/settings/_panes/resize-bulk' ignore missing %}
+            {% endif %}
+        </form>
     {% endif %}
 {% endblock %}
 

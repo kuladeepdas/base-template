@@ -1,0 +1,175 @@
+<?php
+namespace Inspire\Frontend\services;
+
+use Inspire\Frontend\Frontend;
+
+use Inspire\Frontend\elementactions\ResizeImage;
+use Inspire\Frontend\models\Settings;
+
+use Craft;
+use craft\base\Component;
+use craft\base\Image;
+use craft\helpers\Image as ImageHelper;
+use craft\events\AssetEvent;
+use craft\events\RegisterElementActionsEvent;
+use craft\image\Raster;
+
+use Throwable;
+
+class Service extends Component
+{
+    // Public Methods
+    // =========================================================================
+
+    public function beforeHandleAssetFile(AssetEvent $event): void
+    {
+        $asset = $event->sender;
+        $filename = $asset->filename;
+        $path = $asset->tempFilePath ?? $asset->getImageTransformSourcePath();
+
+        if (!$path) {
+            Frontend::$plugin->getLogs()->resizeLog(null, 'error', $filename, ['message' => 'Unable to find path: ' . $path]);
+
+            return;
+        }
+
+        // Because this is fired on the before-save event, and validation hasn't kicked in, yet
+        // we check it here. Otherwise, we potentially process it twice when there's a conflict.
+        // if (!$asset->validate()) {
+        //     Frontend::$plugin->getLogs()->resizeLog(null, 'error', $filename, ['message' => Json::encode($asset->getErrors())]);
+
+        //     return;
+        // }
+
+        // Should we be modifying images in this source?
+        if (!Frontend::$plugin->getService()->getSettingForAssetSource($asset->volumeId, 'enabled')) {
+            Frontend::$plugin->getLogs()->resizeLog(null, 'skipped-volume-disabled', $filename);
+
+            return;
+        }
+
+        // Resize the image
+        Frontend::$plugin->getResize()->resize($asset, $filename, $path);
+    }
+
+    public function registerAssetActions(RegisterElementActionsEvent $event): void
+    {
+        if (Craft::$app->getUser()->checkPermission('imageResizer-resizeImage')) {
+            $event->actions[] = new ResizeImage();
+        }
+    }
+
+    public function getSettingForAssetSource($sourceId, string $setting): mixed
+    {
+        /* @var Settings $settings */
+        $settings = Frontend::$plugin->getSettings();
+
+        // Check if we're using the global settings (all volumes the same), they're priority
+        if ($settings->useGlobalSettings) {
+            return $settings->$setting;
+        }
+
+        // Check if there's a specific setting for the source
+        $sourceSettings = $settings->assetSourceSettings[$sourceId] ?? [];
+
+        if (array_key_exists($setting, $sourceSettings)) {
+            $fallback = null;
+
+            // Some settings should fallback to the all-asset setting when empty, because of how the UI works
+            if ($setting === 'imageWidth') {
+                $fallback = $settings->imageWidth;
+            } else if ($setting === 'imageHeight') {
+                $fallback = $settings->imageHeight;
+            } else if ($setting === 'imageQuality') {
+                $fallback = $settings->imageQuality;
+            }
+
+            return $sourceSettings[$setting] ?: $fallback;
+        }
+
+        return null;
+    }
+
+    /**
+     * @param int|null $quality
+     *
+     */
+    public function getImageQuality(string $path, ?int $quality = null): int
+    {
+        $desiredQuality = $quality ?: Frontend::$plugin->getSettings()->imageQuality;
+        $desiredQuality = $desiredQuality ?: Craft::$app->getConfig()->getGeneral()->defaultImageQuality;
+
+        if (@pathinfo($path, PATHINFO_EXTENSION) == 'png') {
+            // Valid PNG quality settings are 0-9, so normalize and flip, because we're talking about compression
+            // levels, not quality, like jpg and gif.
+            $quality = (int)round(($desiredQuality * 9) / 100);
+            $quality = 9 - $quality;
+
+            if ($quality < 0) {
+                $quality = 0;
+            }
+
+            if ($quality > 9) {
+                $quality = 9;
+            }
+        } else {
+            $quality = $desiredQuality;
+        }
+
+        return $quality;
+    }
+
+    public function getAssetFolders(array $tree, array &$folderOptions): void
+    {
+        foreach ($tree as $folder) {
+            $folderOptions[] = ['label' => $folder->name, 'value' => $folder->id];
+
+            $children = $folder->getChildren();
+
+            if ($children) {
+                $this->getAssetFolders($children, $folderOptions);
+            }
+        }
+    }
+
+    /**
+     * Our own custom save function that respects EXIF data. Using image->saveAs strips EXIF data!
+     *
+     */
+    public function saveAs(Image|Raster &$image, string $filePath): void
+    {
+        // Get the current orientation from Exif - we might need this later to rotate
+        $orientation = $image->getImagineImage()->metadata()->get('ifd0.Orientation');
+
+        $degrees = false;
+
+        switch ($orientation) {
+            case ImageHelper::EXIF_IFD0_ROTATE_180:
+                $degrees = 180;
+                break;
+            case ImageHelper::EXIF_IFD0_ROTATE_90:
+                $degrees = 90;
+                break;
+            case ImageHelper::EXIF_IFD0_ROTATE_270:
+                $degrees = 270;
+                break;
+        }
+
+        // Save the resized image. Note that this can potentially strip all Exif metadata (with `preserveExifData = false`).
+        // We need to do this ASAP, because this is the in-memory, resized image. All other operations such as stripping
+        // Exif data or rotating images need an on-file, saved image to mess around with.
+        $image->saveAs($filePath);
+
+        // If we want to `rotateImagesOnUploadByExifData` we will need to do this manually, rather than rely on
+        // `rotateImageByExifData()` because that will try and load the image again, but because it's aready saved
+        // above, there's no Exif orientation data to look at. Fortunately, we've captured that already before the save.
+        if ($degrees && Craft::$app->getConfig()->getGeneral()->rotateImagesOnUploadByExifData) {
+            // Load in the image again, fresh (it's been resized after all)
+            $image = Craft::$app->getImages()->loadImage($filePath);
+
+            // Perform the rotate and save again
+            $image->rotate($degrees);
+            $image->saveAs($filePath);
+        }
+    }
+}
