@@ -1,0 +1,303 @@
+{% set items = [
+	{ heading: 'Entries', elements: locations.entries },
+	{ heading: 'Links', elements: locations.links },
+	{ heading: 'Categories', elements: locations.categories },
+	{ heading: 'Globals', elements: locations.globals },
+] %}
+
+{% set rows = [] %}
+{% for item in items %}
+	{% for sectionName, groupedItems in item.elements %}
+		{% for location in groupedItems %}
+			{% set rows = rows|merge([{
+				type: item.heading,
+				section: sectionName,
+				title: location.title ?? '',
+				cpUrl: location.cpUrl ?? null,
+				url: location.url ?? null,
+				status: location.status ?? 'disabled',
+				location: location.location ?? null,
+				locations: location.locations ?? ((location.location ?? null) ? [location.location] : []),
+				isActive: location.isActive ?? false,
+			}]) %}
+		{% endfor %}
+	{% endfor %}
+{% endfor %}
+
+{% if rows|length %}
+	<hr>
+	{% css %}
+	#assetlocations-index .tableview table thead th {
+		white-space: nowrap;
+	}
+	#assetlocations-index #toolbar {
+		margin-bottom: 12px;
+	}
+	#assetlocations-index .assetlocations-entry {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+	#assetlocations-index .assetlocations-entry-main {
+		min-width: 0;
+	}
+	#assetlocations-index .assetlocations-entry-title {
+		font-weight: 600;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	#assetlocations-index .assetlocations-link-cell {
+		width: 64px;
+		text-align: center;
+	}
+	#assetlocations-index .assetlocations-link-cell a {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 24px;
+		height: 24px;
+	}
+	#assetlocations-index .assetlocations-link-cell svg {
+		display: inline-block;
+		width: 14px;
+		height: 14px;
+		fill: currentColor;
+	}
+	#assetlocations-index .assetlocations-link-cell .cp-icon {
+		color: currentColor;
+	}
+	#assetlocations-index .assetlocations-locations {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 6px;
+	}
+	#assetlocations-index .assetlocations-location-tag {
+		display: inline-flex;
+		align-items: center;
+		padding: 2px 8px;
+		border-radius: 999px;
+		border: 1px solid var(--border-color);
+		background: var(--gray-050);
+		color: var(--gray-900);
+		font-size: 11px;
+		line-height: 1.5;
+	}
+	#assetlocations-index .assetlocations-footer {
+		margin-top: 10px;
+	}
+	{% endcss %}
+
+	<div id="assetlocations-index">
+		<div id="toolbar" class="flex">
+			<div>
+				<label for="assetlocations-status-filter" class="visually-hidden">Status</label>
+				<div class="select">
+					<select id="assetlocations-status-filter">
+						<option value="all">All</option>
+						<option value="active">Active</option>
+						<option value="inactive">Inactive</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="search-container flex-grow texticon">
+				<span class="texticon-icon search icon" aria-hidden="true"></span>
+				<input type="text" id="assetlocations-search" class="text fullwidth" autocomplete="off" placeholder="Search entries" aria-label="Search entries">
+			</div>
+		</div>
+
+		<div class="tableview">
+			<table class="data fullwidth">
+				<thead>
+					<tr>
+						<th>Entry</th>
+						<th style="width: 360px;">Location</th>
+						<th style="width: 180px;">Status</th>
+						<th class="assetlocations-link-cell" title="Link">
+							<span class="cp-icon small inline-flex">
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" focusable="false" aria-hidden="true">
+									<path d="M57.7 193l9.4 16.4c8.3 14.5 21.9 25.2 38 29.8L163 255.7c17.2 4.9 29 20.6 29 38.5l0 39.9c0 11 6.2 21 16 25.9s16 14.9 16 25.9l0 39c0 15.6 14.9 26.9 29.9 22.6c16.1-4.6 28.6-17.5 32.7-33.8l2.8-11.2c4.2-16.9 15.2-31.4 30.3-40l8.1-4.6c15-8.5 24.2-24.5 24.2-41.7l0-8.3c0-12.7-5.1-24.9-14.1-33.9l-3.9-3.9c-9-9-21.2-14.1-33.9-14.1L257 256c-11.1 0-22.1-2.9-31.8-8.4l-34.5-19.7c-4.3-2.5-7.6-6.5-9.2-11.2c-3.2-9.6 1.1-20 10.2-24.5l5.9-3c6.6-3.3 14.3-3.9 21.3-1.5l23.2 7.7c8.2 2.7 17.2-.4 21.9-7.5c4.7-7 4.2-16.3-1.2-22.8l-13.6-16.3c-10-12-9.9-29.5 .3-41.3l15.7-18.3c8.8-10.3 10.2-25 3.5-36.7l-2.4-4.2c-3.5-.2-6.9-.3-10.4-.3C163.1 48 84.4 108.9 57.7 193zM464 256c0-36.8-9.6-71.4-26.4-101.5L412 164.8c-15.7 6.3-23.8 23.8-18.5 39.8l16.9 50.7c3.5 10.4 12 18.3 22.6 20.9l29.1 7.3c1.2-9 1.8-18.2 1.8-27.5zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256z"></path>
+								</svg>
+							</span>
+						</th>
+					</tr>
+				</thead>
+					<tbody id="assetlocations-rows">
+						{% for row in rows %}
+							{% set rowLocations = row.locations|default([]) %}
+							<tr
+								class="assetlocations-row"
+								data-title="{{ row.title|lower }}"
+								data-location="{{ (rowLocations|join(' '))|lower }}"
+								data-section="{{ row.section|lower }}"
+								data-type="{{ row.type|lower }}"
+								data-active="{{ row.isActive ? '1' : '0' }}"
+							>
+							<td>
+								<div class="assetlocations-entry">
+									<div class="assetlocations-entry-main">
+										<div class="assetlocations-entry-title">
+											{% if row.cpUrl %}
+												<a href="{{ row.cpUrl }}" target="_blank" rel="noopener">{{ row.title }}</a>
+											{% else %}
+												{{ row.title }}
+											{% endif %}
+										</div>
+									</div>
+								</div>
+								</td>
+								<td>
+									{% if rowLocations|length %}
+										<div class="assetlocations-locations">
+											{% for locationName in rowLocations %}
+												<span class="assetlocations-location-tag">{{ locationName }}</span>
+											{% endfor %}
+										</div>
+									{% endif %}
+							</td>
+							<td>
+								<span class="status-label {{ row.isActive ? 'teal' : 'gray' }}">
+									<span class="status {{ row.isActive ? 'teal' : 'disabled' }}"></span>
+									<span class="status-label-text">{{ row.isActive ? 'Live' : 'Disabled' }}</span>
+								</span>
+							</td>
+							<td class="assetlocations-link-cell">
+								{% if row.url %}
+									<a href="{{ row.url }}" target="_blank" rel="noopener" title="Visit webpage" aria-label="Visit webpage">
+										<span class="cp-icon small inline-flex">
+											<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" focusable="false" aria-hidden="true">
+												<path d="M57.7 193l9.4 16.4c8.3 14.5 21.9 25.2 38 29.8L163 255.7c17.2 4.9 29 20.6 29 38.5l0 39.9c0 11 6.2 21 16 25.9s16 14.9 16 25.9l0 39c0 15.6 14.9 26.9 29.9 22.6c16.1-4.6 28.6-17.5 32.7-33.8l2.8-11.2c4.2-16.9 15.2-31.4 30.3-40l8.1-4.6c15-8.5 24.2-24.5 24.2-41.7l0-8.3c0-12.7-5.1-24.9-14.1-33.9l-3.9-3.9c-9-9-21.2-14.1-33.9-14.1L257 256c-11.1 0-22.1-2.9-31.8-8.4l-34.5-19.7c-4.3-2.5-7.6-6.5-9.2-11.2c-3.2-9.6 1.1-20 10.2-24.5l5.9-3c6.6-3.3 14.3-3.9 21.3-1.5l23.2 7.7c8.2 2.7 17.2-.4 21.9-7.5c4.7-7 4.2-16.3-1.2-22.8l-13.6-16.3c-10-12-9.9-29.5 .3-41.3l15.7-18.3c8.8-10.3 10.2-25 3.5-36.7l-2.4-4.2c-3.5-.2-6.9-.3-10.4-.3C163.1 48 84.4 108.9 57.7 193zM464 256c0-36.8-9.6-71.4-26.4-101.5L412 164.8c-15.7 6.3-23.8 23.8-18.5 39.8l16.9 50.7c3.5 10.4 12 18.3 22.6 20.9l29.1 7.3c1.2-9 1.8-18.2 1.8-27.5zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256z"></path>
+											</svg>
+										</span>
+									</a>
+								{% endif %}
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+
+		<div id="footer" class="flex flex-justify stuck assetlocations-footer">
+			<div id="count-spinner" class="spinner small hidden"></div>
+			<div id="count-container" class="light">
+				<div class="flex pagination">
+					<nav class="flex" aria-label="Entry pagination">
+						<button type="button" role="button" class="page-link prev-page disabled" disabled title="Previous Page"></button>
+						<button type="button" role="button" class="page-link next-page disabled" disabled title="Next Page"></button>
+					</nav>
+					<div id="assetlocations-page-info" class="page-info"></div>
+				</div>
+			</div>
+			<div class="flex-grow"></div>
+			<div id="actions-container" class="flex hidden"></div>
+			<div class="flex-grow"></div>
+		</div>
+	</div>
+
+	{% js %}
+	(() => {
+		const root = document.getElementById('assetlocations-index');
+		if (!root) {
+			return;
+		}
+
+		const rows = Array.from(root.querySelectorAll('.assetlocations-row'));
+		const rowsContainer = document.getElementById('assetlocations-rows');
+		const searchInput = document.getElementById('assetlocations-search');
+		const statusFilter = document.getElementById('assetlocations-status-filter');
+		const prevBtn = root.querySelector('.prev-page');
+		const nextBtn = root.querySelector('.next-page');
+		const pageInfo = document.getElementById('assetlocations-page-info');
+
+		let filtered = [...rows];
+		let page = 1;
+		const perPage = 20;
+
+		const applyFilters = () => {
+			const query = (searchInput?.value || '').trim().toLowerCase();
+			const status = statusFilter?.value || 'all';
+
+			filtered = rows.filter((row) => {
+				const haystack = [
+					row.dataset.title || '',
+					row.dataset.location || '',
+					row.dataset.section || '',
+					row.dataset.type || '',
+				].join(' ');
+				const matchQuery = !query || haystack.includes(query);
+				const isActive = row.dataset.active === '1';
+				const matchStatus = status === 'all' || (status === 'active' && isActive) || (status === 'inactive' && !isActive);
+				return matchQuery && matchStatus;
+			});
+
+			page = 1;
+			render();
+		};
+
+		const render = () => {
+			const total = filtered.length;
+			const totalPages = Math.max(1, Math.ceil(total / perPage));
+			page = Math.min(page, totalPages);
+
+			const start = (page - 1) * perPage;
+			const end = Math.min(start + perPage, total);
+			const visible = new Set(filtered.slice(start, end));
+
+			rows.forEach((row) => {
+				row.classList.toggle('hidden', !visible.has(row));
+			});
+
+			if (total === 0) {
+				pageInfo.textContent = '0 entries';
+			} else {
+				pageInfo.textContent = `${start + 1}–${end} of ${total} entries`;
+			}
+
+			const canPrev = page > 1;
+			const canNext = page < totalPages;
+			prevBtn.disabled = !canPrev;
+			prevBtn.classList.toggle('disabled', !canPrev);
+			nextBtn.disabled = !canNext;
+			nextBtn.classList.toggle('disabled', !canNext);
+		};
+
+		searchInput?.addEventListener('input', applyFilters);
+		statusFilter?.addEventListener('change', applyFilters);
+		prevBtn?.addEventListener('click', () => {
+			if (page > 1) {
+				page -= 1;
+				render();
+			}
+		});
+		nextBtn?.addEventListener('click', () => {
+			const maxPage = Math.max(1, Math.ceil(filtered.length / perPage));
+			if (page < maxPage) {
+				page += 1;
+				render();
+			}
+		});
+
+		render();
+	})();
+	{% endjs %}
+{% else %}
+	{% set types = ['entries'] %}
+
+	{% if categoriesCount > 0 %}
+		{% set types = types|merge(['categories']) %}
+	{% endif %}
+
+	{% if globalsCount > 0 %}
+		{% set types = types|merge(['globals']) %}
+	{% endif %}
+
+	<p>This asset cannot be found within
+		{% for type in types %}
+			{% set secondLast = loop.index == (types|length - 1) %}
+			<strong>{{ type }}</strong>{% if not secondLast and not loop.last %}, {% elseif not loop.last %} or {% endif %}
+		{% endfor %}.
+	</p>
+	<p>However it may be used by a plugin, so caution is advised.</p>
+{% endif %}

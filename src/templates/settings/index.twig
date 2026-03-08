@@ -12,6 +12,7 @@
     'update-build-script': { title: 'Update Build Script' },
     'git-status': { title: 'Git Status' },
     'inspire-fields': { title: 'Inspire Fields' },
+    'asset-locations': { title: 'Asset Locations' },
     'expanded-singles': { title: 'Expanded Singles' },
     'embedded-videos': { title: 'Embedded Videos' },
     'image-resizer': { title: 'Image Resizer' },
@@ -193,7 +194,7 @@
                 <button type="submit" class="btn submit" style="margin-top: 12px;">Apply Import</button>
             </form>
         </section>
-    {% elseif selectedTab in ['expanded-singles', 'embedded-videos', 'image-resizer', 'resize-bulk', 'logs'] %}
+    {% elseif selectedTab in ['asset-locations', 'expanded-singles', 'embedded-videos', 'image-resizer', 'resize-bulk', 'logs'] %}
         <form method="post" accept-charset="UTF-8">
             {{ csrfInput() }}
             {{ actionInput('plugins/save-plugin-settings') }}
@@ -206,6 +207,14 @@
                     <button type="button" class="btn" id="inspire-frontend-clear-logs">{{ 'Clear logs' | t('inspire-frontend') }}</button>
                 </div>
                 {% include 'inspire-frontend/settings/_panes/logs' ignore missing %}
+            {% elseif selectedTab == 'asset-locations' %}
+                <h2>Asset Locations</h2>
+                {% namespace 'settings' %}
+                    {% include 'inspire-frontend/settings/_panes/asset-locations' ignore missing %}
+                {% endnamespace %}
+                <div style="margin-top: 16px;">
+                    <button type="submit" class="btn submit">{{ 'Save'|t('app') }}</button>
+                </div>
             {% elseif selectedTab == 'expanded-singles' %}
                 <h2>Expanded Singles</h2>
                 {% namespace 'settings' %}

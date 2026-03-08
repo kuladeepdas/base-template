@@ -30,6 +30,7 @@ Frontend operations and frontend feature plugin for Inspire Craft CMS projects.
 - Update Build Script
 - Git Status
 - Inspire Fields
+- Asset Locations
 - Expanded Singles
 - Embedded Videos
 - Image Resizer
@@ -42,6 +43,10 @@ Frontend operations and frontend feature plugin for Inspire Craft CMS projects.
 - Build script sync to project `frontend/`
 - Git status + commit/push utility actions
 - Inspire Fields snapshot export/import/apply tools
+- Asset Locations integration (moved from standalone plugin)
+  - Native Asset field layout element: `Asset Locations`
+  - Asset index `In Use` table attribute
+  - Settings toggle to enable/disable feature (`enabled` by default)
 - Prefetch variable registration (`craft.prefetch`)
 - Twig image helper support (`singleImg`, `responsiveImg`)
 - Embedded Videos integration

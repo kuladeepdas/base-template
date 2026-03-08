@@ -1,0 +1,8 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.lightswitchField({
+    label: 'Enable Asset Locations',
+    instructions: 'Adds Asset Locations field and usage indicators to Assets in the control panel.',
+    name: 'assetLocationsEnabled',
+    on: settings.assetLocationsEnabled ?? true
+}) }}

@@ -11,6 +11,8 @@ class SchemaSnapshotService extends Component
     private const SNAPSHOT_TYPES = [
         'ckeditorConfigs' => 'CKEditor Configs',
         'entryElementSources' => 'Entry Sidebar Sources',
+        'filesystems' => 'Filesystems',
+        'volumes' => 'Asset Volumes',
         'fields' => 'Fields',
         'entryTypes' => 'Entry Types',
         'sections' => 'Sections',
@@ -78,6 +80,8 @@ class SchemaSnapshotService extends Component
             'capturedAt' => gmdate('c'),
             'ckeditorConfigs' => $projectConfig->get('ckeditor.configs') ?? [],
             'entryElementSources' => $projectConfig->get(ProjectConfig::PATH_ELEMENT_SOURCES . '.craft\\elements\\Entry') ?? [],
+            'filesystems' => $projectConfig->get(ProjectConfig::PATH_FS) ?? [],
+            'volumes' => $projectConfig->get(ProjectConfig::PATH_VOLUMES) ?? [],
             'fields' => $projectConfig->get(ProjectConfig::PATH_FIELDS) ?? [],
             'entryTypes' => $projectConfig->get(ProjectConfig::PATH_ENTRY_TYPES) ?? [],
             'sections' => $projectConfig->get(ProjectConfig::PATH_SECTIONS) ?? [],
@@ -105,6 +109,8 @@ class SchemaSnapshotService extends Component
 
         $importedCkeditorConfigs = 0;
         $importedEntryElementSources = 0;
+        $importedFilesystems = 0;
+        $importedVolumes = 0;
         $importedFields = 0;
         $importedEntryTypes = 0;
         $importedSections = 0;
@@ -119,6 +125,18 @@ class SchemaSnapshotService extends Component
             $sources = is_array($snapshot['entryElementSources'] ?? null) ? $snapshot['entryElementSources'] : [];
             $incomingConfig['elementSources']['craft\\elements\\Entry'] = $sources;
             $importedEntryElementSources = count($sources);
+        }
+
+        if (in_array('filesystems', $types, true)) {
+            $filesystems = is_array($snapshot['filesystems'] ?? null) ? $snapshot['filesystems'] : [];
+            $incomingConfig['fs'] = $filesystems;
+            $importedFilesystems = count($filesystems);
+        }
+
+        if (in_array('volumes', $types, true)) {
+            $volumes = is_array($snapshot['volumes'] ?? null) ? $snapshot['volumes'] : [];
+            $incomingConfig['volumes'] = $volumes;
+            $importedVolumes = count($volumes);
         }
 
         if (in_array('fields', $types, true)) {
@@ -156,6 +174,8 @@ class SchemaSnapshotService extends Component
             'typesImported' => $types,
             'ckeditorConfigsImported' => $importedCkeditorConfigs,
             'entryElementSourcesImported' => $importedEntryElementSources,
+            'filesystemsImported' => $importedFilesystems,
+            'volumesImported' => $importedVolumes,
             'fieldsImported' => $importedFields,
             'entryTypesImported' => $importedEntryTypes,
             'sectionsImported' => $importedSections,
@@ -167,12 +187,16 @@ class SchemaSnapshotService extends Component
         $projectConfig = Craft::$app->getProjectConfig();
 
         $currentSites = $projectConfig->get(ProjectConfig::PATH_SITES) ?? [];
+        $currentFilesystems = $projectConfig->get(ProjectConfig::PATH_FS) ?? [];
+        $currentVolumes = $projectConfig->get(ProjectConfig::PATH_VOLUMES) ?? [];
         $currentFields = $projectConfig->get(ProjectConfig::PATH_FIELDS) ?? [];
         $currentEntryTypes = $projectConfig->get(ProjectConfig::PATH_ENTRY_TYPES) ?? [];
         $currentSections = $projectConfig->get(ProjectConfig::PATH_SECTIONS) ?? [];
         $currentEntrySources = $projectConfig->get(ProjectConfig::PATH_ELEMENT_SOURCES . '.craft\\elements\\Entry') ?? [];
 
         $targetSites = $currentSites;
+        $targetFilesystems = in_array('filesystems', $types, true) ? ($snapshot['filesystems'] ?? []) : $currentFilesystems;
+        $targetVolumes = in_array('volumes', $types, true) ? ($snapshot['volumes'] ?? []) : $currentVolumes;
         $targetFields = in_array('fields', $types, true) ? ($snapshot['fields'] ?? []) : $currentFields;
         $targetEntryTypes = in_array('entryTypes', $types, true) ? ($snapshot['entryTypes'] ?? []) : $currentEntryTypes;
         $targetSections = in_array('sections', $types, true) ? ($snapshot['sections'] ?? []) : $currentSections;
@@ -189,6 +213,21 @@ class SchemaSnapshotService extends Component
         }
 
         $errors = [];
+
+        $targetFsHandles = array_fill_keys(array_keys((array)$targetFilesystems), true);
+        foreach ((array)$targetVolumes as $volumeUid => $volumeConfig) {
+            if (!is_array($volumeConfig)) {
+                continue;
+            }
+            $fsHandle = $volumeConfig['fs'] ?? null;
+            if (is_string($fsHandle) && $fsHandle !== '' && !isset($targetFsHandles[$fsHandle])) {
+                $errors[] = sprintf(
+                    'Volume "%s" references missing filesystem handle "%s". Include "Filesystems" in selection or ensure it already exists.',
+                    (string)($volumeConfig['name'] ?? $volumeUid),
+                    $fsHandle
+                );
+            }
+        }
 
         $targetFieldUids = array_fill_keys(array_keys($targetFields), true);
         foreach ($targetEntryTypes as $entryTypeUid => $entryTypeConfig) {
@@ -427,8 +466,20 @@ class SchemaSnapshotService extends Component
 
     private function loadBundledSnapshot(): array
     {
-        $path = dirname(__DIR__, 2) . '/snapshot/schema.php';
-        if (!is_file($path)) {
+        $paths = [
+            dirname(__DIR__) . '/snapshot/schema.php',
+            dirname(__DIR__, 2) . '/snapshot/schema.php',
+        ];
+
+        $path = null;
+        foreach ($paths as $candidate) {
+            if (is_file($candidate)) {
+                $path = $candidate;
+                break;
+            }
+        }
+
+        if ($path === null) {
             return [];
         }
 
@@ -469,6 +520,8 @@ class SchemaSnapshotService extends Component
         $snapshot['fields'] = is_array($snapshot['fields'] ?? null) ? $snapshot['fields'] : [];
         $snapshot['entryTypes'] = is_array($entryTypes) ? $entryTypes : [];
         $snapshot['entryElementSources'] = is_array($snapshot['entryElementSources'] ?? null) ? $snapshot['entryElementSources'] : [];
+        $snapshot['filesystems'] = is_array($snapshot['filesystems'] ?? null) ? $snapshot['filesystems'] : [];
+        $snapshot['volumes'] = is_array($snapshot['volumes'] ?? null) ? $snapshot['volumes'] : [];
         $snapshot['ckeditorConfigs'] = is_array($snapshot['ckeditorConfigs'] ?? null) ? $snapshot['ckeditorConfigs'] : [];
         return $snapshot;
     }

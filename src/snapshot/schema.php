@@ -2,349 +2,9 @@
 
 return array (
   'version' => 1,
-  'capturedAt' => '2026-03-07T08:59:26+00:00',
-  'sites' => 
-  array (
-    '51a3c38b-5d38-480b-959d-0e03033e978a' => 
-    array (
-      'baseUrl' => '$PRIMARY_SITE_URL',
-      'enabled' => true,
-      'handle' => 'default',
-      'hasUrls' => true,
-      'language' => 'en',
-      'name' => 'Demo Craft',
-      'primary' => true,
-      'siteGroup' => '06362e28-155e-447b-97ea-dce7651b5ef4',
-      'sortOrder' => 1,
-    ),
-  ),
+  'capturedAt' => '2026-03-08T05:55:17+00:00',
   'ckeditorConfigs' => 
   array (
-    '43b0aff5-5693-4bab-90d0-3d3292dc6452' => 
-    array (
-      'css' => '.ck.ck-content {
-    line-height: normal;
-}
-.ck.ck-content p.text-sm {
-    font-size: 12px;
-}
-.ck.ck-content p.text-md {
-    font-size: 16px;
-}
-.ck.ck-content p.text-lg {
-    font-size: 20px;
-}
-.ck.ck-content h1 {
-    font-size: 32px;
-    font-weight: bold;
-}
-.ck.ck-content h2 {
-    font-size: 28px;
-    font-weight: bold;
-}
-.ck.ck-content h3 {
-    font-size: 24px;
-    font-weight: bold;
-}
-.ck.ck-content h4 {
-    font-size: 20px;
-    font-weight: bold;
-}
-.ck.ck-content h5 {
-    font-size: 16px;
-    font-weight: bold;
-}
-.ck.ck-content h6 {
-    font-size: 14px;
-    font-weight: bold;
-}',
-      'headingLevels' => 
-      array (
-        0 => 2,
-        1 => 3,
-        2 => 4,
-        3 => 5,
-        4 => 6,
-      ),
-      'name' => 'Simple',
-      'options' => 
-      array (
-        'alignment' => 
-        array (
-          'options' => 
-          array (
-            0 => 'left',
-            1 => 'center',
-            2 => 'right',
-          ),
-        ),
-        'code' => 
-        array (
-          'indentSequence' => '  ',
-        ),
-        'fontColor' => 
-        array (
-          'colors' => 
-          array (
-            0 => 
-            array (
-              'color' => '#ffffff',
-              'label' => 'White',
-            ),
-            1 => 
-            array (
-              'color' => '#000000',
-              'label' => 'Black',
-            ),
-            2 => 
-            array (
-              'color' => '#717171',
-              'label' => 'Light grey',
-            ),
-            3 => 
-            array (
-              'color' => '#383838',
-              'label' => 'Grey',
-            ),
-          ),
-        ),
-        'link' => 
-        array (
-          'decorators' => 
-          array (
-            'openInNewTab' => 
-            array (
-              'attributes' => 
-              array (
-                'rel' => 'noopener noreferrer',
-                'target' => '_blank',
-              ),
-              'label' => 'Open in a new tab',
-              'mode' => 'manual',
-            ),
-            'openInNewWindow' => 
-            array (
-              'attributes' => 
-              array (
-                'rel' => 'noopener noreferrer',
-                'target' => '_new',
-              ),
-              'label' => 'Open in a new window',
-              'mode' => 'manual',
-            ),
-          ),
-        ),
-        'style' => 
-        array (
-          'definitions' => 
-          array (
-            0 => 
-            array (
-              'classes' => 
-              array (
-                0 => 'text-sm',
-              ),
-              'element' => 'p',
-              'name' => 'Small Text',
-            ),
-            1 => 
-            array (
-              'classes' => 
-              array (
-                0 => 'text-md',
-              ),
-              'element' => 'p',
-              'name' => 'Medium Text',
-            ),
-            2 => 
-            array (
-              'classes' => 
-              array (
-                0 => 'text-lg',
-              ),
-              'element' => 'p',
-              'name' => 'Large Text',
-            ),
-          ),
-        ),
-      ),
-      'toolbar' => 
-      array (
-        0 => 'heading',
-        1 => '|',
-        2 => 'bold',
-        3 => 'italic',
-        4 => 'link',
-        5 => 'sourceEditing',
-      ),
-    ),
-    '94a4f344-99aa-44c6-af09-e59750cfc50a' => 
-    array (
-      'css' => '.ck.ck-content {
-    line-height: normal;
-}
-.ck.ck-content p.text-sm {
-    font-size: 12px;
-}
-.ck.ck-content p.text-md {
-    font-size: 16px;
-}
-.ck.ck-content p.text-lg {
-    font-size: 20px;
-}
-.ck.ck-content h1 {
-    font-size: 32px;
-    font-weight: bold;
-}
-.ck.ck-content h2 {
-    font-size: 28px;
-    font-weight: bold;
-}
-.ck.ck-content h3 {
-    font-size: 24px;
-    font-weight: bold;
-}
-.ck.ck-content h4 {
-    font-size: 20px;
-    font-weight: bold;
-}
-.ck.ck-content h5 {
-    font-size: 16px;
-    font-weight: bold;
-}
-.ck.ck-content h6 {
-    font-size: 14px;
-    font-weight: bold;
-}',
-      'headingLevels' => 
-      array (
-        0 => 2,
-        1 => 3,
-        2 => 4,
-        3 => 5,
-        4 => 6,
-      ),
-      'name' => 'Default',
-      'options' => 
-      array (
-        'alignment' => 
-        array (
-          'options' => 
-          array (
-            0 => 'left',
-            1 => 'center',
-            2 => 'right',
-          ),
-        ),
-        'code' => 
-        array (
-          'indentSequence' => '  ',
-        ),
-        'fontColor' => 
-        array (
-          'colors' => 
-          array (
-            0 => 
-            array (
-              'color' => '#ffffff',
-              'label' => 'White',
-            ),
-            1 => 
-            array (
-              'color' => '#000000',
-              'label' => 'Black',
-            ),
-            2 => 
-            array (
-              'color' => '#717171',
-              'label' => 'Light grey',
-            ),
-            3 => 
-            array (
-              'color' => '#383838',
-              'label' => 'Grey',
-            ),
-          ),
-        ),
-        'link' => 
-        array (
-          'decorators' => 
-          array (
-            'openInNewTab' => 
-            array (
-              'attributes' => 
-              array (
-                'rel' => 'noopener noreferrer',
-                'target' => '_blank',
-              ),
-              'label' => 'Open in a new tab',
-              'mode' => 'manual',
-            ),
-            'openInNewWindow' => 
-            array (
-              'attributes' => 
-              array (
-                'rel' => 'noopener noreferrer',
-                'target' => '_new',
-              ),
-              'label' => 'Open in a new window',
-              'mode' => 'manual',
-            ),
-          ),
-        ),
-        'style' => 
-        array (
-          'definitions' => 
-          array (
-            0 => 
-            array (
-              'classes' => 
-              array (
-                0 => 'text-sm',
-              ),
-              'element' => 'p',
-              'name' => 'Small Text',
-            ),
-            1 => 
-            array (
-              'classes' => 
-              array (
-                0 => 'text-md',
-              ),
-              'element' => 'p',
-              'name' => 'Medium Text',
-            ),
-            2 => 
-            array (
-              'classes' => 
-              array (
-                0 => 'text-lg',
-              ),
-              'element' => 'p',
-              'name' => 'Large Text',
-            ),
-          ),
-        ),
-      ),
-      'toolbar' => 
-      array (
-        0 => 'heading',
-        1 => 'style',
-        2 => '|',
-        3 => 'fontColor',
-        4 => 'bold',
-        5 => 'italic',
-        6 => 'link',
-        7 => 'alignment',
-        8 => 'bulletedList',
-        9 => 'numberedList',
-        10 => 'insertImage',
-        11 => 'mediaEmbed',
-        12 => 'htmlEmbed',
-        13 => 'codeBlock',
-        14 => 'sourceEditing',
-      ),
-    ),
   ),
   'entryElementSources' => 
   array (
@@ -522,6 +182,149 @@ return array (
     array (
       'key' => 'single:91c92746-fee5-44b5-8ba4-3e32a5354b7e',
       'type' => 'native',
+    ),
+  ),
+  'filesystems' => 
+  array (
+    'public' => 
+    array (
+      'hasUrls' => true,
+      'name' => 'Public',
+      'settings' => 
+      array (
+        'path' => '@webroot/files',
+      ),
+      'type' => 'craft\\fs\\Local',
+      'url' => '/files',
+    ),
+    'transforms' => 
+    array (
+      'hasUrls' => true,
+      'name' => 'Image Transforms',
+      'settings' => 
+      array (
+        'path' => '@webroot/transforms',
+      ),
+      'type' => 'craft\\fs\\Local',
+      'url' => '/transforms',
+    ),
+  ),
+  'volumes' => 
+  array (
+    'f6b7065b-8702-4c57-ba37-4454b13d7530' => 
+    array (
+      'altTranslationKeyFormat' => NULL,
+      'altTranslationMethod' => 'none',
+      'fieldLayouts' => 
+      array (
+        'ad06ad75-5cb7-4cc0-b458-abb9eb910dc9' => 
+        array (
+          'cardThumbAlignment' => 'end',
+          'tabs' => 
+          array (
+            0 => 
+            array (
+              'elementCondition' => NULL,
+              'elements' => 
+              array (
+                0 => 
+                array (
+                  'autocapitalize' => true,
+                  'autocomplete' => false,
+                  'autocorrect' => true,
+                  'class' => NULL,
+                  'dateAdded' => '2025-05-30T06:10:08+00:00',
+                  'disabled' => false,
+                  'elementCondition' => NULL,
+                  'id' => NULL,
+                  'inputType' => NULL,
+                  'instructions' => NULL,
+                  'label' => NULL,
+                  'max' => NULL,
+                  'min' => NULL,
+                  'name' => NULL,
+                  'orientation' => NULL,
+                  'placeholder' => NULL,
+                  'readonly' => false,
+                  'requirable' => false,
+                  'size' => NULL,
+                  'step' => NULL,
+                  'tip' => NULL,
+                  'title' => NULL,
+                  'type' => 'craft\\fieldlayoutelements\\assets\\AssetTitleField',
+                  'uid' => 'acd274b9-f9db-4a63-95ee-2a8c91205e6b',
+                  'userCondition' => NULL,
+                  'warning' => NULL,
+                  'width' => 100,
+                ),
+                1 => 
+                array (
+                  'attribute' => 'alt',
+                  'class' => NULL,
+                  'cols' => NULL,
+                  'dateAdded' => '2025-05-30T06:11:27+00:00',
+                  'disabled' => false,
+                  'elementCondition' => NULL,
+                  'id' => NULL,
+                  'instructions' => NULL,
+                  'label' => NULL,
+                  'name' => NULL,
+                  'orientation' => NULL,
+                  'placeholder' => NULL,
+                  'readonly' => false,
+                  'requirable' => true,
+                  'required' => false,
+                  'rows' => NULL,
+                  'tip' => NULL,
+                  'title' => NULL,
+                  'type' => 'craft\\fieldlayoutelements\\assets\\AltField',
+                  'uid' => '417469b8-bda0-40f2-8323-bf6286f7c9d3',
+                  'userCondition' => NULL,
+                  'warning' => NULL,
+                  'width' => 100,
+                ),
+                2 => 
+                array (
+                  'attribute' => 'locations',
+                  'dateAdded' => '2025-10-13T09:12:47+00:00',
+                  'elementCondition' => NULL,
+                  'id' => NULL,
+                  'instructions' => NULL,
+                  'label' => NULL,
+                  'mandatory' => false,
+                  'name' => NULL,
+                  'orientation' => NULL,
+                  'placeholder' => '0',
+                  'readonly' => true,
+                  'requirable' => false,
+                  'required' => false,
+                  'tip' => NULL,
+                  'title' => NULL,
+                  'translatable' => false,
+                  'type' => 'Inspire\\Frontend\\assetlocations\\fieldlayoutelements\\AssetLocationsField',
+                  'uid' => '9f63ae79-50c5-40c3-a550-049a7fbd6ae7',
+                  'userCondition' => NULL,
+                  'warning' => NULL,
+                  'width' => 100,
+                ),
+              ),
+              'name' => 'Content',
+              'uid' => '246211e7-4732-42cd-98bc-c40b3c53c4a3',
+              'userCondition' => NULL,
+            ),
+          ),
+          'thumbFieldKey' => NULL,
+        ),
+      ),
+      'fs' => 'public',
+      'handle' => 'public',
+      'name' => 'Public',
+      'sortOrder' => 1,
+      'subpath' => '',
+      'titleTranslationKeyFormat' => NULL,
+      'titleTranslationMethod' => 'site',
+      'transformFs' => 'transforms',
+      'transformSubpath' => '',
     ),
   ),
   'fields' => 
@@ -1495,11 +1298,364 @@ return array (
         'availableTransforms' => '',
         'availableVolumes' => '*',
         'characterLimit' => NULL,
-        'ckeConfig' => '94a4f344-99aa-44c6-af09-e59750cfc50a',
-        'createButtonLabel' => NULL,
+        'css' => '.ck.ck-content {
+    line-height: normal;
+}
+.ck.ck-content p.text-sm {
+    font-size: 12px;
+}
+.ck.ck-content p.text-md {
+    font-size: 16px;
+}
+.ck.ck-content p.text-lg {
+    font-size: 20px;
+}
+.ck.ck-content h1 {
+    font-size: 32px;
+    font-weight: bold;
+}
+.ck.ck-content h2 {
+    font-size: 28px;
+    font-weight: bold;
+}
+.ck.ck-content h3 {
+    font-size: 24px;
+    font-weight: bold;
+}
+.ck.ck-content h4 {
+    font-size: 20px;
+    font-weight: bold;
+}
+.ck.ck-content h5 {
+    font-size: 16px;
+    font-weight: bold;
+}
+.ck.ck-content h6 {
+    font-size: 14px;
+    font-weight: bold;
+}',
         'defaultTransform' => NULL,
-        'expandEntryButtons' => false,
         'fullGraphqlData' => true,
+        'headingLevels' => 
+        array (
+          0 => 2,
+          1 => 3,
+          2 => 4,
+          3 => 5,
+          4 => 6,
+        ),
+        'js' => NULL,
+        'options' => 
+        array (
+          '__assoc__' => 
+          array (
+            0 => 
+            array (
+              0 => 'alignment',
+              1 => 
+              array (
+                '__assoc__' => 
+                array (
+                  0 => 
+                  array (
+                    0 => 'options',
+                    1 => 
+                    array (
+                      0 => 'left',
+                      1 => 'center',
+                      2 => 'right',
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            1 => 
+            array (
+              0 => 'code',
+              1 => 
+              array (
+                '__assoc__' => 
+                array (
+                  0 => 
+                  array (
+                    0 => 'indentSequence',
+                    1 => '  ',
+                  ),
+                ),
+              ),
+            ),
+            2 => 
+            array (
+              0 => 'fontColor',
+              1 => 
+              array (
+                '__assoc__' => 
+                array (
+                  0 => 
+                  array (
+                    0 => 'colors',
+                    1 => 
+                    array (
+                      0 => 
+                      array (
+                        '__assoc__' => 
+                        array (
+                          0 => 
+                          array (
+                            0 => 'color',
+                            1 => '#ffffff',
+                          ),
+                          1 => 
+                          array (
+                            0 => 'label',
+                            1 => 'White',
+                          ),
+                        ),
+                      ),
+                      1 => 
+                      array (
+                        '__assoc__' => 
+                        array (
+                          0 => 
+                          array (
+                            0 => 'color',
+                            1 => '#000000',
+                          ),
+                          1 => 
+                          array (
+                            0 => 'label',
+                            1 => 'Black',
+                          ),
+                        ),
+                      ),
+                      2 => 
+                      array (
+                        '__assoc__' => 
+                        array (
+                          0 => 
+                          array (
+                            0 => 'color',
+                            1 => '#717171',
+                          ),
+                          1 => 
+                          array (
+                            0 => 'label',
+                            1 => 'Light grey',
+                          ),
+                        ),
+                      ),
+                      3 => 
+                      array (
+                        '__assoc__' => 
+                        array (
+                          0 => 
+                          array (
+                            0 => 'color',
+                            1 => '#383838',
+                          ),
+                          1 => 
+                          array (
+                            0 => 'label',
+                            1 => 'Grey',
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            3 => 
+            array (
+              0 => 'link',
+              1 => 
+              array (
+                '__assoc__' => 
+                array (
+                  0 => 
+                  array (
+                    0 => 'decorators',
+                    1 => 
+                    array (
+                      '__assoc__' => 
+                      array (
+                        0 => 
+                        array (
+                          0 => 'openInNewTab',
+                          1 => 
+                          array (
+                            '__assoc__' => 
+                            array (
+                              0 => 
+                              array (
+                                0 => 'attributes',
+                                1 => 
+                                array (
+                                  '__assoc__' => 
+                                  array (
+                                    0 => 
+                                    array (
+                                      0 => 'rel',
+                                      1 => 'noopener noreferrer',
+                                    ),
+                                    1 => 
+                                    array (
+                                      0 => 'target',
+                                      1 => '_blank',
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              1 => 
+                              array (
+                                0 => 'label',
+                                1 => 'Open in a new tab',
+                              ),
+                              2 => 
+                              array (
+                                0 => 'mode',
+                                1 => 'manual',
+                              ),
+                            ),
+                          ),
+                        ),
+                        1 => 
+                        array (
+                          0 => 'openInNewWindow',
+                          1 => 
+                          array (
+                            '__assoc__' => 
+                            array (
+                              0 => 
+                              array (
+                                0 => 'attributes',
+                                1 => 
+                                array (
+                                  '__assoc__' => 
+                                  array (
+                                    0 => 
+                                    array (
+                                      0 => 'rel',
+                                      1 => 'noopener noreferrer',
+                                    ),
+                                    1 => 
+                                    array (
+                                      0 => 'target',
+                                      1 => '_new',
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              1 => 
+                              array (
+                                0 => 'label',
+                                1 => 'Open in a new window',
+                              ),
+                              2 => 
+                              array (
+                                0 => 'mode',
+                                1 => 'manual',
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            4 => 
+            array (
+              0 => 'style',
+              1 => 
+              array (
+                '__assoc__' => 
+                array (
+                  0 => 
+                  array (
+                    0 => 'definitions',
+                    1 => 
+                    array (
+                      0 => 
+                      array (
+                        '__assoc__' => 
+                        array (
+                          0 => 
+                          array (
+                            0 => 'classes',
+                            1 => 
+                            array (
+                              0 => 'text-sm',
+                            ),
+                          ),
+                          1 => 
+                          array (
+                            0 => 'element',
+                            1 => 'p',
+                          ),
+                          2 => 
+                          array (
+                            0 => 'name',
+                            1 => 'Small Text',
+                          ),
+                        ),
+                      ),
+                      1 => 
+                      array (
+                        '__assoc__' => 
+                        array (
+                          0 => 
+                          array (
+                            0 => 'classes',
+                            1 => 
+                            array (
+                              0 => 'text-md',
+                            ),
+                          ),
+                          1 => 
+                          array (
+                            0 => 'element',
+                            1 => 'p',
+                          ),
+                          2 => 
+                          array (
+                            0 => 'name',
+                            1 => 'Medium Text',
+                          ),
+                        ),
+                      ),
+                      2 => 
+                      array (
+                        '__assoc__' => 
+                        array (
+                          0 => 
+                          array (
+                            0 => 'classes',
+                            1 => 
+                            array (
+                              0 => 'text-lg',
+                            ),
+                          ),
+                          1 => 
+                          array (
+                            0 => 'element',
+                            1 => 'p',
+                          ),
+                          2 => 
+                          array (
+                            0 => 'name',
+                            1 => 'Large Text',
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
         'parseEmbeds' => false,
         'purifierConfig' => NULL,
         'purifyHtml' => true,
@@ -1507,6 +1663,24 @@ return array (
         'showUnpermittedVolumes' => false,
         'showWordCount' => false,
         'sourceEditingGroups' => '*',
+        'toolbar' => 
+        array (
+          0 => 'heading',
+          1 => 'style',
+          2 => '|',
+          3 => 'fontColor',
+          4 => 'bold',
+          5 => 'italic',
+          6 => 'link',
+          7 => 'alignment',
+          8 => 'bulletedList',
+          9 => 'numberedList',
+          10 => 'insertImage',
+          11 => 'mediaEmbed',
+          12 => 'htmlEmbed',
+          13 => 'codeBlock',
+          14 => 'sourceEditing',
+        ),
         'wordLimit' => NULL,
       ),
       'translationKeyFormat' => NULL,

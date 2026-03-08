@@ -76,10 +76,12 @@ class SnapshotController extends Controller
         try {
             $result = $service->importSnapshotReplacingTypes($snapshot, $selectedTypes);
             $summary = sprintf(
-                'Imported: %d type(s). ckeditor=%d, entrySources=%d, fields=%d, entryTypes=%d, sections=%d.',
+                'Imported: %d type(s). ckeditor=%d, entrySources=%d, filesystems=%d, volumes=%d, fields=%d, entryTypes=%d, sections=%d.',
                 count((array)($result['typesImported'] ?? [])),
                 (int)($result['ckeditorConfigsImported'] ?? 0),
                 (int)($result['entryElementSourcesImported'] ?? 0),
+                (int)($result['filesystemsImported'] ?? 0),
+                (int)($result['volumesImported'] ?? 0),
                 (int)($result['fieldsImported'] ?? 0),
                 (int)($result['entryTypesImported'] ?? 0),
                 (int)($result['sectionsImported'] ?? 0),
@@ -110,10 +112,12 @@ class SnapshotController extends Controller
         try {
             $result = $service->importSnapshotReplacingTypes($snapshot, $selectedTypes);
             $summary = sprintf(
-                'Applied default template: %d type(s). ckeditor=%d, entrySources=%d, fields=%d, entryTypes=%d, sections=%d.',
+                'Applied default template: %d type(s). ckeditor=%d, entrySources=%d, filesystems=%d, volumes=%d, fields=%d, entryTypes=%d, sections=%d.',
                 count((array)($result['typesImported'] ?? [])),
                 (int)($result['ckeditorConfigsImported'] ?? 0),
                 (int)($result['entryElementSourcesImported'] ?? 0),
+                (int)($result['filesystemsImported'] ?? 0),
+                (int)($result['volumesImported'] ?? 0),
                 (int)($result['fieldsImported'] ?? 0),
                 (int)($result['entryTypesImported'] ?? 0),
                 (int)($result['sectionsImported'] ?? 0),

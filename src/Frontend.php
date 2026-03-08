@@ -11,6 +11,9 @@ use craft\base\Element;
 use craft\elements\Asset;
 use craft\elements\Entry;
 use craft\events\RegisterCpSettingsEvent;
+use craft\events\DefineFieldLayoutFieldsEvent;
+use craft\events\RegisterElementTableAttributesEvent;
+use craft\events\DefineAttributeHtmlEvent;
 use craft\events\RegisterElementSourcesEvent;
 use craft\events\RegisterTemplateRootsEvent;
 use craft\events\TemplateEvent;
@@ -19,6 +22,7 @@ use craft\web\twig\variables\Cp;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\View;
 use craft\services\UserPermissions;
+use craft\models\FieldLayout;
 use craft\ckeditor\events\DefineLinkOptionsEvent;
 use craft\ckeditor\Field as CkEditorField;
 use craft\redactor\events\RegisterLinkOptionsEvent;
@@ -36,6 +40,11 @@ use Inspire\Frontend\variables\PrefetchVariable;
 use Inspire\Frontend\embeddedvideos\Integration as EmbeddedVideosIntegration;
 use Inspire\Frontend\embeddedvideos\Service as EmbeddedVideosService;
 use Inspire\Frontend\embeddedvideos\Controller as EmbeddedVideosController;
+use Inspire\Frontend\assetlocations\fieldlayoutelements\AssetLocationsField;
+use Inspire\Frontend\assetlocations\services\FindAssetService as AssetLocationsFindAssetService;
+use Inspire\Frontend\assetlocations\services\FindElementService as AssetLocationsFindElementService;
+use Inspire\Frontend\assetlocations\services\GetSectionService as AssetLocationsGetSectionService;
+use Inspire\Frontend\assetlocations\services\GetUsageService as AssetLocationsGetUsageService;
 use putyourlightson\blitzhints\BlitzHints;
 use yii\base\Event;
 use yii\base\InvalidConfigException;
@@ -78,6 +87,10 @@ class Frontend extends Plugin
             'singlesList' => SinglesList::class,
             'logs' => Logs::class,
             'embeddedVideos' => EmbeddedVideosService::class,
+            'assetLocationsFindAsset' => AssetLocationsFindAssetService::class,
+            'assetLocationsSection' => AssetLocationsGetSectionService::class,
+            'assetLocationsElementService' => AssetLocationsFindElementService::class,
+            'assetLocationsUsage' => AssetLocationsGetUsageService::class,
         ]);
 
         \Inspire\Frontend\embeddedvideos\Plugin::boot($this);
@@ -87,6 +100,7 @@ class Frontend extends Plugin
 
         (new EmbeddedVideosIntegration($this))->register();
         $this->registerFrontendFeatureHandlers();
+        $this->registerAssetLocationsHandlers();
         $this->registerPermissions();
         $this->migrateMovedFeatureSettingsFromBase();
 
@@ -176,6 +190,7 @@ class Frontend extends Plugin
             'update-build-script',
             'git-status',
             'inspire-fields',
+            'asset-locations',
             'expanded-singles',
             'embedded-videos',
             'image-resizer',
@@ -340,6 +355,52 @@ class Frontend extends Plugin
                 }
             });
         }
+    }
+
+    private function registerAssetLocationsHandlers(): void
+    {
+        if (!$this->getSettings()->assetLocationsEnabled) {
+            return;
+        }
+
+        Event::on(
+            FieldLayout::class,
+            FieldLayout::EVENT_DEFINE_NATIVE_FIELDS,
+            function (DefineFieldLayoutFieldsEvent $event): void {
+                $fieldLayout = $event->sender;
+                if ($fieldLayout->type === Asset::class) {
+                    $event->fields[] = AssetLocationsField::class;
+                }
+            }
+        );
+
+        Event::on(
+            Asset::class,
+            Asset::EVENT_REGISTER_TABLE_ATTRIBUTES,
+            function (RegisterElementTableAttributesEvent $event): void {
+                $event->tableAttributes['used'] = [
+                    'label' => Craft::t('app', 'In Use'),
+                ];
+            }
+        );
+
+        Event::on(
+            Asset::class,
+            Asset::EVENT_DEFINE_ATTRIBUTE_HTML,
+            function (DefineAttributeHtmlEvent $event): void {
+                if ($event->attribute !== 'used') {
+                    return;
+                }
+
+                /** @var Asset $asset */
+                $asset = $event->sender;
+                $isUsed = $this->assetLocationsUsage->getUsage($asset);
+                $event->html = $isUsed
+                    ? '<span class="status live" title="This asset is used"></span><span class="visually-hidden">This asset is used</span>'
+                    : '<span class="status pending" title="This asset may be used"></span><span class="visually-hidden">This asset may be used</span>';
+                $event->handled = true;
+            }
+        );
     }
 
     private function getVolumeOptions(): array

@@ -57,6 +57,7 @@ class Settings extends Model
     public bool $useYouTubeNoCookie = false;
     public bool $disableVimeoTracking = false;
     public bool $preventNonWhitelistedUploads = false;
+    public bool $assetLocationsEnabled = true;
 
     public function rules(): array
     {
@@ -65,7 +66,7 @@ class Settings extends Model
             ['parameters', 'safe'],
             [['whitelist', 'extraWhitelist'], 'each', 'rule' => ['string']],
             [['maxAssetNameLength', 'maxFileNameLength', 'cacheDuration', 'imageWidth', 'imageHeight', 'imageQuality'], 'integer'],
-            [['showThumbnailsInCp', 'useYouTubeNoCookie', 'disableVimeoTracking', 'preventNonWhitelistedUploads', 'expandSingles', 'redirectToEntry', 'useGlobalSettings', 'enabled', 'skipLarger', 'nonDestructiveResize', 'movedFeatureSettingsMigrated'], 'boolean'],
+            [['showThumbnailsInCp', 'useYouTubeNoCookie', 'disableVimeoTracking', 'preventNonWhitelistedUploads', 'expandSingles', 'redirectToEntry', 'useGlobalSettings', 'enabled', 'skipLarger', 'nonDestructiveResize', 'movedFeatureSettingsMigrated', 'assetLocationsEnabled'], 'boolean'],
             ['assetSourceSettings', 'safe'],
         ];
     }
