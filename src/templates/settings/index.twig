@@ -156,6 +156,7 @@
             <form method="post" accept-charset="UTF-8">
                 {{ csrfInput() }}
                 {{ actionInput('inspire-frontend/snapshot/apply-default') }}
+                {{ redirectInput('settings/plugins/inspire-frontend?tab=inspire-fields') }}
                 <button type="submit" class="btn submit">Apply Default Template</button>
             </form>
         </section>
@@ -169,6 +170,7 @@
             <form method="post" accept-charset="UTF-8">
                 {{ csrfInput() }}
                 {{ actionInput('inspire-frontend/snapshot/export') }}
+                {{ redirectInput('settings/plugins/inspire-frontend?tab=inspire-fields') }}
                 <button type="submit" class="btn submit">Export Snapshot</button>
             </form>
         </section>
@@ -183,6 +185,7 @@
             <form method="post" accept-charset="UTF-8" enctype="multipart/form-data">
                 {{ csrfInput() }}
                 {{ actionInput('inspire-frontend/snapshot/import') }}
+                {{ redirectInput('settings/plugins/inspire-frontend?tab=inspire-fields') }}
                 <div style="max-width: 600px;">
                     {{ forms.fileField({
                         label: 'Snapshot JSON file',
