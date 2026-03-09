@@ -2,7 +2,7 @@
 
 return array (
   'version' => 1,
-  'capturedAt' => '2026-03-08T05:55:17+00:00',
+  'capturedAt' => '2026-03-09T14:21:02+00:00',
   'ckeditorConfigs' => 
   array (
   ),
@@ -3132,70 +3132,28 @@ return array (
       'settings' => 
       array (
         'description' => '',
-        'hideSocial' => '',
-        'robots' => 
+        'elementDisplayPreviewType' => 'google',
+        'facebookEnabledFields' => '',
+        'facebookTabEnabled' => '',
+        'generalEnabledFields' => 
         array (
-          0 => '',
-          1 => '',
-          2 => '',
-          3 => '',
-          4 => '',
-          5 => '',
-          6 => '',
-          7 => '',
+          0 => 'seoTitle',
+          1 => 'seoDescription',
+          2 => 'seoImage',
         ),
-        'socialImage' => '',
-        'suffixAsPrefix' => NULL,
-        'title' => 
-        array (
-          0 => 
-          array (
-            '__assoc__' => 
-            array (
-              0 => 
-              array (
-                0 => 'key',
-                1 => '1',
-              ),
-              1 => 
-              array (
-                0 => 'locked',
-                1 => '0',
-              ),
-              2 => 
-              array (
-                0 => 'template',
-                1 => '{title}',
-              ),
-            ),
-          ),
-          1 => 
-          array (
-            '__assoc__' => 
-            array (
-              0 => 
-              array (
-                0 => 'key',
-                1 => '2',
-              ),
-              1 => 
-              array (
-                0 => 'locked',
-                1 => '1',
-              ),
-              2 => 
-              array (
-                0 => 'template',
-                1 => ' - {{ siteName }}',
-              ),
-            ),
-          ),
-        ),
+        'generalTabEnabled' => '1',
+        'hideSocial' => false,
+        'sitemapEnabledFields' => '',
+        'sitemapTabEnabled' => '',
+        'socialImage' => NULL,
+        'suffixAsPrefix' => false,
         'titleSuffix' => NULL,
+        'twitterEnabledFields' => '',
+        'twitterTabEnabled' => '',
       ),
       'translationKeyFormat' => NULL,
       'translationMethod' => 'none',
-      'type' => 'Inspire\\Seo\\fields\\SeoField',
+      'type' => 'inspire\\seo\\fields\\SeoSettings',
     ),
     '1937aae8-dca3-4e22-b461-d485e68b6415' => 
     array (
