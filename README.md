@@ -17,7 +17,7 @@ Frontend operations and frontend feature plugin for Inspire Craft CMS projects.
 - `inspire/auth` `^1.0`
 - `inspire/base` `^1.0`
 - `inspire/forms` `^1.0`
-- `inspire/seo` `^4.0`
+- `inspire/seo` `^5.0`
 - `putyourlightson/craft-blitz-hints`
 
 ## Settings Location
