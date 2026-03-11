@@ -7899,10 +7899,18 @@
   }
   Vue.compile = compileToFunctions;
   function monkeypatch(Class, method, callback) {
+    if (!Class || !Class.prototype || typeof Class.prototype[method] !== "function" || typeof callback !== "function") {
+      return;
+    }
     const methodFn = Class.prototype[method];
     Class.prototype[method] = function() {
-      methodFn.apply(this, arguments);
-      callback.call(this);
+      const result = methodFn.apply(this, arguments);
+      try {
+        callback.call(this);
+      } catch (error) {
+        console.error(`[embedded-videos] monkeypatch callback failed for ${method}`, error);
+      }
+      return result;
     };
   }
   let uidCounter = 0;
@@ -8551,6 +8559,57 @@
       const kinds = normalizeKinds(allowedKinds);
       return kinds.length === 1 && kinds.includes("embeddedVideo");
     };
+    const ensureFieldSearchVisible = (assetSelectInput) => {
+      if (!(assetSelectInput == null ? void 0 : assetSelectInput.$container) || assetSelectInput.$container.length === 0) {
+        return;
+      }
+      const $searchEls = assetSelectInput.$container.find(
+        ".search, .search-container, .elementselect .search, .elementselect .search-container"
+      );
+      $searchEls.each(function() {
+        const $el = $(this);
+        $el.removeClass("hidden");
+        $el.show();
+        $el.css("display", "");
+      });
+    };
+    const ensureFieldSearchInput = (assetSelectInput) => {
+      if (!(assetSelectInput == null ? void 0 : assetSelectInput.$container) || assetSelectInput.$container.length === 0) {
+        return;
+      }
+      const $existing = assetSelectInput.$container.find(".elementselect__search-input-wrapper").first();
+      if ($existing.length > 0) {
+        ensureFieldSearchVisible(assetSelectInput);
+        return;
+      }
+      const inputId = `embeddedvideos-search-${uniqueId("field")}`;
+      const dir = $("html").attr("dir") || "ltr";
+      const $field = assetSelectInput.$container.closest(".field");
+      const labelId = $field.find(".heading label, label").first().attr("id") || null;
+      const $search = $(`
+      <div class="texticon search icon elementselect__search-input-wrapper">
+        <input type="text" id="${inputId}" class="text fullwidth" autocomplete="off" placeholder="${Craft.t("app", "Search")}" dir="${dir}" role="combobox" aria-expanded="false">
+        <div class="spinner hidden"></div>
+      </div>
+    `);
+      if (labelId) {
+        $search.find("input").attr("aria-labelledby", labelId);
+      }
+      const $controlsRow2 = assetSelectInput.$container.children(".flex").first();
+      if ($controlsRow2.length > 0 && (assetSelectInput.$addElementBtn == null ? void 0 : assetSelectInput.$addElementBtn.length) > 0) {
+        assetSelectInput.$addElementBtn.after($search);
+      } else {
+        assetSelectInput.$container.append($search);
+      }
+      if (typeof assetSelectInput._attachSearchInput === "function") {
+        assetSelectInput._attachSearchInput();
+      } else if (typeof assetSelectInput.initSearchInput === "function") {
+        assetSelectInput.initSearchInput();
+      } else if (typeof assetSelectInput._initSearchInput === "function") {
+        assetSelectInput._initSearchInput();
+      }
+      ensureFieldSearchVisible(assetSelectInput);
+    };
     const getFieldActionTarget = (assetSelectInput) => {
       var _a2, _b;
       const criteria = ((_a2 = assetSelectInput.settings) == null ? void 0 : _a2.criteria) ?? {};
@@ -8696,22 +8755,44 @@
       if (!this.$addElementBtn || this.$addElementBtn.length === 0) {
         return;
       }
+      if (!this.$container || this.$container.length === 0 || typeof this.$container.data !== "function") {
+        return;
+      }
+      ensureFieldSearchVisible(this);
+      const allowedAssetKinds = ((_a2 = this.settings.criteria) == null ? void 0 : _a2.kind) ?? [];
+      const normalizedKinds = normalizeKinds(allowedAssetKinds);
+      const allowsEmbeddedVideo = normalizedKinds.includes("embeddedVideo");
+      if (!allowsEmbeddedVideo) {
+        return;
+      }
       if (this.$container.data("embeddedVideoButtonInitialized")) {
         return;
       }
       this.$container.data("embeddedVideoButtonInitialized", true);
-      const allowedAssetKinds = ((_a2 = this.settings.criteria) == null ? void 0 : _a2.kind) ?? [];
       const fieldButton = new Button("Embed Video", { videoIcon: true });
       fieldButton.$element.addClass("dashed");
-      const $anchor = this.$uploadBtn && this.$uploadBtn.length > 0 ? this.$uploadBtn : this.$addElementBtn;
-      $anchor.after(fieldButton.$element);
+      ensureFieldSearchInput(this);
+      const $controlsRow = this.$container.children(".flex").first();
+      const $rowSpinner = $controlsRow.children(".spinner").last();
+      const $searchWrapper = $controlsRow.find(".elementselect__search-input-wrapper").first();
+      if ($searchWrapper.length > 0) {
+        fieldButton.$element.insertBefore($searchWrapper);
+        if ($rowSpinner.length > 0) {
+          $searchWrapper.insertBefore($rowSpinner);
+        }
+      } else if ($rowSpinner.length > 0) {
+        $rowSpinner.before(fieldButton.$element);
+      } else if ($controlsRow.length > 0) {
+        $controlsRow.append(fieldButton.$element);
+      } else {
+        this.$addElementBtn.after(fieldButton.$element);
+      }
       if (this.$uploadBtn && this.$uploadBtn.length > 0) {
         if (shouldHideUploadButton(allowedAssetKinds)) {
           this.$uploadBtn.hide();
-        } else {
-          this.$uploadBtn.show();
         }
       }
+      ensureFieldSearchVisible(this);
       if (canShowEmbedButton(allowedAssetKinds)) {
         fieldButton.show();
       } else {

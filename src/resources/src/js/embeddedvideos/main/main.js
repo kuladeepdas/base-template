@@ -39,6 +39,69 @@ const applyMonkeypatch = () => {
     return kinds.length === 1 && kinds.includes('embeddedVideo')
   }
 
+  const ensureFieldSearchVisible = (assetSelectInput) => {
+    if (!assetSelectInput?.$container || assetSelectInput.$container.length === 0) {
+      return
+    }
+
+    const $searchEls = assetSelectInput.$container.find(
+      '.search, .search-container, .elementselect .search, .elementselect .search-container'
+    )
+
+    $searchEls.each(function () {
+      const $el = $(this)
+      $el.removeClass('hidden')
+      $el.show()
+      $el.css('display', '')
+    })
+  }
+
+  const ensureFieldSearchInput = (assetSelectInput) => {
+    if (!assetSelectInput?.$container || assetSelectInput.$container.length === 0) {
+      return
+    }
+
+    const $existing = assetSelectInput.$container.find('.elementselect__search-input-wrapper').first()
+    if ($existing.length > 0) {
+      ensureFieldSearchVisible(assetSelectInput)
+      return
+    }
+
+    const inputId = `embeddedvideos-search-${uniqueId('field')}`
+    const dir = $('html').attr('dir') || 'ltr'
+    const $field = assetSelectInput.$container.closest('.field')
+    const labelId = $field.find('.heading label, label').first().attr('id') || null
+
+    const $search = $(`
+      <div class="texticon search icon elementselect__search-input-wrapper">
+        <input type="text" id="${inputId}" class="text fullwidth" autocomplete="off" placeholder="${Craft.t('app', 'Search')}" dir="${dir}" role="combobox" aria-expanded="false">
+        <div class="spinner hidden"></div>
+      </div>
+    `)
+
+    if (labelId) {
+      $search.find('input').attr('aria-labelledby', labelId)
+    }
+
+    const $controlsRow = assetSelectInput.$container.children('.flex').first()
+    if ($controlsRow.length > 0 && assetSelectInput.$addElementBtn?.length > 0) {
+      assetSelectInput.$addElementBtn.after($search)
+    } else {
+      assetSelectInput.$container.append($search)
+    }
+
+    // Hook up Craft's inline search behavior when available on this class/version.
+    if (typeof assetSelectInput._attachSearchInput === 'function') {
+      assetSelectInput._attachSearchInput()
+    } else if (typeof assetSelectInput.initSearchInput === 'function') {
+      assetSelectInput.initSearchInput()
+    } else if (typeof assetSelectInput._initSearchInput === 'function') {
+      assetSelectInput._initSearchInput()
+    }
+
+    ensureFieldSearchVisible(assetSelectInput)
+  }
+
   const getFieldActionTarget = (assetSelectInput) => {
     const criteria = assetSelectInput.settings?.criteria ?? {}
 
@@ -204,29 +267,58 @@ const applyMonkeypatch = () => {
       return
     }
 
+    if (!this.$container || this.$container.length === 0 || typeof this.$container.data !== 'function') {
+      return
+    }
+
+    ensureFieldSearchVisible(this)
+
+    const allowedAssetKinds = this.settings.criteria?.kind ?? []
+    const normalizedKinds = normalizeKinds(allowedAssetKinds)
+    const allowsEmbeddedVideo = normalizedKinds.includes('embeddedVideo')
+
+    if (!allowsEmbeddedVideo) {
+      return
+    }
+
     if (this.$container.data('embeddedVideoButtonInitialized')) {
       return
     }
 
     this.$container.data('embeddedVideoButtonInitialized', true)
 
-    const allowedAssetKinds = this.settings.criteria?.kind ?? []
     const fieldButton = new Button('Embed Video', { videoIcon: true })
     fieldButton.$element.addClass('dashed')
 
-    const $anchor = (this.$uploadBtn && this.$uploadBtn.length > 0)
-      ? this.$uploadBtn
-      : this.$addElementBtn
+    ensureFieldSearchInput(this)
 
-    $anchor.after(fieldButton.$element)
+    const $controlsRow = this.$container.children('.flex').first()
+    const $rowSpinner = $controlsRow.children('.spinner').last()
+    const $searchWrapper = $controlsRow.find('.elementselect__search-input-wrapper').first()
+
+    if ($controlsRow.length > 0 && $searchWrapper.length > 0) {
+      // Keep search on the right by placing buttons before the search wrapper.
+      fieldButton.$element.insertBefore($searchWrapper)
+      if ($rowSpinner.length > 0) {
+        $searchWrapper.insertBefore($rowSpinner)
+      } else {
+        $controlsRow.append($searchWrapper)
+      }
+    } else if ($rowSpinner.length > 0) {
+      $rowSpinner.before(fieldButton.$element)
+    } else if ($controlsRow.length > 0) {
+      $controlsRow.append(fieldButton.$element)
+    } else {
+      this.$addElementBtn.after(fieldButton.$element)
+    }
 
     if (this.$uploadBtn && this.$uploadBtn.length > 0) {
       if (shouldHideUploadButton(allowedAssetKinds)) {
         this.$uploadBtn.hide()
-      } else {
-        this.$uploadBtn.show()
       }
     }
+
+    ensureFieldSearchVisible(this)
 
     if (canShowEmbedButton(allowedAssetKinds)) {
       fieldButton.show()
