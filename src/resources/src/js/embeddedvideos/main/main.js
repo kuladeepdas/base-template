@@ -1,7 +1,7 @@
 import './main.css'
 import EmbeddedVideos from './EmbeddedVideos'
 import Button from './Button'
-import { monkeypatch } from './utilities'
+import { monkeypatch, uniqueId } from './utilities'
 
 // Ensure browser runtime has a process shim for bundled deps expecting process.env.
 window.process = window.process || { env: { NODE_ENV: 'production' } }

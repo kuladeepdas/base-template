@@ -67,24 +67,36 @@ class ColorAlphaData extends Model implements Serializable
 
     public function getRgb(): string
     {
-        return sprintf('rgb(%d,%d,%d)', $this->getRed(), $this->getGreen(), $this->getBlue());
+        return sprintf('rgb(%d %d %d)', $this->getRed(), $this->getGreen(), $this->getBlue());
     }
 
     public function getRgba(): string
     {
-        return sprintf('rgba(%d,%d,%d,%s)', $this->getRed(), $this->getGreen(), $this->getBlue(), rtrim(rtrim(sprintf('%.3F', $this->_alpha), '0'), '.'));
+        return sprintf(
+            'rgb(%d %d %d / %s)',
+            $this->getRed(),
+            $this->getGreen(),
+            $this->getBlue(),
+            rtrim(rtrim(sprintf('%.3F', $this->_alpha), '0'), '.')
+        );
     }
 
     public function getHsl(): string
     {
         [$h, $s, $l] = $this->hsl();
-        return sprintf('hsl(%d,%d%%,%d%%)', $h, $s, $l);
+        return sprintf('hsl(%d %d%% %d%%)', $h, $s, $l);
     }
 
     public function getHsla(): string
     {
         [$h, $s, $l] = $this->hsl();
-        return sprintf('hsla(%d,%d%%,%d%%,%s)', $h, $s, $l, rtrim(rtrim(sprintf('%.3F', $this->_alpha), '0'), '.'));
+        return sprintf(
+            'hsl(%d %d%% %d%% / %s)',
+            $h,
+            $s,
+            $l,
+            rtrim(rtrim(sprintf('%.3F', $this->_alpha), '0'), '.')
+        );
     }
 
     private function hsl(): array

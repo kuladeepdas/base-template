@@ -7914,7 +7914,7 @@
     };
   }
   let uidCounter = 0;
-  function uniqueId$1(prefix = "uid") {
+  function uniqueId(prefix = "uid") {
     return `${prefix}${Math.random().toString(36).substr(2)}${uidCounter++}`;
   }
   function isUrl(url) {
@@ -8033,7 +8033,7 @@
       },
       setupPreviewCallback(currentUrl) {
         this.clearPendingRequest();
-        const cb = uniqueId$1("embeddedvideos");
+        const cb = uniqueId("embeddedvideos");
         this.callbackId = cb;
         const previewMap = this.getPreviewMap();
         previewMap.set(cb, () => {
@@ -8300,9 +8300,9 @@
         mainClass: "embedded-videos_hud_main",
         minBodyWidth: 400
       }, settings);
-      const cancelId = uniqueId$1();
-      const saveId = uniqueId$1();
-      const spinnerId = uniqueId$1();
+      const cancelId = uniqueId();
+      const saveId = uniqueId();
+      const spinnerId = uniqueId();
       const cancelLabel = Craft.t("app", "Cancel");
       const saveLabel = Craft.t("app", "Save");
       this.$footer = $$2(`
