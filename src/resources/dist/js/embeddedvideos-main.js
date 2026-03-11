@@ -7914,7 +7914,7 @@
     };
   }
   let uidCounter = 0;
-  function uniqueId(prefix = "uid") {
+  function uniqueId$1(prefix = "uid") {
     return `${prefix}${Math.random().toString(36).substr(2)}${uidCounter++}`;
   }
   function isUrl(url) {
@@ -8033,7 +8033,7 @@
       },
       setupPreviewCallback(currentUrl) {
         this.clearPendingRequest();
-        const cb = uniqueId("embeddedvideos");
+        const cb = uniqueId$1("embeddedvideos");
         this.callbackId = cb;
         const previewMap = this.getPreviewMap();
         previewMap.set(cb, () => {
@@ -8300,9 +8300,9 @@
         mainClass: "embedded-videos_hud_main",
         minBodyWidth: 400
       }, settings);
-      const cancelId = uniqueId();
-      const saveId = uniqueId();
-      const spinnerId = uniqueId();
+      const cancelId = uniqueId$1();
+      const saveId = uniqueId$1();
+      const spinnerId = uniqueId$1();
       const cancelLabel = Craft.t("app", "Cancel");
       const saveLabel = Craft.t("app", "Save");
       this.$footer = $$2(`
@@ -8574,6 +8574,7 @@
       });
     };
     const ensureFieldSearchInput = (assetSelectInput) => {
+      var _a2;
       if (!(assetSelectInput == null ? void 0 : assetSelectInput.$container) || assetSelectInput.$container.length === 0) {
         return;
       }
@@ -8595,8 +8596,8 @@
       if (labelId) {
         $search.find("input").attr("aria-labelledby", labelId);
       }
-      const $controlsRow2 = assetSelectInput.$container.children(".flex").first();
-      if ($controlsRow2.length > 0 && (assetSelectInput.$addElementBtn == null ? void 0 : assetSelectInput.$addElementBtn.length) > 0) {
+      const $controlsRow = assetSelectInput.$container.children(".flex").first();
+      if ($controlsRow.length > 0 && ((_a2 = assetSelectInput.$addElementBtn) == null ? void 0 : _a2.length) > 0) {
         assetSelectInput.$addElementBtn.after($search);
       } else {
         assetSelectInput.$container.append($search);
@@ -8775,10 +8776,12 @@
       const $controlsRow = this.$container.children(".flex").first();
       const $rowSpinner = $controlsRow.children(".spinner").last();
       const $searchWrapper = $controlsRow.find(".elementselect__search-input-wrapper").first();
-      if ($searchWrapper.length > 0) {
+      if ($controlsRow.length > 0 && $searchWrapper.length > 0) {
         fieldButton.$element.insertBefore($searchWrapper);
         if ($rowSpinner.length > 0) {
           $searchWrapper.insertBefore($rowSpinner);
+        } else {
+          $controlsRow.append($searchWrapper);
         }
       } else if ($rowSpinner.length > 0) {
         $rowSpinner.before(fieldButton.$element);

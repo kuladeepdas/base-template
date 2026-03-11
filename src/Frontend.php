@@ -11,6 +11,7 @@ use craft\base\Element;
 use craft\elements\Asset;
 use craft\elements\Entry;
 use craft\events\RegisterCpSettingsEvent;
+use craft\events\RegisterComponentTypesEvent;
 use craft\events\DefineFieldLayoutFieldsEvent;
 use craft\events\RegisterElementTableAttributesEvent;
 use craft\events\DefineAttributeHtmlEvent;
@@ -22,6 +23,7 @@ use craft\web\twig\variables\Cp;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\View;
 use craft\services\UserPermissions;
+use craft\services\Fields;
 use craft\models\FieldLayout;
 use craft\ckeditor\events\DefineLinkOptionsEvent;
 use craft\ckeditor\Field as CkEditorField;
@@ -37,6 +39,7 @@ use Inspire\Frontend\services\SinglesList;
 use Inspire\Frontend\twig\ImagesHelper;
 use Inspire\Frontend\twig\ImagesTwigExtension;
 use Inspire\Frontend\variables\PrefetchVariable;
+use Inspire\Frontend\fields\ColorAlpha;
 use Inspire\Frontend\embeddedvideos\Integration as EmbeddedVideosIntegration;
 use Inspire\Frontend\embeddedvideos\Service as EmbeddedVideosService;
 use Inspire\Frontend\embeddedvideos\Controller as EmbeddedVideosController;
@@ -101,6 +104,7 @@ class Frontend extends Plugin
         (new EmbeddedVideosIntegration($this))->register();
         $this->registerFrontendFeatureHandlers();
         $this->registerAssetLocationsHandlers();
+        $this->registerFieldTypes();
         $this->registerPermissions();
         $this->migrateMovedFeatureSettingsFromBase();
 
@@ -399,6 +403,17 @@ class Frontend extends Plugin
                     ? '<span class="status live" title="This asset is used"></span><span class="visually-hidden">This asset is used</span>'
                     : '<span class="status pending" title="This asset may be used"></span><span class="visually-hidden">This asset may be used</span>';
                 $event->handled = true;
+            }
+        );
+    }
+
+    private function registerFieldTypes(): void
+    {
+        Event::on(
+            Fields::class,
+            Fields::EVENT_REGISTER_FIELD_TYPES,
+            static function(RegisterComponentTypesEvent $event): void {
+                $event->types[] = ColorAlpha::class;
             }
         );
     }

@@ -1,0 +1,11 @@
+{% import '_includes/forms' as forms %}
+
+{{ forms.textareaField({
+  label: 'Custom swatches'|t('inspire-frontend'),
+  instructions: 'One color per line (or comma-separated). Supports hex and rgb/rgba values. Swatches are hidden if this is empty.'|t('inspire-frontend'),
+  id: 'customSwatches',
+  name: 'customSwatches',
+  rows: 6,
+  value: field.customSwatches ?? '',
+  placeholder: '#f44336\n#e91e63\nrgba(33, 150, 243, 0.7)',
+}) }}
