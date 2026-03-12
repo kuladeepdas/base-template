@@ -1,4 +1,4 @@
-import './preview.css'
+import '../../../scss/embeddedvideos/preview.scss'
 
 window.EmbeddedVideosPreview = {
   addCallback (callbackName) {

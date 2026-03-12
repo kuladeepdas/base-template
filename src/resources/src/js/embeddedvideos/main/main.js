@@ -1,4 +1,4 @@
-import './main.css'
+import '../../../scss/embeddedvideos/main.scss'
 import EmbeddedVideos from './EmbeddedVideos'
 import Button from './Button'
 import { monkeypatch, uniqueId } from './utilities'

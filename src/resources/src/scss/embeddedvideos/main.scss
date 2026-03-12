@@ -13,8 +13,8 @@
   height: 14px;
   display: inline-block;
   background: currentColor;
-  mask: url('./video-icon.svg') no-repeat center / contain;
-  -webkit-mask: url('./video-icon.svg') no-repeat center / contain;
+  mask: url('../../js/embeddedvideos/main/video-icon.svg') no-repeat center / contain;
+  -webkit-mask: url('../../js/embeddedvideos/main/video-icon.svg') no-repeat center / contain;
 }
 
 .embedded-videos_hud {
