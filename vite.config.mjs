@@ -1,7 +1,6 @@
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { build, defineConfig } from 'vite';
-import vue from '@vitejs/plugin-vue2';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const distDir = resolve(__dirname, 'src/resources/dist');
@@ -61,7 +60,6 @@ const buildRemainingTargetsPlugin = (options = {}) => ({
 
 export const createTargetConfig = (target, options = {}) => ({
   plugins: [
-    vue(),
     ...(options.includeOrchestrator ? [buildRemainingTargetsPlugin(options)] : []),
   ],
   publicDir: false,
@@ -71,7 +69,6 @@ export const createTargetConfig = (target, options = {}) => ({
   },
   resolve: {
     alias: {
-      vue: 'vue/dist/vue.esm.js',
       '@': resolve(__dirname, 'src/resources/src/js'),
     },
   },

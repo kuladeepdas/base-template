@@ -10,14 +10,11 @@
   },
   "dependencies": {
     "core-js": "^3.6.4",
-    "es6-promise": "^4.2.8",
-    "vue": "^2.6.11"
+    "es6-promise": "^4.2.8"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue2": "^2.3.3",
     "craftcms-sass": "^3.4.0",
     "sass": "^1.86.0",
-    "vite": "^6.4.1",
-    "vue-template-compiler": "^2.6.11"
+    "vite": "^6.4.1"
   }
 }
