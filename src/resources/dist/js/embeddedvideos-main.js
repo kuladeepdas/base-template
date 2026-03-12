@@ -8611,6 +8611,78 @@
       }
       ensureFieldSearchVisible(assetSelectInput);
     };
+    const getFieldLimit = (assetSelectInput) => {
+      var _a2, _b, _c;
+      const rawLimit = ((_a2 = assetSelectInput == null ? void 0 : assetSelectInput.settings) == null ? void 0 : _a2.limit) ?? ((_c = (_b = assetSelectInput == null ? void 0 : assetSelectInput.settings) == null ? void 0 : _b.criteria) == null ? void 0 : _c.limit) ?? null;
+      const parsed = Number.parseInt(rawLimit, 10);
+      return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
+    };
+    const getSelectedCount = (assetSelectInput) => {
+      var _a2;
+      if (!assetSelectInput) {
+        return 0;
+      }
+      if (typeof assetSelectInput.getSelectedElementIds === "function") {
+        const ids = assetSelectInput.getSelectedElementIds();
+        if (Array.isArray(ids)) {
+          return ids.length;
+        }
+      }
+      if (assetSelectInput.$elements && typeof assetSelectInput.$elements.length === "number") {
+        return assetSelectInput.$elements.length;
+      }
+      const $elements = (_a2 = assetSelectInput.$container) == null ? void 0 : _a2.find(".elements .element");
+      return ($elements == null ? void 0 : $elements.length) ?? 0;
+    };
+    const updateFieldControlsVisibility = (assetSelectInput, fieldButton, allowedKinds = []) => {
+      if (!(assetSelectInput == null ? void 0 : assetSelectInput.$container) || assetSelectInput.$container.length === 0) {
+        return;
+      }
+      const $searchWrapper = assetSelectInput.$container.find(".elementselect__search-input-wrapper, .search, .search-container").first();
+      const limit = getFieldLimit(assetSelectInput);
+      const selectedCount = getSelectedCount(assetSelectInput);
+      const atCapacity = limit !== null && selectedCount >= limit;
+      if (atCapacity) {
+        fieldButton.hide();
+        if ($searchWrapper.length > 0) {
+          $searchWrapper.addClass("hidden");
+          $searchWrapper.hide();
+        }
+        return;
+      }
+      if (canShowEmbedButton(allowedKinds)) {
+        fieldButton.show();
+      } else {
+        fieldButton.hide();
+      }
+      if ($searchWrapper.length > 0) {
+        $searchWrapper.removeClass("hidden");
+        $searchWrapper.show();
+        $searchWrapper.css("display", "");
+      }
+    };
+    const setupFieldCapacityWatcher = (assetSelectInput, fieldButton, allowedKinds = []) => {
+      if (!(assetSelectInput == null ? void 0 : assetSelectInput.$container) || assetSelectInput.$container.length === 0) {
+        return;
+      }
+      if (assetSelectInput.$container.data("embeddedVideoCapacityWatcherInitialized")) {
+        return;
+      }
+      assetSelectInput.$container.data("embeddedVideoCapacityWatcherInitialized", true);
+      const run = () => updateFieldControlsVisibility(assetSelectInput, fieldButton, allowedKinds);
+      if (typeof assetSelectInput.on === "function") {
+        assetSelectInput.on("selectionChange", run);
+        assetSelectInput.on("updateElements", run);
+        assetSelectInput.on("removeElements", run);
+      }
+      const host = assetSelectInput.$container.find(".elements").first().get(0) || assetSelectInput.$container.get(0);
+      if (host && typeof MutationObserver !== "undefined") {
+        const observer2 = new MutationObserver(run);
+        observer2.observe(host, { childList: true, subtree: true });
+        assetSelectInput.$container.data("embeddedVideoCapacityObserver", observer2);
+      }
+      run();
+    };
     const getFieldActionTarget = (assetSelectInput) => {
       var _a2, _b;
       const criteria = ((_a2 = assetSelectInput.settings) == null ? void 0 : _a2.criteria) ?? {};
@@ -8796,11 +8868,8 @@
         }
       }
       ensureFieldSearchVisible(this);
-      if (canShowEmbedButton(allowedAssetKinds)) {
-        fieldButton.show();
-      } else {
-        fieldButton.hide();
-      }
+      updateFieldControlsVisibility(this, fieldButton, allowedAssetKinds);
+      setupFieldCapacityWatcher(this, fieldButton, allowedAssetKinds);
       embeddedVideos.addButton(
         fieldButton,
         ["top", "right", "bottom", "left"],
@@ -8871,6 +8940,7 @@
           if (typeof this.updateDisabledElementsInModal === "function") {
             this.updateDisabledElementsInModal();
           }
+          updateFieldControlsVisibility(this, fieldButton, allowedAssetKinds);
         } catch (error) {
           Craft.cp.displayError(
             Craft.t("embeddedvideos", "Could not add the embedded video to this field.")

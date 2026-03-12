@@ -3,9 +3,9 @@
 <head>
 	<meta charset="utf-8">
 	<title>{{ embeddedVideo.title }}</title>
-	{% set previewCss = view.getAssetManager().getPublishedUrl('@inspire/embeddedvideos/assets/preview/dist/', true, 'styles/preview.css') %}
+	{% set previewCss = view.getAssetManager().getPublishedUrl('@inspire/frontend/resources/dist', true, 'css/embeddedvideos-preview.css') %}
 	<link rel="stylesheet" href="{{ previewCss }}">
-	{% set previewJs = view.getAssetManager().getPublishedUrl('@inspire/embeddedvideos/assets/preview/dist/', true, 'scripts/preview.js') %}
+	{% set previewJs = view.getAssetManager().getPublishedUrl('@inspire/frontend/resources/dist', true, 'js/embeddedvideos-preview.js') %}
 	<script src="{{ previewJs }}"></script>
 	{% if callback is defined and callback %}
 		<script>EmbeddedVideosPreview.addCallback('{{ callback|e('js') }}')</script>

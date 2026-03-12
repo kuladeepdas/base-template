@@ -1,6 +1,6 @@
-{% set previewCss = view.getAssetManager().getPublishedUrl('@inspire/embeddedvideos/assets/preview/dist/styles/preview.css', true) %}
+{% set previewCss = view.getAssetManager().getPublishedUrl('@inspire/frontend/resources/dist/css/embeddedvideos-preview.css', true) %}
 <link rel="stylesheet" href="{{ previewCss }}">
-{% set previewJs = view.getAssetManager().getPublishedUrl('@inspire/embeddedvideos/assets/preview/dist/scripts/preview.js', true) %}
+{% set previewJs = view.getAssetManager().getPublishedUrl('@inspire/frontend/resources/dist/js/embeddedvideos-preview.js', true) %}
 <script src="{{ previewJs }}"></script>
 
 <div class="volume-preview">
