@@ -1,0 +1,337 @@
+.if-settings-swatches {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.if-settings-swatch-row {
+  display: inline-grid;
+  grid-template-columns: 40px 230px auto;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 320px;
+}
+
+.if-settings-row-editor {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+  width: 230px;
+  min-width: 230px;
+  max-width: 230px;
+  overflow: hidden;
+}
+
+.if-settings-row-grid {
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+  flex: 1 1 0;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.if-settings-row-channel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.if-settings-row-grid[data-mode=hex] .if-settings-row-channel[data-row-cwrap="1"] {
+  flex: 1 1 auto;
+}
+
+.if-settings-row-channel span {
+  color: #9ca3af;
+  font-size: 10px;
+  line-height: 1;
+}
+
+.if-settings-row-channel input.color-input {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  height: 26px;
+  min-height: 26px;
+  text-align: center;
+  font-size: 12px;
+  padding: 4px 6px;
+}
+
+.if-settings-row-mode-switch {
+  display: grid;
+  gap: 1px;
+  align-self: center;
+  flex: 0 0 auto;
+}
+
+.if-settings-row-mode-switch button {
+  width: 16px;
+  height: 10px;
+  border: 0;
+  background: transparent;
+  color: var(--text-color);
+  padding: 0;
+}
+
+.if-settings-row-mode-switch button svg {
+  display: block;
+  width: 12px;
+  height: 12px;
+  margin: -1px auto 0;
+}
+
+.if-settings-row-mode-switch button svg path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.if-settings-swatch-row .if-swatch-btn {
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+
+.if-settings-swatch-row .if-swatch {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+}
+
+.if-settings-swatch-row .delete {
+  margin: 0;
+}
+
+.if-picker.if-settings-picker {
+  position: fixed;
+  z-index: 1002;
+  width: 250px;
+  background: #fff;
+  color: #1f2937;
+  border-radius: 5px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+.if-picker.if-settings-picker .if-sv {
+  position: relative;
+  width: 100%;
+  height: 128px;
+  overflow: hidden;
+  cursor: crosshair;
+}
+
+.if-picker.if-settings-picker .if-sv-white,
+.if-picker.if-settings-picker .if-sv-black {
+  position: absolute;
+  inset: 0;
+}
+
+.if-picker.if-settings-picker .if-sv-white {
+  background: linear-gradient(to right, #fff 0%, rgba(255, 255, 255, 0) 100%);
+}
+
+.if-picker.if-settings-picker .if-sv-black {
+  background: linear-gradient(to top, #000 0%, rgba(0, 0, 0, 0) 100%);
+}
+
+.if-picker.if-settings-picker .if-handle {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  margin-left: -6px;
+  margin-top: -6px;
+  border: 1px solid #fff;
+  border-radius: 999px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+}
+
+.if-picker.if-settings-picker .if-row {
+  display: flex;
+  align-items: center;
+}
+
+.if-picker.if-settings-picker .if-row1 {
+  gap: 10px;
+  padding: 10px 12px;
+}
+
+.if-picker.if-settings-picker .if-eye-btn {
+  width: 24px;
+  height: 24px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #000;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.if-picker.if-settings-picker .if-eye-btn svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.if-picker.if-settings-picker .if-preview-dot {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  flex: 0 0 auto;
+}
+
+.if-picker.if-settings-picker .if-slider-stack {
+  flex: 1 1 auto;
+  display: grid;
+  gap: 8px;
+}
+
+.if-picker.if-settings-picker .if-hue-slider,
+.if-picker.if-settings-picker .if-alpha-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 12px;
+  border-radius: 4px;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  overflow: visible;
+}
+
+.if-picker.if-settings-picker .if-hue-slider {
+  --slider-track: linear-gradient(to right, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%);
+}
+
+.if-picker.if-settings-picker .if-hue-slider::-webkit-slider-runnable-track,
+.if-picker.if-settings-picker .if-alpha-slider::-webkit-slider-runnable-track {
+  height: 12px;
+  border-radius: 4px;
+  background: var(--slider-track, #d1d5db);
+}
+
+.if-picker.if-settings-picker .if-hue-slider::-moz-range-track,
+.if-picker.if-settings-picker .if-alpha-slider::-moz-range-track {
+  height: 12px;
+  border-radius: 4px;
+  background: var(--slider-track, #d1d5db);
+}
+
+.if-picker.if-settings-picker .if-hue-slider::-webkit-slider-thumb,
+.if-picker.if-settings-picker .if-alpha-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 13px;
+  height: 13px;
+  margin-top: -0.5px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+  transform: translateX(var(--thumb-shift, 0px));
+}
+
+.if-picker.if-settings-picker .if-hue-slider::-moz-range-thumb,
+.if-picker.if-settings-picker .if-alpha-slider::-moz-range-thumb {
+  width: 13px;
+  height: 13px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+  transform: translateX(var(--thumb-shift, 0px));
+}
+
+.if-picker.if-settings-picker .if-row2 {
+  gap: 8px;
+  padding: 0 12px 10px;
+}
+
+.if-picker.if-settings-picker .if-value-stack {
+  flex: 1 1 auto;
+}
+
+.if-picker.if-settings-picker .if-channel-grid {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 8px;
+}
+
+.if-picker.if-settings-picker .if-channel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1 1 0;
+  min-width: 0;
+  gap: 6px;
+}
+
+.if-picker.if-settings-picker .if-channel span {
+  color: #9ca3af;
+  font-size: 11px;
+  line-height: 1;
+  text-align: center;
+}
+
+.if-picker.if-settings-picker .if-channel input.color-input {
+  height: 26px;
+  background: transparent;
+  color: inherit;
+  border: 1px solid #C7C7C7;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 13px !important;
+  line-height: 1;
+  padding: 5px;
+  padding-inline: 0;
+  font-family: inherit;
+}
+
+.if-picker.if-settings-picker .if-mode-switch {
+  display: grid;
+  gap: 1px;
+  align-self: center;
+}
+
+.if-picker.if-settings-picker .if-mode-switch button {
+  width: 16px;
+  height: 10px;
+  border: 0;
+  background: transparent;
+  color: var(--text-color);
+  padding: 0;
+}
+
+.if-picker.if-settings-picker .if-mode-switch button svg {
+  display: block;
+  width: 12px;
+  height: 12px;
+  margin: -1px auto 0;
+}
+
+.if-picker.if-settings-picker .if-mode-switch button svg path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}

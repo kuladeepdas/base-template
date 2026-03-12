@@ -9,6 +9,8 @@ use craft\base\Field;
 use craft\base\InlineEditableFieldInterface;
 use craft\base\MergeableFieldInterface;
 use craft\helpers\Html;
+use Inspire\Frontend\assetbundles\ColorAlphaInputAsset;
+use Inspire\Frontend\assetbundles\ColorAlphaSettingsAsset;
 use Inspire\Frontend\fields\data\ColorAlphaData;
 use yii\db\Schema;
 
@@ -84,6 +86,7 @@ class ColorAlpha extends Field implements InlineEditableFieldInterface, Mergeabl
     protected function inputHtml(mixed $value, ?ElementInterface $element, bool $inline): string
     {
         /** @var ColorAlphaData|null $value */
+        Craft::$app->getView()->registerAssetBundle(ColorAlphaInputAsset::class);
         $id = $this->getInputId();
         $hex = $value?->getHex() ?? '#000000';
         $opacity = $value?->getOpacity() ?? 100;
@@ -100,6 +103,7 @@ class ColorAlpha extends Field implements InlineEditableFieldInterface, Mergeabl
 
     public function getSettingsHtml(): ?string
     {
+        Craft::$app->getView()->registerAssetBundle(ColorAlphaSettingsAsset::class);
         return Craft::$app->getView()->renderTemplate('inspire-frontend/_fields/color-alpha/settings', [
             'field' => $this,
         ]);

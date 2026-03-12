@@ -4,9 +4,9 @@
   "type": "module",
   "scripts": {
     "build": "vite build --config vite.config.mjs",
-    "watch": "vite build --watch --config vite.config.mjs",
-    "dev": "npm run build",
-    "production": "npm run build"
+    "watch": "vite build --watch --config vite.config.mjs --mode development",
+    "dev": "vite build --config vite.config.mjs --mode development",
+    "prod": "npm run build"
   },
   "dependencies": {
     "core-js": "^3.6.4",

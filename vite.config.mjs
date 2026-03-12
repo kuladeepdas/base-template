@@ -26,6 +26,14 @@ export const targets = [
     key: 'expanded-singles',
     entry: resolve(__dirname, 'src/resources/src/js/expanded-singles.js'),
   },
+  {
+    key: 'color-alpha-input',
+    entry: resolve(__dirname, 'src/resources/src/js/color-alpha/input/main.js'),
+  },
+  {
+    key: 'color-alpha-settings',
+    entry: resolve(__dirname, 'src/resources/src/js/color-alpha/settings/main.js'),
+  },
 ];
 
 let didCleanDist = false;

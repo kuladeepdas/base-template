@@ -1,96 +1,144 @@
 # Inspire Frontend
 
-Frontend operations and frontend feature plugin for Inspire Craft CMS projects.
-
-## Package
-
-- Name: `inspire/frontend`
-- Handle: `inspire-frontend`
-- Class: `Inspire\\Frontend\\Frontend`
-- Version: `1.0.0`
+Inspire Frontend is a Craft CMS plugin for frontend-focused project tooling and field extensions.
 
 ## Requirements
 
 - PHP `^8.2`
 - Craft CMS `^5.0`
-- `craftcms/ckeditor` `^5.0`
-- `inspire/auth` `^1.0`
-- `inspire/base` `^1.0`
-- `inspire/forms` `^1.0`
-- `inspire/seo` `^5.0`
-- `putyourlightson/craft-blitz-hints`
+- Plugin dependency: `inspire/base`
 
-## Settings Location
+## Installation
 
-- `Settings -> Frontend`
-
-## Settings Tabs
-
-- Rebuild Assets
-- Update Build Script
-- Git Status
-- Inspire Fields
-- Asset Locations
-- Expanded Singles
-- Embedded Videos
-- Image Resizer
-- Bulk Image Resizer
-- Image Resizer Logs
-
-## Main Features
-
-- Frontend package/build maintenance actions from CP
-- Build script sync to project `frontend/`
-- Git status + commit/push utility actions
-- Inspire Fields snapshot export/import/apply tools
-- Asset Locations integration (moved from standalone plugin)
-  - Native Asset field layout element: `Asset Locations`
-  - Asset index `In Use` table attribute
-  - Settings toggle to enable/disable feature (`enabled` by default)
-- Prefetch variable registration (`craft.prefetch`)
-- Twig image helper support (`singleImg`, `responsiveImg`)
-- Embedded Videos integration
-- Expanded Singles integration
-- Image Resizer integration
-
-## Build (Vite)
-
-Run in `plugins/inspire-frontend`:
+Install via Composer:
 
 ```bash
+composer require inspire/frontend:^1.0
+```
+
+Then install in Craft:
+
+```bash
+php craft plugin/install inspire-frontend
+```
+
+## What It Provides
+
+- Frontend project update/build helpers in plugin settings
+- Inspire Fields snapshot tools (built-in template + import/export)
+- Asset Locations integration
+- Embedded Videos integration
+- Advanced Color field functionality
+- Frontend helper macros/functions shipped by the plugin
+
+## Usage
+
+### Frontend Build Tools (Plugin Settings)
+
+- Open `Settings -> Frontend`.
+- Use:
+  - `Update Packages` to run package updates and install flow.
+  - `Update Build Script` to compare/apply plugin frontend scaffold updates.
+  - `Git Status` to check repo status and commit/push from CP tools.
+
+### Inspire Fields (Snapshots)
+
+- Open `Settings -> Frontend -> Inspire Fields`.
+- `Default Template`: applies the built-in template snapshot.
+- `Export`: downloads current site template snapshot.
+- `Import`: uploads and applies a snapshot file.
+
+Use this when bootstrapping new environments with matching fields/entry types/sections/filesystems and editor config.
+
+### Asset Locations
+
+- Enable/disable in `Settings -> Frontend -> Asset Locations`.
+- In asset edit pages, the field lists where the asset is used:
+  - Entry title
+  - Status
+  - Frontend link
+  - Block/location tags (if nested inside blocks)
+
+### Embedded Videos
+
+- In Asset fields with allowed kind set to include embedded video, `Embed Video` buttons are available.
+- Paste a YouTube/Vimeo URL in the HUD and save.
+- The created embedded asset is attached to the field relation.
+
+Twig usage example:
+
+```twig
+{% set video = entry.videoField.one() %}
+{% if video %}
+  {% set embedded = craft.embeddedVideos.get(video) %}
+  {% if embedded %}
+    {{ embedded.code|raw }}
+  {% endif %}
+{% endif %}
+```
+
+### Advanced Color Field
+
+- Add field type `Advanced Color` in field settings.
+- Configure optional custom swatches in field settings.
+- In entries, use the color circle to open the picker (HEX/RGB/RGBA/HSL/HSLA + alpha).
+
+Twig usage example:
+
+```twig
+{% set c = entry.advancedColor %}
+{% if c %}
+  <div style="color: {{ c.hex }};">HEX</div>
+  <div style="color: {{ c.rgb }};">RGB</div>
+  <div style="color: {{ c.rgba }};">RGBA</div>
+  <div style="color: {{ c.hsl }};">HSL</div>
+  <div style="color: {{ c.hsla }};">HSLA</div>
+{% endif %}
+```
+
+### Frontend Image Helpers
+
+The plugin exposes global helper functions for image macros without manual imports.
+
+Use directly in templates:
+
+```twig
+{{ singleImg(entry.image.one()) }}
+{{ responsiveImg(entry.image.one(), {
+  class: 'img-fluid',
+  loading: 'lazy'
+}) }}
+```
+
+## Asset Build
+
+From plugin root:
+
+```bash
+cd plugins/inspire-frontend
 npm install
 npm run build
 ```
 
-### Build Targets
+Available scripts:
 
-- `embeddedvideos-main`
-- `embeddedvideos-preview`
-- `inspire-ui`
-- `image-resizer`
-- `expanded-singles`
+- `npm run build`
+- `npm run watch`
+- `npm run dev`
+- `npm run prod`
 
-Output:
+## Project Structure
 
-- `src/resources/dist/`
+- `src/` PHP plugin source
+- `src/resources/src/` JS/SCSS source files
+- `src/resources/dist/` built assets
+- `src/templates/` CP and Twig templates
 
-## Local Installation
+## Notes
 
-```json
-{
-  "repositories": [
-    {
-      "type": "path",
-      "url": "plugins/inspire-frontend"
-    }
-  ],
-  "require": {
-    "inspire/frontend": "1.0.0"
-  }
-}
-```
+- In production environments, run built assets only.
+- If control panel updates are not reflected, clear Craft caches.
 
-```bash
-composer update inspire/frontend
-php craft plugin/install inspire-frontend
-```
+## License
+
+Craft License
