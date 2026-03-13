@@ -156,6 +156,7 @@
   const modes = ['hex', 'rgb', 'rgba', 'hsl', 'hsla'];
   let modeIndex = 0;
 
+  const initialHasValue = String(hiddenColor.value || '').trim() !== '';
   let {h, s, v} = rgbToHsv(...Object.values(hexToRgb(hiddenColor.value || '#ffffff')));
   let a = clamp((Number(hiddenAlpha.value) || 100) / 100, 0, 1);
   let syncingValueInput = false;
@@ -263,13 +264,15 @@
     refs.label4.textContent = 'A';
   };
 
-  const render = () => {
+  const render = (commitValue = true) => {
     const rgb = hsvToRgb(h, s, v);
     const hex = rgbToHex(rgb.r, rgb.g, rgb.b);
     const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
 
-    hiddenColor.value = hex;
-    hiddenAlpha.value = String(Math.round(a * 100));
+    if (commitValue) {
+      hiddenColor.value = hex;
+      hiddenAlpha.value = String(Math.round(a * 100));
+    }
     syncingValueInput = true;
     const mode = currentMode();
     setChannelEditor(mode, rgb, hsl, a, {
@@ -388,12 +391,12 @@
 
   hueInput.addEventListener('input', () => {
     h = clamp(Number(hueInput.value) || 0, 0, 360);
-    render();
+    render(true);
   });
 
   alphaInput.addEventListener('input', () => {
     a = clamp((Number(alphaInput.value) || 0) / 100, 0, 1);
-    render();
+    render(true);
   });
 
   let draggingSv = false;
@@ -403,7 +406,7 @@
     const y = clamp((ev.clientY - rect.top) / rect.height, 0, 1);
     s = x;
     v = 1 - y;
-    render();
+    render(true);
   };
   svWrap.addEventListener('mousedown', (ev) => {
     draggingSv = true;
@@ -421,10 +424,10 @@
     el.addEventListener('change', () => {
       if (syncingValueInput) return;
       if (!tryParsePopupValue()) {
-        render();
+        render(initialHasValue);
         return;
       }
-      render();
+      render(true);
     });
   });
 
@@ -473,16 +476,16 @@
     el.addEventListener('change', () => {
       if (syncingValueInput) return;
       if (!tryParseInlineValue()) {
-        render();
+        render(initialHasValue);
         return;
       }
-      render();
+      render(true);
     });
   });
 
   const shiftMode = (dir) => {
     modeIndex = (modeIndex + dir + modes.length) % modes.length;
-    render();
+    render(initialHasValue);
   };
   modePrevButtons.forEach((button) => button.addEventListener('click', () => shiftMode(-1)));
   modeNextButtons.forEach((button) => button.addEventListener('click', () => shiftMode(1)));
@@ -498,7 +501,7 @@
       h = hsv.h;
       s = hsv.s;
       v = hsv.v;
-      render();
+      render(true);
     });
   });
 
@@ -509,12 +512,12 @@
       const picked = String(result.sRGBHex || '#000000').toLowerCase();
       const hsv = rgbToHsv(...Object.values(hexToRgb(picked)));
       h = hsv.h; s = hsv.s; v = hsv.v;
-      render();
+      render(true);
     } catch (_e) {
       // user cancelled
     }
   });
 
-    render();
+    render(initialHasValue);
   });
 })();

@@ -1,5 +1,5 @@
-{% set initialHex = (hex ?? '#ffffff')|lower %}
-{% set initialAlpha = (opacity ?? 100)|number_format(0, '.', '') %}
+{% set initialHex = (hex ?? '')|lower %}
+{% set initialAlpha = opacity is same as('') or opacity is null ? '' : opacity|number_format(0, '.', '') %}
 {% set swatches = swatches ?? [] %}
 
 <div id="{{ id }}-alpha-field" class="if-color-field" data-color-alpha-input>
