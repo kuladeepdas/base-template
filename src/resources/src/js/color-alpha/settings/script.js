@@ -13,7 +13,7 @@
   const alphaHex = (a) => Math.round(clamp(a, 0, 1) * 255).toString(16).padStart(2, '0');
 
   const hexToRgb = (hex) => {
-    const v = String(hex || '#000000').replace('#', '').toLowerCase();
+    const v = String(hex || '#ffffff').replace('#', '').toLowerCase();
     return {
       r: Number.parseInt(v.slice(0, 2), 16) || 0,
       g: Number.parseInt(v.slice(2, 4), 16) || 0,
@@ -383,7 +383,7 @@
   };
 
   const openPicker = (circle, input) => {
-    const parsed = parseValue(input.value) || {hex: '#000000', alpha: 1};
+    const parsed = parseValue(input.value) || {hex: '#ffffff', alpha: 1};
     const hsv = rgbToHsv(...Object.values(hexToRgb(parsed.hex)));
     h = hsv.h;
     s = hsv.s;
@@ -423,7 +423,7 @@
     });
   };
 
-  const rowTemplate = (value = '#000000') => {
+  const rowTemplate = (value = '#ffffff') => {
     const row = document.createElement('div');
     row.className = 'if-settings-swatch-row';
 
@@ -504,12 +504,12 @@
       dot.style.backgroundColor = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${parsed.alpha})`;
     };
 
-    input.value = normalizeValue(value) || '#000000';
+    input.value = normalizeValue(value) || '#ffffff';
     let rowModeIndex = modeIndex;
     const rowMode = () => modes[rowModeIndex];
 
     const renderEditor = () => {
-      const parsed = parseValue(input.value) || {hex: '#000000', alpha: 1};
+      const parsed = parseValue(input.value) || {hex: '#ffffff', alpha: 1};
       const rgb = hexToRgb(parsed.hex);
       const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
       const mode = rowMode();
@@ -653,7 +653,7 @@
 
   addBtn.addEventListener('click', (ev) => {
     ev.preventDefault();
-    list.appendChild(rowTemplate('#000000'));
+    list.appendChild(rowTemplate('#ffffff'));
     syncHidden();
   });
 

@@ -56,7 +56,7 @@
       const fmtA = (a2) => round(a2, 2).toString().replace(/\\.0$/, "");
       const alphaHex = (a2) => Math.round(clamp(a2, 0, 1) * 255).toString(16).padStart(2, "0");
       const hexToRgb = (hex) => {
-        const v2 = String(hex || "#000000").replace("#", "").toLowerCase();
+        const v2 = String(hex || "#ffffff").replace("#", "").toLowerCase();
         return {
           r: Number.parseInt(v2.slice(0, 2), 16) || 0,
           g: Number.parseInt(v2.slice(2, 4), 16) || 0,
@@ -148,7 +148,7 @@
       };
       const modes = ["hex", "rgb", "rgba", "hsl", "hsla"];
       let modeIndex = 0;
-      let { h, s, v } = rgbToHsv(...Object.values(hexToRgb(hiddenColor.value || "#000000")));
+      let { h, s, v } = rgbToHsv(...Object.values(hexToRgb(hiddenColor.value || "#ffffff")));
       let a = clamp((Number(hiddenAlpha.value) || 100) / 100, 0, 1);
       let syncingValueInput = false;
       document.body.appendChild(pop);

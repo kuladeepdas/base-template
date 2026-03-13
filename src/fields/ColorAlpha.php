@@ -88,7 +88,7 @@ class ColorAlpha extends Field implements InlineEditableFieldInterface, Mergeabl
         /** @var ColorAlphaData|null $value */
         Craft::$app->getView()->registerAssetBundle(ColorAlphaInputAsset::class);
         $id = $this->getInputId();
-        $hex = $value?->getHex() ?? '#000000';
+        $hex = $value?->getHex() ?? '#ffffff';
         $opacity = $value?->getOpacity() ?? 100;
 
         return Craft::$app->getView()->renderTemplate('inspire-frontend/_fields/color-alpha/input', [
