@@ -27,6 +27,10 @@ abstract class FrontendAsset extends AssetBundle
      */
     public function init(): void
     {
+        $appendTimestamp = Craft::$app->getConfig()->getGeneral()->devMode;
+        $this->cssOptions['appendTimestamp'] = $appendTimestamp;
+        $this->jsOptions['appendTimestamp'] = $appendTimestamp;
+
         parent::init();
 
         $manifest = $this->getManifest();
