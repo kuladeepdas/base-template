@@ -14,6 +14,8 @@
             {% block after_header %}
             {% endblock %}
         </header>
+        {% block banner %}
+        {% endblock %}
         <main id="content" {% if main_classes is defined %}class="{{ main_classes }}"{% endif %}>
             {% block messages %}
                 {% include "_includes/messages" %}
