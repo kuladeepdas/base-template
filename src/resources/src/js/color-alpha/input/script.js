@@ -1,8 +1,5 @@
 (() => {
-  const roots = document.querySelectorAll('[data-color-alpha-input]');
-  if (!roots.length) return;
-
-  roots.forEach((root) => {
+  const initRoot = (root) => {
     if (!(root instanceof HTMLElement) || root.dataset.colorAlphaInit === '1') {
       return;
     }
@@ -44,7 +41,7 @@
   const cLabel2 = root.querySelector('[data-clabel="2"]');
   const cLabel3 = root.querySelector('[data-clabel="3"]');
   const cLabel4 = root.querySelector('[data-clabel="4"]');
-  const modalChannelGrid = pop.querySelector('[data-channel-grid]');
+  const modalChannelGrid = pop?.querySelector('[data-channel-grid]');
   const modePrevButtons = root.querySelectorAll('[data-mode-prev]');
   const modeNextButtons = root.querySelectorAll('[data-mode-next]');
   const swatchButtons = root.querySelectorAll('[data-swatch]');
@@ -519,5 +516,23 @@
   });
 
     render(initialHasValue);
+  };
+
+  document.querySelectorAll('[data-color-alpha-input]').forEach((root) => initRoot(root));
+
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      mutation.addedNodes.forEach((node) => {
+        if (!(node instanceof HTMLElement)) {
+          return;
+        }
+        if (node.matches('[data-color-alpha-input]')) {
+          initRoot(node);
+        }
+        node.querySelectorAll?.('[data-color-alpha-input]').forEach((el) => initRoot(el));
+      });
+    });
   });
+
+  observer.observe(document.body, {childList: true, subtree: true});
 })();
