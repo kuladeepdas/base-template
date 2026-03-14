@@ -17,7 +17,7 @@
 
         {% if image.getUrl({width: 1}) is not empty %}
             {% if image.extension|lower not in ['jpeg', 'jpg', 'png'] %}
-                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
+                <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="
                      data-src="{{ image.url }}"
                      style="aspect-ratio: {{ ratio }}"
                      class="{{ classes ~ ' lazyload' }}"
@@ -55,7 +55,7 @@
                         format: image.extension|lower,
                         quality: craft.app.config.general.defaultImageQuality
                     }) %}
-                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
+                    <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="
                          data-src="{{ image.getUrl({width: widths[0], height: ((widths[0] / ratio)|round(0, 'ceil'))|integer, mode:'crop', format:image.extension|lower, quality:craft.app.config.general.defaultImageQuality}) }}"
                          style="aspect-ratio: {{ ratio }}"
                          data-srcset="{{ defaultimg.getSrcset(widths) }}"
@@ -69,7 +69,7 @@
             {% endif %}
         {% else %}
             {# Placeholder if URL is missing #}
-            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
+            <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="
                  alt="placeholder"
                  class="{{ classes }}"
                  width="{{ width }}"
@@ -82,7 +82,7 @@
         {% set width = styles.0.width ?? '100%' %}
         {% set ratio = styles.0.ratio ?? 1 %}
         {% set height = width != '100%' ? width / ratio : '100%' %}
-        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
+        <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="
              alt="placeholder"
              class="{{ classes }}"
              width="{{ width }}"
@@ -99,7 +99,7 @@
 
         {% if image.getUrl({width: 1}) is not empty %}
             {% if image.extension|lower not in ['jpeg', 'jpg', 'png'] %}
-                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
+                <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="
                      data-src="{{ image.url }}"
                      style="aspect-ratio: {{ ratio }}"
                      class="{{ classes ~ ' lazyload' }}"
@@ -126,7 +126,7 @@
                         quality: craft.app.config.general.defaultImageQuality
                     }) %}
                     <source type="image/webp" data-srcset="{{ webpimg.getSrcset([width]) }}">
-                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
+                    <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="
                          data-src="{{ image.getUrl({width: width, height: height, mode:'crop', format:image.extension|lower, quality:craft.app.config.general.defaultImageQuality}) }}"
                          style="aspect-ratio: {{ ratio }}"
                          class="{{ classes ~ ' scale-with-grid lazyload' }}"
@@ -138,7 +138,7 @@
             {% endif %}
         {% else %}
             {# Placeholder if URL missing #}
-            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
+            <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="
                  alt="placeholder"
                  class="{{ classes }}"
                  width="{{ width }}"
@@ -150,7 +150,7 @@
         {% set ratio = options.ratio ?? 1 %}
         {% set width = size ?? '100%' %}
         {% set height = width != '100%' ? width / ratio : '100%' %}
-        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
+        <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="
              alt="placeholder"
              class="{{ classes }}"
              width="{{ width }}"
