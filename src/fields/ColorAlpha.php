@@ -46,12 +46,15 @@ class ColorAlpha extends Field implements InlineEditableFieldInterface, Mergeabl
 
         if (is_array($value)) {
             $color = trim((string)($value['color'] ?? ''));
+            if ($color === '') {
+                $color = '#ffffff';
+            }
             $alpha = (float)($value['alpha'] ?? 100) / 100;
             return $this->createData($color, $alpha);
         }
 
         if (!is_string($value) || trim($value) === '') {
-            return null;
+            return new ColorAlphaData('#ffffff', 1.0);
         }
 
         $parsed = $this->parseColorString($value);
@@ -88,8 +91,8 @@ class ColorAlpha extends Field implements InlineEditableFieldInterface, Mergeabl
         /** @var ColorAlphaData|null $value */
         Craft::$app->getView()->registerAssetBundle(ColorAlphaInputAsset::class);
         $id = $this->getInputId();
-        $hex = $value?->getHex() ?? '';
-        $opacity = $value?->getOpacity() ?? '';
+        $hex = $value?->getHex() ?? '#ffffff';
+        $opacity = $value?->getOpacity() ?? 100;
 
         return Craft::$app->getView()->renderTemplate('inspire-frontend/_fields/color-alpha/input', [
             'id' => $id,
