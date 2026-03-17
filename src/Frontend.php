@@ -38,6 +38,7 @@ use Inspire\Frontend\services\Service;
 use Inspire\Frontend\services\SinglesList;
 use Inspire\Frontend\twig\ImagesHelper;
 use Inspire\Frontend\twig\ImagesTwigExtension;
+use Inspire\Frontend\twig\ColorTwigExtension;
 use Inspire\Frontend\variables\PrefetchVariable;
 use Inspire\Frontend\fields\ColorAlpha;
 use Inspire\Frontend\embeddedvideos\Integration as EmbeddedVideosIntegration;
@@ -128,6 +129,7 @@ class Frontend extends Plugin
 
         $this->registerSettingsLinks();
         Craft::$app->getView()->registerTwigExtension(new ImagesTwigExtension());
+        Craft::$app->getView()->registerTwigExtension(new ColorTwigExtension());
         Event::on(
             View::class,
             View::EVENT_BEFORE_RENDER_TEMPLATE,
