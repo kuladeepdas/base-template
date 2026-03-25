@@ -14,6 +14,26 @@ class UtilityController extends Controller
     protected array|int|bool $allowAnonymous = ['session-info'];
 
     /**
+     * @param $action
+     * @return bool
+     * @throws \craft\web\ServiceUnavailableHttpException
+     * @throws \yii\web\BadRequestHttpException
+     * @throws \yii\web\ForbiddenHttpException
+     * @throws \yii\web\UnauthorizedHttpException
+     */
+    public function beforeAction($action): bool
+    {
+        /**
+         * this action will be called from cached/stale pages, it very likely does not have a valid CSRF value
+         */
+        if ($action->id === 'session-info') {
+            $this->enableCsrfValidation = false;
+        }
+
+        return parent::beforeAction($action);
+    }
+
+    /**
      * This is based on
      * - vendor/craftcms/cms/src/controllers/UsersController.php
      * - actionSessionInfo()
