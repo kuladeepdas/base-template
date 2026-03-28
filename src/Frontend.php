@@ -130,6 +130,10 @@ class Frontend extends Plugin
         $this->registerSettingsLinks();
         Craft::$app->getView()->registerTwigExtension(new ImagesTwigExtension());
         Craft::$app->getView()->registerTwigExtension(new ColorTwigExtension());
+        $twig = Craft::$app->getView()->getTwig();
+        if ($twig !== null && !$twig->hasGlobal('images')) {
+            $twig->addGlobal('images', new ImagesHelper());
+        }
         Event::on(
             View::class,
             View::EVENT_BEFORE_RENDER_TEMPLATE,
