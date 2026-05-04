@@ -1,6 +1,6 @@
 <?php
 
-namespace Inspire\Frontend\twig;
+namespace Kdgraphics\BaseTemplate\twig;
 
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
@@ -9,7 +9,7 @@ class ColorTwigExtension extends AbstractExtension
 {
     public function getName(): string
     {
-        return 'Inspire Frontend Color Twig Extension';
+        return 'Base Template Color Twig Extension';
     }
 
     public function getFilters(): array

@@ -1,7 +1,7 @@
 <?php
-namespace Inspire\Frontend\console\controllers;
+namespace Kdgraphics\BaseTemplate\console\controllers;
 
-use Inspire\Frontend\Frontend;
+use Kdgraphics\BaseTemplate\BaseTemplate;
 
 
 use Craft;
@@ -105,7 +105,7 @@ class ResizeController extends Controller
             $fs = $volume->getFs();
             $isLocal = $fs instanceof LocalFsInterface;
 
-            $result = Frontend::$plugin->getResize()->resize($asset, $filename, $path);
+            $result = BaseTemplate::$plugin->getResize()->resize($asset, $filename, $path);
 
             // If the image resize was successful we can continue
             if ($result === true) {

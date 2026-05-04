@@ -1,5 +1,5 @@
-if (typeof Craft.InspireFrontend === typeof undefined) {
-    Craft.InspireFrontend = {};
+if (typeof Craft.BaseTemplate === typeof undefined) {
+    Craft.BaseTemplate = {};
 }
 
 (function($) {

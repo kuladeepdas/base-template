@@ -1,5 +1,5 @@
 <?php
-namespace Inspire\Frontend\models;
+namespace Kdgraphics\BaseTemplate\models;
 
 use Craft;
 use craft\base\Model;
@@ -32,14 +32,14 @@ class Log extends Model
     public function getDescription(): string
     {
         return match ($this->handle) {
-            'success' => Craft::t('inspire-frontend', 'Resized successfully.'),
-            'skipped-larger-result' => Craft::t('inspire-frontend', 'Resizing would result in a larger file size.'),
-            'skipped-non-image' => Craft::t('inspire-frontend', 'Image cannot be resized (not manipulatable).'),
-            'skipped-under-limits' => Craft::t('inspire-frontend', 'Image already under maximum width/height.'),
-            'skipped-no-volume' => Craft::t('inspire-frontend', 'Volume not found.'),
-            'skipped-no-volume-type' => Craft::t('inspire-frontend', 'Source type not found.'),
-            'skipped-volume-disabled' => Craft::t('inspire-frontend', 'Volume not enabled to auto-resize on upload.'),
-            'error' => Craft::t('inspire-frontend', 'Error.'),
+            'success' => Craft::t('base-template', 'Resized successfully.'),
+            'skipped-larger-result' => Craft::t('base-template', 'Resizing would result in a larger file size.'),
+            'skipped-non-image' => Craft::t('base-template', 'Image cannot be resized (not manipulatable).'),
+            'skipped-under-limits' => Craft::t('base-template', 'Image already under maximum width/height.'),
+            'skipped-no-volume' => Craft::t('base-template', 'Volume not found.'),
+            'skipped-no-volume-type' => Craft::t('base-template', 'Source type not found.'),
+            'skipped-volume-disabled' => Craft::t('base-template', 'Volume not enabled to auto-resize on upload.'),
+            'error' => Craft::t('base-template', 'Error.'),
             default => $this->message,
         };
     }

@@ -1,24 +1,24 @@
-{% do view.registerAssetBundle('Inspire\\Frontend\\assetbundles\\ImageResizerAsset') %}
-{% import "inspire-frontend/_macros" as imageResizerMacro %}
+{% do view.registerAssetBundle('Kdgraphics\\BaseTemplate\\assetbundles\\ImageResizerAsset') %}
+{% import "base-template/_macros" as imageResizerMacro %}
 
 {% if logEntries is defined and logEntries|length %}
     <table id="logs" class="data fullwidth collapsible image-resizer-logs-table">
         <thead>
             <tr>
-                <th scope="col">{{ "Filename" | t('inspire-frontend') }}</th>
-                <th scope="col">{{ "Result" | t('inspire-frontend') }}</th>
-                <th scope="col">{{ "Timestamp" | t('inspire-frontend') }}</th>
+                <th scope="col">{{ "Filename" | t('base-template') }}</th>
+                <th scope="col">{{ "Result" | t('base-template') }}</th>
+                <th scope="col">{{ "Timestamp" | t('base-template') }}</th>
             </tr>
         </thead>
 
         <tbody>
             {% for entry in logEntries %}
                 <tr>
-                    <td class="col-label" data-title="{{ 'Filename' | t('inspire-frontend') }}">
+                    <td class="col-label" data-title="{{ 'Filename' | t('base-template') }}">
                         <span class="">{{ entry.filename }}</span>
                     </td>
 
-                    <td class="col-label" data-title="{{ 'Result' | t('inspire-frontend') }}">
+                    <td class="col-label" data-title="{{ 'Result' | t('base-template') }}">
                         <span class="log-result {{ entry.result }}">{{ entry.result }}</span>
 
                         <span class="log-label {{ entry.result }}">
@@ -32,7 +32,7 @@
                                 {% set filesize = imageResizerMacro.filesize(saved) %}
                                 {% set percentage = ((saved / prevSize) * 100) | number_format %}
 
-                                {{ "Saved {perc}% ({num})." | t('inspire-frontend', { num: filesize, perc: percentage }) }}
+                                {{ "Saved {perc}% ({num})." | t('base-template', { num: filesize, perc: percentage }) }}
                             {% endif %}
 
                             {% if entry.handle == 'error' %}
@@ -41,7 +41,7 @@
                         </span>
                     </td>
 
-                    <td data-title="{{ 'Timestamp' | t('inspire-frontend') }}">
+                    <td data-title="{{ 'Timestamp' | t('base-template') }}">
                         <code>
                             {{ entry.dateTime | date('short') ~ ' ' ~ entry.dateTime | time('short') }}
                         </code>
@@ -51,12 +51,12 @@
         </tbody>
     </table>
 {% else %}
-    <p>{{ 'No logs yet.'|t('inspire-frontend') }}</p>
+    <p>{{ 'No logs yet.'|t('base-template') }}</p>
 {% endif %}
 
 {% js %}
 (() => {
-    const btn = document.getElementById('inspire-frontend-clear-logs');
+    const btn = document.getElementById('base-template-clear-logs');
     if (!btn) {
         return;
     }
@@ -66,8 +66,8 @@
         btn.disabled = true;
 
         try {
-            await Craft.sendActionRequest('POST', 'inspire-frontend/logs/clear');
-            window.location = Craft.getCpUrl('settings/plugins/inspire-frontend', { tab: 'logs' });
+            await Craft.sendActionRequest('POST', 'base-template/logs/clear');
+            window.location = Craft.getCpUrl('settings/plugins/base-template', { tab: 'logs' });
         } catch (error) {
             btn.classList.remove('loading');
             btn.disabled = false;

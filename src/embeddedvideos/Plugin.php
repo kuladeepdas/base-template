@@ -1,22 +1,22 @@
 <?php
 
-namespace Inspire\Frontend\embeddedvideos;
+namespace Kdgraphics\BaseTemplate\embeddedvideos;
 
-use Inspire\Frontend\Frontend;
+use Kdgraphics\BaseTemplate\BaseTemplate;
 use yii\base\UnknownPropertyException;
 
 class Plugin
 {
     public static ?self $plugin = null;
 
-    private Frontend $basePlugin;
+    private BaseTemplate $basePlugin;
 
-    private function __construct(Frontend $basePlugin)
+    private function __construct(BaseTemplate $basePlugin)
     {
         $this->basePlugin = $basePlugin;
     }
 
-    public static function boot(Frontend $basePlugin): void
+    public static function boot(BaseTemplate $basePlugin): void
     {
         self::$plugin = new self($basePlugin);
     }
@@ -35,4 +35,3 @@ class Plugin
         throw new UnknownPropertyException(sprintf('Unknown property: %s::%s', self::class, $name));
     }
 }
-

@@ -1,6 +1,6 @@
 <?php
 
-namespace Inspire\Frontend\fields\data;
+namespace Kdgraphics\BaseTemplate\fields\data;
 
 use craft\base\Model;
 use craft\base\Serializable;

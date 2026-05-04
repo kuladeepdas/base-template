@@ -1,6 +1,6 @@
 <?php
 
-namespace Inspire\Frontend\services;
+namespace Kdgraphics\BaseTemplate\services;
 
 use craft\base\Component;
 use craft\web\View;

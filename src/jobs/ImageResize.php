@@ -1,7 +1,7 @@
 <?php
-namespace Inspire\Frontend\jobs;
+namespace Kdgraphics\BaseTemplate\jobs;
 
-use Inspire\Frontend\Frontend;
+use Kdgraphics\BaseTemplate\BaseTemplate;
 
 
 use Craft;
@@ -35,7 +35,7 @@ class ImageResize extends BaseJob
 
     public function getDescription(): ?string
     {
-        return Craft::t('inspire-frontend', 'Resizing images');
+        return Craft::t('base-template', 'Resizing images');
     }
 
     /**
@@ -62,7 +62,7 @@ class ImageResize extends BaseJob
                 $fs = $volume->getFs();
                 $isLocal = $fs instanceof LocalFsInterface;
 
-                $result = Frontend::$plugin->getResize()->resize($asset, $filename, $path, $width, $height, $this->taskId);
+                $result = BaseTemplate::$plugin->getResize()->resize($asset, $filename, $path, $width, $height, $this->taskId);
 
                 // If the image resize was successful we can continue
                 if ($result === true) {

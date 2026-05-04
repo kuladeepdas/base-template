@@ -1,26 +1,26 @@
 // ==========================================================================
 
-// Inspire UI for Craft CMS
-// Author: Inspire - https://inspire.io/
+// Base Template UI for Craft CMS
+// Author: KD Graphics
 
 // ==========================================================================
 
-import '../scss/inspire-ui.scss';
+import '../scss/base-template-ui.scss';
 
-const Inspire = window.Inspire || (window.Inspire = {});
+const BaseTemplateUi = window.BaseTemplateUi || (window.BaseTemplateUi = {});
 
 (function($) {
 let $initialTab = null;
 
-Inspire.UI = Garnish.Base.extend({
+BaseTemplateUi.UI = Garnish.Base.extend({
     init: function() {
         $('[data-vui-tabs]').each(function(index, element) {
-            new Inspire.UI.SimpleTabs($(element));
+            new BaseTemplateUi.UI.SimpleTabs($(element));
         });
     },
 });
 
-Inspire.UI.SimpleTabs = Garnish.Base.extend({
+BaseTemplateUi.UI.SimpleTabs = Garnish.Base.extend({
     $container: null,
     $ul: null,
     $tabs: null,
@@ -219,6 +219,6 @@ Inspire.UI.SimpleTabs = Garnish.Base.extend({
 });
 
 // Initialise immediately
-new Inspire.UI();
+new BaseTemplateUi.UI();
 
 })(jQuery);

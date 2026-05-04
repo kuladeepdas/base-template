@@ -1,10 +1,10 @@
-if (typeof Craft.InspireFrontend === typeof undefined) {
-    Craft.InspireFrontend = {};
+if (typeof Craft.BaseTemplate === typeof undefined) {
+    Craft.BaseTemplate = {};
 }
 
 (function($) {
 
-Craft.InspireFrontend.ResizeElementAction = Garnish.Base.extend({
+Craft.BaseTemplate.ResizeElementAction = Garnish.Base.extend({
 
     init: function(imageWidth, imageHeight, type) {
         var settings = {
@@ -21,14 +21,14 @@ Craft.InspireFrontend.ResizeElementAction = Garnish.Base.extend({
                 return (documents > 0) ? false : true;
             },
             activate: function($selectedItems) {
-                new Craft.InspireFrontend.ResizeModal($selectedItems.find('.element'), $selectedItems, settings);
+                new Craft.BaseTemplate.ResizeModal($selectedItems.find('.element'), $selectedItems, settings);
             }
         });
     },
 
 });
 
-Craft.InspireFrontend.BulkResizeAssetFolder = Garnish.Base.extend({
+Craft.BaseTemplate.BulkResizeAssetFolder = Garnish.Base.extend({
 
     init: function(imageWidth, imageHeight) {
         var settings = {
@@ -41,13 +41,13 @@ Craft.InspireFrontend.BulkResizeAssetFolder = Garnish.Base.extend({
             settings.assetFolderName = $(this).data('name');
             settings.bulkResize = true;
 
-            new Craft.InspireFrontend.ResizeModal('', '', settings);
+            new Craft.BaseTemplate.ResizeModal('', '', settings);
         });
     },
 
 });
 
-Craft.InspireFrontend.ResizeModal = Garnish.Modal.extend({
+Craft.BaseTemplate.ResizeModal = Garnish.Modal.extend({
     $element: null,
     $selectedItems: null,
     settings: null,
@@ -86,13 +86,13 @@ Craft.InspireFrontend.ResizeModal = Garnish.Modal.extend({
             '<div class="modal-content">' +
                 '<div class="modal-main">' +
                     '<div class="modal-elements">' +
-                        '<h1>' + Craft.t('inspire-frontend', 'Resize Images') + '</h1>' +
-                        '<p>' + Craft.t('inspire-frontend', 'You are about to resize {desc} to be a maximum of {width}px wide and {height}px high. Alternatively, set the width and height limits below for on-demand resizing.', { desc: actionDescription, width: settings.width, height: settings.height }) + '</p>' +
+                        '<h1>' + Craft.t('base-template', 'Resize Images') + '</h1>' +
+                        '<p>' + Craft.t('base-template', 'You are about to resize {desc} to be a maximum of {width}px wide and {height}px high. Alternatively, set the width and height limits below for on-demand resizing.', { desc: actionDescription, width: settings.width, height: settings.height }) + '</p>' +
 
-                        '<input class="text" type="text" id="settings-imageWidth" size="10" name="settings[imageWidth]" value="' + settings.width + '" autocomplete="off"> ' + Craft.t('inspire-frontend', 'width') + ' &nbsp;&nbsp;' +
-                        '<input class="text" type="text" id="settings-imageHeight" size="10" name="settings[imageHeight]" value="' + settings.height + '" autocomplete="off"> ' + Craft.t('inspire-frontend', 'height') +
+                        '<input class="text" type="text" id="settings-imageWidth" size="10" name="settings[imageWidth]" value="' + settings.width + '" autocomplete="off"> ' + Craft.t('base-template', 'width') + ' &nbsp;&nbsp;' +
+                        '<input class="text" type="text" id="settings-imageHeight" size="10" name="settings[imageHeight]" value="' + settings.height + '" autocomplete="off"> ' + Craft.t('base-template', 'height') +
 
-                        '<p><strong>' + Craft.t('inspire-frontend', 'Caution') + ':</strong> ' + Craft.t('inspire-frontend', 'This operation permanently alters your images.') + '</p>' +
+                        '<p><strong>' + Craft.t('base-template', 'Caution') + ':</strong> ' + Craft.t('base-template', 'This operation permanently alters your images.') + '</p>' +
                     '</div>' +
                 '</div>' +
             '</div>' +
@@ -104,9 +104,9 @@ Craft.InspireFrontend.ResizeModal = Garnish.Modal.extend({
 
         this.$footerSpinner = $('<div class="spinner hidden"/>').appendTo(this.$footer);
         this.$buttons = $('<div class="buttons rightalign first"/>').appendTo(this.$footer);
-        this.$closeBtn = $('<div class="btn close hidden">'+Craft.t('inspire-frontend', 'Close')+'</div>').appendTo(this.$buttons);
-        this.$cancelBtn = $('<div class="btn cancel">'+Craft.t('inspire-frontend', 'Cancel')+'</div>').appendTo(this.$buttons);
-        this.$saveBtn = $('<div class="btn submit">'+Craft.t('inspire-frontend', 'Resize')+'</div>').appendTo(this.$buttons);
+        this.$closeBtn = $('<div class="btn close hidden">'+Craft.t('base-template', 'Close')+'</div>').appendTo(this.$buttons);
+        this.$cancelBtn = $('<div class="btn cancel">'+Craft.t('base-template', 'Cancel')+'</div>').appendTo(this.$buttons);
+        this.$saveBtn = $('<div class="btn submit">'+Craft.t('base-template', 'Resize')+'</div>').appendTo(this.$buttons);
 
         this.$body = $body;
 
@@ -156,9 +156,9 @@ Craft.InspireFrontend.ResizeModal = Garnish.Modal.extend({
         }
 
         // Trigger the task creation
-        Craft.sendActionRequest('POST', 'inspire-frontend/base/resize-element-action', { data });
+        Craft.sendActionRequest('POST', 'base-template/base/resize-element-action', { data });
 
-        new Craft.InspireFrontend.ResizeTaskProgress(this, taskId, function() {
+        new Craft.BaseTemplate.ResizeTaskProgress(this, taskId, function() {
             modal.$footerSpinner.addClass('hidden');
 
             modal.$closeBtn.removeClass('hidden');
@@ -187,7 +187,7 @@ Craft.InspireFrontend.ResizeModal = Garnish.Modal.extend({
 
 });
 
-Craft.InspireFrontend.ResizeTaskProgress = Garnish.Base.extend({
+Craft.BaseTemplate.ResizeTaskProgress = Garnish.Base.extend({
     modal: null,
     taskId: null,
 
@@ -237,7 +237,7 @@ Craft.InspireFrontend.ResizeTaskProgress = Garnish.Base.extend({
             newTaskIds.push(taskInfo.id);
         } else {
             // Likely too fast for Craft to register this was even a task!
-            var progressTask = new Craft.InspireFrontend.ResizeTaskProgress.Task(this.modal, this.taskId, taskInfo);
+            var progressTask = new Craft.BaseTemplate.ResizeTaskProgress.Task(this.modal, this.taskId, taskInfo);
             progressTask.complete();
 
             this.completed = true;
@@ -267,7 +267,7 @@ Craft.InspireFrontend.ResizeTaskProgress = Garnish.Base.extend({
             if (this.tasksById[taskInfo.id]) {
                 this.tasksById[taskInfo.id].updateStatus(taskInfo);
             } else {
-                this.tasksById[taskInfo.id] = new Craft.InspireFrontend.ResizeTaskProgress.Task(this.modal, this.taskId, taskInfo);
+                this.tasksById[taskInfo.id] = new Craft.BaseTemplate.ResizeTaskProgress.Task(this.modal, this.taskId, taskInfo);
             }
 
             if (anyTasksRunning) {
@@ -285,7 +285,7 @@ Craft.InspireFrontend.ResizeTaskProgress = Garnish.Base.extend({
     }
 });
 
-Craft.InspireFrontend.ResizeTaskProgress.Task = Garnish.Base.extend({
+Craft.BaseTemplate.ResizeTaskProgress.Task = Garnish.Base.extend({
     taskId: null,
     modal: null,
     id: null,
@@ -339,7 +339,7 @@ Craft.InspireFrontend.ResizeTaskProgress.Task = Garnish.Base.extend({
                     break;
                 }
                 case 4: {
-                    $('<div class="error">' + Craft.t('inspire-frontend', 'Processing failed. <a class="go" href="' + Craft.getCpUrl('settings/plugins/inspire-frontend', { tab: 'logs' }) + '">View logs</a>') + '</div>').appendTo(this.$statusContainer);
+                    $('<div class="error">' + Craft.t('base-template', 'Processing failed. <a class="go" href="' + Craft.getCpUrl('settings/plugins/base-template', { tab: 'logs' }) + '">View logs</a>') + '</div>').appendTo(this.$statusContainer);
                     break;
                 }
             }
@@ -354,12 +354,12 @@ Craft.InspireFrontend.ResizeTaskProgress.Task = Garnish.Base.extend({
         // Get the summary of our processing
         var data = { taskId: this.taskId };
 
-        Craft.sendActionRequest('POST', 'inspire-frontend/base/get-task-summary', { data })
+        Craft.sendActionRequest('POST', 'base-template/base/get-task-summary', { data })
             .then((response) => {
-                var html = '<span class="success">' + Craft.t('inspire-frontend', 'Success') + ': ' + response.data.summary.success + ', </span>' +
-                    '<span class="skipped">' + Craft.t('inspire-frontend', 'Skipped') + ': ' + response.data.summary.skipped + ', </span>' +
-                    '<span class="error">' + Craft.t('inspire-frontend', 'Error') + ': ' + response.data.summary.error + ' </span>' +
-                    '<a class="go" href="' + Craft.getCpUrl('settings/plugins/inspire-frontend', { tab: 'logs' }) + '">' + Craft.t('inspire-frontend', 'View logs') + '</a>';
+                var html = '<span class="success">' + Craft.t('base-template', 'Success') + ': ' + response.data.summary.success + ', </span>' +
+                    '<span class="skipped">' + Craft.t('base-template', 'Skipped') + ': ' + response.data.summary.skipped + ', </span>' +
+                    '<span class="error">' + Craft.t('base-template', 'Error') + ': ' + response.data.summary.error + ' </span>' +
+                    '<a class="go" href="' + Craft.getCpUrl('settings/plugins/base-template', { tab: 'logs' }) + '">' + Craft.t('base-template', 'View logs') + '</a>';
 
                 this.$statusContainer.empty();
                 $('<div>' + html + '</div>').appendTo(this.$statusContainer);

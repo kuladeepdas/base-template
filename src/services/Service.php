@@ -1,10 +1,10 @@
 <?php
-namespace Inspire\Frontend\services;
+namespace Kdgraphics\BaseTemplate\services;
 
-use Inspire\Frontend\Frontend;
+use Kdgraphics\BaseTemplate\BaseTemplate;
 
-use Inspire\Frontend\elementactions\ResizeImage;
-use Inspire\Frontend\models\Settings;
+use Kdgraphics\BaseTemplate\elementactions\ResizeImage;
+use Kdgraphics\BaseTemplate\models\Settings;
 
 use Craft;
 use craft\base\Component;
@@ -28,7 +28,7 @@ class Service extends Component
         $path = $asset->tempFilePath ?? $asset->getImageTransformSourcePath();
 
         if (!$path) {
-            Frontend::$plugin->getLogs()->resizeLog(null, 'error', $filename, ['message' => 'Unable to find path: ' . $path]);
+            BaseTemplate::$plugin->getLogs()->resizeLog(null, 'error', $filename, ['message' => 'Unable to find path: ' . $path]);
 
             return;
         }
@@ -36,20 +36,20 @@ class Service extends Component
         // Because this is fired on the before-save event, and validation hasn't kicked in, yet
         // we check it here. Otherwise, we potentially process it twice when there's a conflict.
         // if (!$asset->validate()) {
-        //     Frontend::$plugin->getLogs()->resizeLog(null, 'error', $filename, ['message' => Json::encode($asset->getErrors())]);
+        //     BaseTemplate::$plugin->getLogs()->resizeLog(null, 'error', $filename, ['message' => Json::encode($asset->getErrors())]);
 
         //     return;
         // }
 
         // Should we be modifying images in this source?
-        if (!Frontend::$plugin->getService()->getSettingForAssetSource($asset->volumeId, 'enabled')) {
-            Frontend::$plugin->getLogs()->resizeLog(null, 'skipped-volume-disabled', $filename);
+        if (!BaseTemplate::$plugin->getService()->getSettingForAssetSource($asset->volumeId, 'enabled')) {
+            BaseTemplate::$plugin->getLogs()->resizeLog(null, 'skipped-volume-disabled', $filename);
 
             return;
         }
 
         // Resize the image
-        Frontend::$plugin->getResize()->resize($asset, $filename, $path);
+        BaseTemplate::$plugin->getResize()->resize($asset, $filename, $path);
     }
 
     public function registerAssetActions(RegisterElementActionsEvent $event): void
@@ -62,7 +62,7 @@ class Service extends Component
     public function getSettingForAssetSource($sourceId, string $setting): mixed
     {
         /* @var Settings $settings */
-        $settings = Frontend::$plugin->getSettings();
+        $settings = BaseTemplate::$plugin->getSettings();
 
         // Check if we're using the global settings (all volumes the same), they're priority
         if ($settings->useGlobalSettings) {
@@ -96,7 +96,7 @@ class Service extends Component
      */
     public function getImageQuality(string $path, ?int $quality = null): int
     {
-        $desiredQuality = $quality ?: Frontend::$plugin->getSettings()->imageQuality;
+        $desiredQuality = $quality ?: BaseTemplate::$plugin->getSettings()->imageQuality;
         $desiredQuality = $desiredQuality ?: Craft::$app->getConfig()->getGeneral()->defaultImageQuality;
 
         if (@pathinfo($path, PATHINFO_EXTENSION) == 'png') {

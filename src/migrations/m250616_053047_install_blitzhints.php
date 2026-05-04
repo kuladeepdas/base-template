@@ -1,6 +1,6 @@
 <?php
 
-namespace Inspire\Frontend\migrations;
+namespace Kdgraphics\BaseTemplate\migrations;
 
 use Craft;
 use craft\db\Migration;

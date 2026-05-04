@@ -1,15 +1,15 @@
 (function() {
   "use strict";
-  const Inspire = window.Inspire || (window.Inspire = {});
+  const BaseTemplateUi = window.BaseTemplateUi || (window.BaseTemplateUi = {});
   (function($) {
-    Inspire.UI = Garnish.Base.extend({
+    BaseTemplateUi.UI = Garnish.Base.extend({
       init: function() {
         $("[data-vui-tabs]").each(function(index, element) {
-          new Inspire.UI.SimpleTabs($(element));
+          new BaseTemplateUi.UI.SimpleTabs($(element));
         });
       }
     });
-    Inspire.UI.SimpleTabs = Garnish.Base.extend({
+    BaseTemplateUi.UI.SimpleTabs = Garnish.Base.extend({
       $container: null,
       $ul: null,
       $tabs: null,
@@ -154,7 +154,7 @@
         return $tab;
       }
     });
-    new Inspire.UI();
+    new BaseTemplateUi.UI();
   })(jQuery);
 })();
-//# sourceMappingURL=inspire-ui.js.map
+//# sourceMappingURL=base-template-ui.js.map

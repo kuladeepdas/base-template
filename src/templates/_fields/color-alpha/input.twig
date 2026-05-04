@@ -96,7 +96,7 @@
       <div class="if-swatches-wrap">
         <div class="if-swatches" data-swatches>
           {% for swatchColor in swatches %}
-            <button type="button" class="if-swatch-item" data-swatch="{{ swatchColor|lower }}" aria-label="{{ 'Use swatch {color}'|t('inspire-frontend', { color: swatchColor }) }}"></button>
+            <button type="button" class="if-swatch-item" data-swatch="{{ swatchColor|lower }}" aria-label="{{ 'Use swatch {color}'|t('base-template', { color: swatchColor }) }}"></button>
           {% endfor %}
         </div>
       </div>

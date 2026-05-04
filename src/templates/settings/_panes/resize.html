@@ -1,50 +1,50 @@
 {% import '_includes/forms' as forms %}
-{% import 'inspire-frontend/_macros' as macros %}
+{% import 'base-template/_macros' as macros %}
 
 {% set additionalSettings = {
     sourceOptions: sourceOptions,
 } %}
 
 {{ forms.lightswitchField({
-    label: 'Manage Resize for All Volumes' | t('inspire-frontend'),
-    instructions: 'Whether you want to manage image resize settings for all asset volumes, or manage them individually for each volume.' | t('inspire-frontend'),
+    label: 'Manage Resize for All Volumes' | t('base-template'),
+    instructions: 'Whether you want to manage image resize settings for all asset volumes, or manage them individually for each volume.' | t('base-template'),
     id: 'useGlobalSettings',
     name: 'useGlobalSettings',
     on: settings.useGlobalSettings,
-    warning: macros.configWarning('useGlobalSettings', 'inspire-frontend'),
+    warning: macros.configWarning('useGlobalSettings', 'base-template'),
     toggle: 'all-volume-settings',
     reverseToggle: 'volume-settings'
 }) }}
 
 {{ forms.lightswitchField({
-    label: 'Skip larger resulting images' | t('inspire-frontend'),
-    instructions: 'If the resizing process results in a larger image that the previous, do not replace with larger file.' | t('inspire-frontend'),
+    label: 'Skip larger resulting images' | t('base-template'),
+    instructions: 'If the resizing process results in a larger image that the previous, do not replace with larger file.' | t('base-template'),
     id: 'skipLarger',
     name: 'skipLarger',
     on: settings.skipLarger,
-    warning: macros.configWarning('skipLarger', 'inspire-frontend'),
+    warning: macros.configWarning('skipLarger', 'base-template'),
 }) }}
 
 {{ forms.lightswitchField({
-    label: 'Non-destructive' | t('inspire-frontend'),
-    instructions: 'Image Resizer will save a copy of your original image, untouched. This will be in a folder called `originals`, relative to the source image.' | t('inspire-frontend'),
+    label: 'Non-destructive' | t('base-template'),
+    instructions: 'Image Resizer will save a copy of your original image, untouched. This will be in a folder called `originals`, relative to the source image.' | t('base-template'),
     id: 'nonDestructiveResize',
     name: 'nonDestructiveResize',
     on: settings.nonDestructiveResize,
-    warning: macros.configWarning('nonDestructiveResize', 'inspire-frontend'),
+    warning: macros.configWarning('nonDestructiveResize', 'base-template'),
 }) }}
 
 <hr>
 
 <div id="all-volume-settings">
-    <h2>{{ 'All Asset Volume Settings' | t('inspire-frontend') }}</h2>
+    <h2>{{ 'All Asset Volume Settings' | t('base-template') }}</h2>
 
     {{ macros.resizeSetting(settings, additionalSettings) }}
 </div>
 
 <div id="volume-settings">
     {% for item in sourceOptions %}
-        <h2>{{ "“{label}” Asset Volume Settings" | t('inspire-frontend', { label: item.label }) }}</h2>
+        <h2>{{ "“{label}” Asset Volume Settings" | t('base-template', { label: item.label }) }}</h2>
 
         {{ macros.resizeSetting(settings, additionalSettings, item) }}
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Inspire\Frontend\models;
+namespace Kdgraphics\BaseTemplate\models;
 
 use craft\base\Model;
 

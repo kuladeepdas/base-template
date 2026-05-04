@@ -1,5 +1,5 @@
 <?php
-namespace Inspire\Frontend\assetbundles;
+namespace Kdgraphics\BaseTemplate\assetbundles;
 
 use craft\web\AssetBundle;
 use craft\web\assets\cp\CpAsset as CraftCpAsset;
@@ -11,18 +11,18 @@ class CpAsset extends AssetBundle
 
     public function init(): void
     {
-        $this->sourcePath = '@inspire/frontend/resources/dist';
+        $this->sourcePath = '@kdgraphics/base-template/resources/dist';
 
         $this->depends = [
             CraftCpAsset::class
         ];
 
         $this->css = [
-            'css/inspire-ui.css',
+            'css/base-template-ui.css',
         ];
 
         $this->js = [
-            'js/inspire-ui.js'
+            'js/base-template-ui.js'
         ];
 
         parent::init();

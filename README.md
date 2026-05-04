@@ -1,31 +1,30 @@
-# Inspire Frontend
+# Base Template
 
-Inspire Frontend is a Craft CMS plugin for frontend-focused project tooling and field extensions.
+Base Template is a Craft CMS plugin for frontend-focused project tooling and field extensions.
 
 ## Requirements
 
 - PHP `^8.2`
 - Craft CMS `^5.0`
-- Plugin dependency: `inspire/base`
 
 ## Installation
 
 Install via Composer:
 
 ```bash
-composer require inspire/frontend:^1.0
+composer require kdgraphics/base-template:^1.0
 ```
 
 Then install in Craft:
 
 ```bash
-php craft plugin/install inspire-frontend
+php craft plugin/install base-template
 ```
 
 ## What It Provides
 
 - Frontend project update/build helpers in plugin settings
-- Inspire Fields snapshot tools (built-in template + import/export)
+- Content model snapshot tools (built-in template + import/export)
 - Asset Locations integration
 - Embedded Videos integration
 - Advanced Color field functionality
@@ -33,17 +32,17 @@ php craft plugin/install inspire-frontend
 
 ## Usage
 
-### Frontend Build Tools (Plugin Settings)
+### Build Tools (Plugin Settings)
 
-- Open `Settings -> Frontend`.
+- Open `Settings -> Base Template`.
 - Use:
   - `Update Packages` to run package updates and install flow.
   - `Update Build Script` to compare/apply plugin frontend scaffold updates.
   - `Git Status` to check repo status and commit/push from CP tools.
 
-### Inspire Fields (Snapshots)
+### Content Models (Snapshots)
 
-- Open `Settings -> Frontend -> Inspire Fields`.
+- Open `Settings -> Base Template -> Content Models`.
 - `Default Template`: applies the built-in template snapshot.
 - `Export`: downloads current site template snapshot.
 - `Import`: uploads and applies a snapshot file.
@@ -52,7 +51,7 @@ Use this when bootstrapping new environments with matching fields/entry types/se
 
 ### Asset Locations
 
-- Enable/disable in `Settings -> Frontend -> Asset Locations`.
+- Enable/disable in `Settings -> Base Template -> Asset Locations`.
 - In asset edit pages, the field lists where the asset is used:
   - Entry title
   - Status
@@ -115,7 +114,7 @@ Use directly in templates:
 From plugin root:
 
 ```bash
-cd plugins/inspire-frontend
+cd plugins/base-template
 npm install
 npm run build
 ```

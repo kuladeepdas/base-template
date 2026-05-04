@@ -1,10 +1,10 @@
 <?php
-namespace Inspire\Frontend\assetbundles;
+namespace Kdgraphics\BaseTemplate\assetbundles;
 
 use craft\web\AssetBundle;
 use craft\web\assets\cp\CpAsset;
 
-use Inspire\Frontend\assetbundles\CpAsset as InspireCpAsset;
+use Kdgraphics\BaseTemplate\assetbundles\CpAsset as BaseTemplateCpAsset;
 
 class ExpandedSinglesAsset extends AssetBundle
 {
@@ -13,10 +13,10 @@ class ExpandedSinglesAsset extends AssetBundle
 
     public function init(): void
     {
-        $this->sourcePath = "@inspire/frontend/resources/dist";
+        $this->sourcePath = "@kdgraphics/base-template/resources/dist";
 
         $this->depends = [
-            InspireCpAsset::class,
+            BaseTemplateCpAsset::class,
             CpAsset::class,
         ];
 

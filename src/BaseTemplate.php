@@ -1,6 +1,6 @@
 <?php
 
-namespace Inspire\Frontend;
+namespace Kdgraphics\BaseTemplate;
 
 use Craft;
 use craft\web\Controller;
@@ -29,26 +29,26 @@ use craft\ckeditor\events\DefineLinkOptionsEvent;
 use craft\ckeditor\Field as CkEditorField;
 use craft\redactor\events\RegisterLinkOptionsEvent;
 use craft\redactor\Field as RedactorField;
-use Inspire\Frontend\models\Settings;
-use Inspire\Frontend\services\Logs;
-use Inspire\Frontend\services\PrefetchService;
-use Inspire\Frontend\services\Resize;
-use Inspire\Frontend\services\SchemaSnapshotService;
-use Inspire\Frontend\services\Service;
-use Inspire\Frontend\services\SinglesList;
-use Inspire\Frontend\twig\ImagesHelper;
-use Inspire\Frontend\twig\ImagesTwigExtension;
-use Inspire\Frontend\twig\ColorTwigExtension;
-use Inspire\Frontend\variables\PrefetchVariable;
-use Inspire\Frontend\fields\ColorAlpha;
-use Inspire\Frontend\embeddedvideos\Integration as EmbeddedVideosIntegration;
-use Inspire\Frontend\embeddedvideos\Service as EmbeddedVideosService;
-use Inspire\Frontend\embeddedvideos\Controller as EmbeddedVideosController;
-use Inspire\Frontend\assetlocations\fieldlayoutelements\AssetLocationsField;
-use Inspire\Frontend\assetlocations\services\FindAssetService as AssetLocationsFindAssetService;
-use Inspire\Frontend\assetlocations\services\FindElementService as AssetLocationsFindElementService;
-use Inspire\Frontend\assetlocations\services\GetSectionService as AssetLocationsGetSectionService;
-use Inspire\Frontend\assetlocations\services\GetUsageService as AssetLocationsGetUsageService;
+use Kdgraphics\BaseTemplate\models\Settings;
+use Kdgraphics\BaseTemplate\services\Logs;
+use Kdgraphics\BaseTemplate\services\PrefetchService;
+use Kdgraphics\BaseTemplate\services\Resize;
+use Kdgraphics\BaseTemplate\services\SchemaSnapshotService;
+use Kdgraphics\BaseTemplate\services\Service;
+use Kdgraphics\BaseTemplate\services\SinglesList;
+use Kdgraphics\BaseTemplate\twig\ImagesHelper;
+use Kdgraphics\BaseTemplate\twig\ImagesTwigExtension;
+use Kdgraphics\BaseTemplate\twig\ColorTwigExtension;
+use Kdgraphics\BaseTemplate\variables\PrefetchVariable;
+use Kdgraphics\BaseTemplate\fields\ColorAlpha;
+use Kdgraphics\BaseTemplate\embeddedvideos\Integration as EmbeddedVideosIntegration;
+use Kdgraphics\BaseTemplate\embeddedvideos\Service as EmbeddedVideosService;
+use Kdgraphics\BaseTemplate\embeddedvideos\Controller as EmbeddedVideosController;
+use Kdgraphics\BaseTemplate\assetlocations\fieldlayoutelements\AssetLocationsField;
+use Kdgraphics\BaseTemplate\assetlocations\services\FindAssetService as AssetLocationsFindAssetService;
+use Kdgraphics\BaseTemplate\assetlocations\services\FindElementService as AssetLocationsFindElementService;
+use Kdgraphics\BaseTemplate\assetlocations\services\GetSectionService as AssetLocationsGetSectionService;
+use Kdgraphics\BaseTemplate\assetlocations\services\GetUsageService as AssetLocationsGetUsageService;
 use putyourlightson\blitzhints\BlitzHints;
 use yii\base\Event;
 use yii\base\InvalidConfigException;
@@ -56,7 +56,7 @@ use yii\base\InvalidConfigException;
 /**
  * @property-read PrefetchService $prefetch
  */
-class Frontend extends Plugin
+class BaseTemplate extends Plugin
 {
     /** @var self */
     public static self $plugin;
@@ -97,9 +97,9 @@ class Frontend extends Plugin
             'assetLocationsUsage' => AssetLocationsGetUsageService::class,
         ]);
 
-        \Inspire\Frontend\embeddedvideos\Plugin::boot($this);
-        Craft::setAlias('@inspire/frontend/resources', $this->getBasePath() . '/resources');
-        Craft::setAlias('@inspire/embeddedvideos', $this->getBasePath() . '/embeddedvideos');
+        \Kdgraphics\BaseTemplate\embeddedvideos\Plugin::boot($this);
+        Craft::setAlias('@kdgraphics/base-template/resources', $this->getBasePath() . '/resources');
+        Craft::setAlias('@kdgraphics/base-template/embeddedvideos', $this->getBasePath() . '/embeddedvideos');
         $this->controllerMap['embedded-videos'] = EmbeddedVideosController::class;
 
         (new EmbeddedVideosIntegration($this))->register();
@@ -107,7 +107,6 @@ class Frontend extends Plugin
         $this->registerAssetLocationsHandlers();
         $this->registerFieldTypes();
         $this->registerPermissions();
-        $this->migrateMovedFeatureSettingsFromBase();
 
         /**
          * register template root
@@ -123,7 +122,7 @@ class Frontend extends Plugin
             View::class,
             View::EVENT_REGISTER_CP_TEMPLATE_ROOTS,
             function (RegisterTemplateRootsEvent $event): void {
-                $event->roots['inspire-frontend'] = __DIR__ . '/templates';
+                $event->roots['base-template'] = __DIR__ . '/templates';
             }
         );
 
@@ -199,7 +198,7 @@ class Frontend extends Plugin
             'rebuild-assets',
             'update-build-script',
             'git-status',
-            'inspire-fields',
+            'content-models',
             'asset-locations',
             'expanded-singles',
             'embedded-videos',
@@ -215,7 +214,7 @@ class Frontend extends Plugin
         $controller = Craft::$app->controller;
 
         return $controller->renderTemplate(
-            'inspire-frontend/settings/index',
+            'base-template/settings/index',
             [
                 'plugin' => $this,
                 'settings' => $this->getSettings(),
@@ -240,12 +239,12 @@ class Frontend extends Plugin
         $register = function(RegisterCpSettingsEvent $event): void {
             $systemLabel = Craft::t('app', 'System');
             $pluginsLabel = Craft::t('app', 'Plugins');
-            $handle = 'inspire-frontend';
+            $handle = 'base-template';
             $iconMaskPath = $this->getBasePath() . '/icon.svg';
 
             $frontendItem = [
                 'url' => "settings/plugins/$handle",
-                'label' => 'Frontend',
+                'label' => 'Base Template',
                 'iconMask' => $iconMaskPath,
             ];
 
@@ -313,9 +312,9 @@ class Frontend extends Plugin
     {
         Event::on(UserPermissions::class, UserPermissions::EVENT_REGISTER_PERMISSIONS, function(RegisterUserPermissionsEvent $event): void {
             $event->permissions[] = [
-                'heading' => Craft::t('inspire-frontend', 'Inspire Frontend'),
+                'heading' => Craft::t('base-template', 'Base Template'),
                 'permissions' => [
-                    'imageResizer-resizeImage' => ['label' => Craft::t('inspire-frontend', 'Resize images')],
+                    'imageResizer-resizeImage' => ['label' => Craft::t('base-template', 'Resize images')],
                 ],
             ];
         });
@@ -439,53 +438,6 @@ class Frontend extends Plugin
         $assetTree = Craft::$app->getAssets()->getFolderTreeByVolumeIds(Craft::$app->getVolumes()->getAllVolumeIds());
         $this->getService()->getAssetFolders($assetTree, $folderOptions);
         return $folderOptions;
-    }
-
-    private function migrateMovedFeatureSettingsFromBase(): void
-    {
-        $settings = $this->getSettings();
-        if ($settings->movedFeatureSettingsMigrated) {
-            return;
-        }
-
-        $basePlugin = Craft::$app->getPlugins()->getPlugin('inspire-base');
-        if ($basePlugin === null) {
-            return;
-        }
-
-        $baseSettings = $basePlugin->getSettings();
-        $keys = [
-            'expandSingles',
-            'redirectToEntry',
-            'useGlobalSettings',
-            'enabled',
-            'imageWidth',
-            'imageHeight',
-            'imageQuality',
-            'assetSourceSettings',
-            'skipLarger',
-            'nonDestructiveResize',
-            'referer',
-            'parameters',
-            'whitelist',
-            'extraWhitelist',
-            'maxAssetNameLength',
-            'maxFileNameLength',
-            'cacheDuration',
-            'showThumbnailsInCp',
-            'useYouTubeNoCookie',
-            'disableVimeoTracking',
-            'preventNonWhitelistedUploads',
-        ];
-
-        foreach ($keys as $key) {
-            if (property_exists($baseSettings, $key)) {
-                $settings->{$key} = $baseSettings->{$key};
-            }
-        }
-
-        $settings->movedFeatureSettingsMigrated = true;
-        Craft::$app->getPlugins()->savePluginSettings($this, $settings->toArray());
     }
 
 }

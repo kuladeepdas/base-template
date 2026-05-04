@@ -1,6 +1,6 @@
 <?php
 
-namespace Inspire\Frontend\controllers;
+namespace Kdgraphics\BaseTemplate\controllers;
 
 use Craft;
 use craft\base\ElementInterface;
@@ -1228,7 +1228,7 @@ class UtilityController extends Controller
 
         $updated = str_replace(
             ['FrontendCore', 'WebpackAsset', '$webpackName'],
-            ['Frontend', 'FrontendAsset', '$frontendName'],
+            ['BaseTemplate', 'BaseTemplateAsset', '$frontendName'],
             $contents
         );
 

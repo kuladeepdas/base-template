@@ -1,8 +1,8 @@
-{% set previewCss = view.getAssetManager().getPublishedUrl('@inspire/frontend/resources/dist/css/embeddedvideos-preview.css', true) %}
+{% set previewCss = view.getAssetManager().getPublishedUrl('@kdgraphics/base-template/resources/dist/css/embeddedvideos-preview.css', true) %}
 <link rel="stylesheet" href="{{ previewCss }}">
-{% set previewJs = view.getAssetManager().getPublishedUrl('@inspire/frontend/resources/dist/js/embeddedvideos-preview.js', true) %}
+{% set previewJs = view.getAssetManager().getPublishedUrl('@kdgraphics/base-template/resources/dist/js/embeddedvideos-preview.js', true) %}
 <script src="{{ previewJs }}"></script>
 
 <div class="volume-preview">
-    {% include 'inspire-frontend/embedded-videos/_components/embedded_video_preview' with {embeddedVideo: embeddedVideo} only %}
+    {% include 'base-template/embedded-videos/_components/embedded_video_preview' with {embeddedVideo: embeddedVideo} only %}
 </div>

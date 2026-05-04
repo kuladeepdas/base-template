@@ -1,6 +1,6 @@
 <?php
 
-namespace Inspire\Frontend\embeddedvideos;
+namespace Kdgraphics\BaseTemplate\embeddedvideos;
 
 use Craft;
 use craft\db\Table;
@@ -9,8 +9,8 @@ use craft\helpers\Html;
 use craft\helpers\Json;
 use craft\models\VolumeFolder;
 use craft\web\Controller as BaseController;
-use Inspire\Frontend\assetbundles\EmbeddedVideosPreviewAsset;
-use Inspire\Frontend\embeddedvideos\Plugin as EmbeddedVideos;
+use Kdgraphics\BaseTemplate\assetbundles\EmbeddedVideosPreviewAsset;
+use Kdgraphics\BaseTemplate\embeddedvideos\Plugin as EmbeddedVideos;
 use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -18,8 +18,8 @@ use yii\web\Response;
 /**
  * Class Controller
  *
- * @package inspire\embeddedvideos
- * @author Inspire <craft@inspire.com.au>
+ * @package kdgraphics\base-template\embeddedvideos
+ * @author KD Graphics
  * @author Benjamin Fleming
  * @since 1.0.0
  */
@@ -243,7 +243,7 @@ class Controller extends BaseController
             }
         }
 
-        $template = $viewService->renderTemplate('inspire-frontend/embedded-videos/_preview', [
+        $template = $viewService->renderTemplate('base-template/embedded-videos/_preview', [
             'embeddedVideo' => $embeddedVideo,
             'callback' => $callback,
             'showContent' => $showContent,

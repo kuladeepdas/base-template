@@ -1,10 +1,10 @@
 <?php
-namespace Inspire\Frontend\elementactions;
+namespace Kdgraphics\BaseTemplate\elementactions;
 
-use Inspire\Frontend\Frontend;
+use Kdgraphics\BaseTemplate\BaseTemplate;
 
-use Inspire\Frontend\assetbundles\ImageResizerAsset;
-use Inspire\Frontend\models\Settings;
+use Kdgraphics\BaseTemplate\assetbundles\ImageResizerAsset;
+use Kdgraphics\BaseTemplate\models\Settings;
 
 use Craft;
 use craft\base\ElementAction;
@@ -19,7 +19,7 @@ class ResizeImage extends ElementAction
 
     public function getTriggerLabel(): string
     {
-        return Craft::t('inspire-frontend', 'Resize image');
+        return Craft::t('base-template', 'Resize image');
     }
 
     /**
@@ -28,14 +28,14 @@ class ResizeImage extends ElementAction
     public function getTriggerHtml(): ?string
     {
         /* @var Settings $settings */
-        $settings = Frontend::$plugin->getSettings();
+        $settings = BaseTemplate::$plugin->getSettings();
         $imageWidth = $settings->imageWidth;
         $imageHeight = $settings->imageHeight;
         $type = Json::encode(static::class);
 
         Craft::$app->getView()->registerAssetBundle(ImageResizerAsset::class);
 
-        Craft::$app->getView()->registerJs('new Craft.InspireFrontend.ResizeElementAction(' .
+        Craft::$app->getView()->registerJs('new Craft.BaseTemplate.ResizeElementAction(' .
             '"' . $imageWidth . '", ' .
             '"' . $imageHeight . '", '
             . $type .

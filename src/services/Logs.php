@@ -1,9 +1,9 @@
 <?php
-namespace Inspire\Frontend\services;
+namespace Kdgraphics\BaseTemplate\services;
 
-use Inspire\Frontend\Frontend;
+use Kdgraphics\BaseTemplate\BaseTemplate;
 
-use Inspire\Frontend\models\Log;
+use Kdgraphics\BaseTemplate\models\Log;
 
 use Craft;
 use craft\base\Component;
@@ -64,7 +64,7 @@ class Logs extends Component
     {
         $logEntries = [];
 
-        foreach (Frontend::$plugin->getLogs()->getLogEntries() as $entry) {
+        foreach (BaseTemplate::$plugin->getLogs()->getLogEntries() as $entry) {
             if ($entry->taskId == $taskId) {
                 $logEntries[] = $entry;
             }

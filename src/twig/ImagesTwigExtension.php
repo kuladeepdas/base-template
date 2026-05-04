@@ -1,6 +1,6 @@
 <?php
 
-namespace Inspire\Frontend\twig;
+namespace Kdgraphics\BaseTemplate\twig;
 
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;

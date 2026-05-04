@@ -1,9 +1,9 @@
 <?php
-namespace Inspire\Frontend\services;
+namespace Kdgraphics\BaseTemplate\services;
 
-use Inspire\Frontend\Frontend;
+use Kdgraphics\BaseTemplate\BaseTemplate;
 
-use Inspire\Frontend\models\Settings;
+use Kdgraphics\BaseTemplate\models\Settings;
 
 use Craft;
 use craft\base\Component;
@@ -35,14 +35,14 @@ class Resize extends Component
 
         // Does the volume exist?
         if (!$volume) {
-            Frontend::$plugin->getLogs()->resizeLog($taskId, 'skipped-no-volume', $filename);
+            BaseTemplate::$plugin->getLogs()->resizeLog($taskId, 'skipped-no-volume', $filename);
 
             return false;
         }
 
         // Is this a manipulatable image?
         if (!ImageHelper::canManipulateAsImage(@pathinfo($path, PATHINFO_EXTENSION))) {
-            Frontend::$plugin->getLogs()->resizeLog($taskId, 'skipped-non-image', $filename);
+            BaseTemplate::$plugin->getLogs()->resizeLog($taskId, 'skipped-non-image', $filename);
 
             return false;
         }
@@ -54,7 +54,7 @@ class Resize extends Component
 
         try {
             /* @var Settings $settings */
-            $settings = Frontend::$plugin->getSettings();
+            $settings = BaseTemplate::$plugin->getSettings();
             $image = Craft::$app->getImages()->loadImage($path);
 
             // Save some existing properties for logging (see savings)
@@ -66,8 +66,8 @@ class Resize extends Component
 
             // We can have settings globally, or per asset source. Check!
             // Our maximum width/height for assets from plugin settings
-            $imageWidth = Frontend::$plugin->getService()->getSettingForAssetSource($asset->getVolumeId(), 'imageWidth');
-            $imageHeight = Frontend::$plugin->getService()->getSettingForAssetSource($asset->getVolumeId(), 'imageHeight');
+            $imageWidth = BaseTemplate::$plugin->getService()->getSettingForAssetSource($asset->getVolumeId(), 'imageWidth');
+            $imageHeight = BaseTemplate::$plugin->getService()->getSettingForAssetSource($asset->getVolumeId(), 'imageHeight');
 
             // Allow for overrides passed on-demand
             $imageWidth = $width ?: $imageWidth;
@@ -120,14 +120,14 @@ class Resize extends Component
             if ($hasResized) {
                 // Set image quality - but normalise (for PNG)!
                 if (method_exists($image, 'setQuality')) {
-                    $image->setQuality(Frontend::$plugin->getService()->getImageQuality($path));
+                    $image->setQuality(BaseTemplate::$plugin->getService()->getImageQuality($path));
                 }
 
                 // If we're checking for larger images
                 if ($settings->skipLarger) {
                     // Save this resized image in a temporary location - we need to test filesize difference
                     $tempPath = AssetsHelper::tempFilePath($filename);
-                    Frontend::$plugin->getService()->saveAs($image, $tempPath);
+                    BaseTemplate::$plugin->getService()->saveAs($image, $tempPath);
 
                     clearstatcache();
 
@@ -144,15 +144,15 @@ class Resize extends Component
                             'size' => filesize($path),
                         ];
 
-                        Frontend::$plugin->getLogs()->resizeLog($taskId, 'success', $filename, ['prev' => $originalProperties, 'curr' => $newProperties]);
+                        BaseTemplate::$plugin->getLogs()->resizeLog($taskId, 'success', $filename, ['prev' => $originalProperties, 'curr' => $newProperties]);
                     } else {
-                        Frontend::$plugin->getLogs()->resizeLog($taskId, 'skipped-larger-result', $filename);
+                        BaseTemplate::$plugin->getLogs()->resizeLog($taskId, 'skipped-larger-result', $filename);
                     }
 
                     // Delete our temp file we test filesize with
                     @unlink($tempPath);
                 } else {
-                    Frontend::$plugin->getService()->saveAs($image, $path);
+                    BaseTemplate::$plugin->getService()->saveAs($image, $path);
 
                     clearstatcache();
 
@@ -162,15 +162,15 @@ class Resize extends Component
                         'size' => filesize($path),
                     ];
 
-                    Frontend::$plugin->getLogs()->resizeLog($taskId, 'success', $filename, ['prev' => $originalProperties, 'curr' => $newProperties]);
+                    BaseTemplate::$plugin->getLogs()->resizeLog($taskId, 'success', $filename, ['prev' => $originalProperties, 'curr' => $newProperties]);
                 }
             } else {
-                Frontend::$plugin->getLogs()->resizeLog($taskId, 'skipped-under-limits', $filename);
+                BaseTemplate::$plugin->getLogs()->resizeLog($taskId, 'skipped-under-limits', $filename);
             }
 
             return true;
         } catch (Exception $e) {
-            Frontend::$plugin->getLogs()->resizeLog($taskId, 'error', $filename, ['message' => $e->getMessage()]);
+            BaseTemplate::$plugin->getLogs()->resizeLog($taskId, 'error', $filename, ['message' => $e->getMessage()]);
 
             return false;
         }

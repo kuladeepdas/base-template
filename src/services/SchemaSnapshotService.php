@@ -1,6 +1,6 @@
 <?php
 
-namespace Inspire\Frontend\services;
+namespace Kdgraphics\BaseTemplate\services;
 
 use Craft;
 use craft\base\Component;
@@ -372,7 +372,7 @@ class SchemaSnapshotService extends Component
             $projectConfig->set(
                 'ckeditor.configs.' . $configUid,
                 $config,
-                sprintf('Inspire Frontend: sync CKEditor config %s', $configUid)
+                sprintf('Base Template: sync CKEditor config %s', $configUid)
             );
             $addedCkeditorConfigs++;
         }
@@ -382,7 +382,7 @@ class SchemaSnapshotService extends Component
             $projectConfig->set(
                 ProjectConfig::PATH_ELEMENT_SOURCES . '.craft\\elements\\Entry',
                 $snapshotEntryElementSources,
-                'Inspire Frontend: sync entry element sources'
+                'Base Template: sync entry element sources'
             );
             $updatedEntryElementSources++;
         }
@@ -396,7 +396,7 @@ class SchemaSnapshotService extends Component
             $projectConfig->set(
                 ProjectConfig::PATH_FIELDS . '.' . $fieldUid,
                 $fieldConfig,
-                sprintf('Inspire Frontend: sync field %s', $fieldUid)
+                sprintf('Base Template: sync field %s', $fieldUid)
             );
             $addedFields++;
         }
@@ -414,7 +414,7 @@ class SchemaSnapshotService extends Component
             $projectConfig->set(
                 ProjectConfig::PATH_ENTRY_TYPES . '.' . $entryTypeUid,
                 $entryTypeConfig,
-                sprintf('Inspire Frontend: sync entry type %s', $entryTypeUid)
+                sprintf('Base Template: sync entry type %s', $entryTypeUid)
             );
             $addedEntryTypes++;
             $currentEntryTypes[(string)$entryTypeUid] = $entryTypeConfig;
@@ -430,7 +430,7 @@ class SchemaSnapshotService extends Component
                 $projectConfig->set(
                     ProjectConfig::PATH_SECTIONS . '.' . $sectionUid,
                     $sectionConfig,
-                    sprintf('Inspire Frontend: sync section %s', $sectionUid)
+                    sprintf('Base Template: sync section %s', $sectionUid)
                 );
                 $addedSections++;
                 $currentSections[(string)$sectionUid] = $sectionConfig;
@@ -449,7 +449,7 @@ class SchemaSnapshotService extends Component
                 $projectConfig->set(
                     ProjectConfig::PATH_SECTIONS . '.' . $targetSectionUid . '.entryTypes',
                     $mergedRefs,
-                    sprintf('Inspire Frontend: sync section entry types %s', $targetSectionUid)
+                    sprintf('Base Template: sync section entry types %s', $targetSectionUid)
                 );
                 $currentSections[$targetSectionUid]['entryTypes'] = $mergedRefs;
             }

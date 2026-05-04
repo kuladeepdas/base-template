@@ -1,5 +1,5 @@
 <?php
-namespace Inspire\Frontend\assetlocations\services;
+namespace Kdgraphics\BaseTemplate\assetlocations\services;
 
 use Craft;
 use craft\base\Component;

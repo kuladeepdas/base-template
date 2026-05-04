@@ -251,7 +251,7 @@ export default class Form extends Emitter {
     this.previewHeight = 320
     this.lastRequestedUrl = targetUrl
 
-    this.iframeSrc = Craft.getActionUrl('inspire-frontend/embedded-videos/preview', {
+    this.iframeSrc = Craft.getActionUrl('base-template/embedded-videos/preview', {
       showContent: 1,
       callback: this.callbackId,
       url: targetUrl
@@ -280,7 +280,7 @@ export default class Form extends Emitter {
     this.setState('saving')
 
     Craft.queue.push(async () => await new Promise((resolve, reject) => {
-      Craft.sendActionRequest('POST', `inspire-frontend/embedded-videos/${this.replace ? 'replace' : 'save'}`, { data })
+      Craft.sendActionRequest('POST', `base-template/embedded-videos/${this.replace ? 'replace' : 'save'}`, { data })
         .then((response) => {
           if (response.data?.success === true) {
             const payload = response.data.payload

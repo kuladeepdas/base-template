@@ -1,7 +1,7 @@
 <?php
-namespace Inspire\Frontend\assetlocations\services;
+namespace Kdgraphics\BaseTemplate\assetlocations\services;
 
-use Inspire\Frontend\Frontend;
+use Kdgraphics\BaseTemplate\BaseTemplate;
 
 use Craft;
 use craft\base\Component;
@@ -28,7 +28,7 @@ class FindElementService extends Component
 		$assetEntries = [];
 
 		// Find all Asset Fields within Entries where this asset is used
-		$relatedEntries = Frontend::$plugin->assetLocationsFindAsset->checkAssetFields(
+		$relatedEntries = BaseTemplate::$plugin->assetLocationsFindAsset->checkAssetFields(
 			$type,
 			$asset,
 			$siteId
@@ -38,7 +38,7 @@ class FindElementService extends Component
 
 
 		// Get all Super Tables where this asset is used within Entries
-		$tableEntries = Frontend::$plugin->assetLocationsFindAsset->checkSuperTableFields(
+		$tableEntries = BaseTemplate::$plugin->assetLocationsFindAsset->checkSuperTableFields(
 			$type,
 			$asset,
 			$siteId
@@ -76,7 +76,7 @@ class FindElementService extends Component
 
 			foreach ($linkQuery as $link) {
 				// Check Entries
-				$linkEntry = Frontend::$plugin->assetLocationsFindAsset->checkEntriesElement(
+				$linkEntry = BaseTemplate::$plugin->assetLocationsFindAsset->checkEntriesElement(
 					$link['elementId'],
 					$siteId
 				);
@@ -92,7 +92,7 @@ class FindElementService extends Component
 							'cpUrl' => $this->resolveEntryCpUrl($entry),
 							'url' => $this->resolveEntryUrl($entry),
 							'status' => $entry->status,
-							'section' => Frontend::$plugin->assetLocationsSection->getSectionName($entry),
+							'section' => BaseTemplate::$plugin->assetLocationsSection->getSectionName($entry),
 							'location' => $location,
 							'locations' => $location ? [$location] : [],
 							'isActive' => (bool)$entry->enabled
@@ -110,7 +110,7 @@ class FindElementService extends Component
 				}
 
 				// Check Super Tables
-				$superTableElement = Frontend::$plugin->assetLocationsFindAsset->checkSuperTableElements(
+				$superTableElement = BaseTemplate::$plugin->assetLocationsFindAsset->checkSuperTableElements(
 					$link['elementId'],
 					$siteId
 				);

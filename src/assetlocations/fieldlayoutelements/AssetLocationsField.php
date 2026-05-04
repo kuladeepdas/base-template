@@ -1,8 +1,8 @@
 <?php
 
-namespace Inspire\Frontend\assetlocations\fieldlayoutelements;
+namespace Kdgraphics\BaseTemplate\assetlocations\fieldlayoutelements;
 
-use Inspire\Frontend\Frontend;
+use Kdgraphics\BaseTemplate\BaseTemplate;
 
 use Craft;
 use craft\base\ElementInterface;
@@ -91,21 +91,21 @@ class AssetLocationsField extends BaseNativeField
 	 */
 	public function getValue(AssetElement $asset): array
 	{
-		$entries = Frontend::$plugin->assetLocationsElementService->getElements(
+		$entries = BaseTemplate::$plugin->assetLocationsElementService->getElements(
 			Entry::class,
 			$asset,
 			$asset->siteId
 		);
 
-		$links = Frontend::$plugin->assetLocationsElementService->getLinks($asset, $asset->siteId);
+		$links = BaseTemplate::$plugin->assetLocationsElementService->getLinks($asset, $asset->siteId);
 
-		$categories = Frontend::$plugin->assetLocationsElementService->getElements(
+		$categories = BaseTemplate::$plugin->assetLocationsElementService->getElements(
 			Category::class,
 			$asset,
 			$asset->siteId
 		);
 
-		$globals = Frontend::$plugin->assetLocationsElementService->getElements(
+		$globals = BaseTemplate::$plugin->assetLocationsElementService->getElements(
 			GlobalSet::class,
 			$asset,
 			$asset->siteId
@@ -176,7 +176,7 @@ class AssetLocationsField extends BaseNativeField
 	 */
 	protected function inputHtml(?ElementInterface $element = null, bool $static = false): ?string
 	{
-		return Craft::$app->getView()->renderTemplate('inspire-frontend/asset-locations/locations', [
+		return Craft::$app->getView()->renderTemplate('base-template/asset-locations/locations', [
 			'locations' => $this->getValue($element),
 			'categoriesCount' => $this->categoryCheck(),
 			'globalsCount' => $this->globalsCheck(),

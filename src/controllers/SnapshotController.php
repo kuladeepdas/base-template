@@ -1,10 +1,10 @@
 <?php
 
-namespace Inspire\Frontend\controllers;
+namespace Kdgraphics\BaseTemplate\controllers;
 
 use Craft;
 use craft\web\Controller;
-use Inspire\Frontend\Frontend;
+use Kdgraphics\BaseTemplate\BaseTemplate;
 use yii\web\BadRequestHttpException;
 use yii\web\Response;
 use yii\web\UploadedFile;
@@ -18,7 +18,7 @@ class SnapshotController extends Controller
         $this->requirePostRequest();
         $this->requireCpRequest();
 
-        $service = Frontend::getInstance()->getSchemaSnapshot();
+        $service = BaseTemplate::getInstance()->getSchemaSnapshot();
         $selectedTypes = array_keys($service->getSnapshotTypeLabels());
 
         $snapshot = $service->buildSnapshot();
@@ -28,7 +28,7 @@ class SnapshotController extends Controller
             throw new BadRequestHttpException('Unable to encode snapshot as JSON.');
         }
 
-        $filename = sprintf('inspire-frontend-snapshot-%s.json', gmdate('Ymd-His'));
+        $filename = sprintf('base-template-snapshot-%s.json', gmdate('Ymd-His'));
         return Craft::$app->getResponse()->sendContentAsFile($json, $filename, [
             'mimeType' => 'application/json',
         ]);
@@ -63,7 +63,7 @@ class SnapshotController extends Controller
             return $this->redirectToPostedUrl();
         }
 
-        $service = Frontend::getInstance()->getSchemaSnapshot();
+        $service = BaseTemplate::getInstance()->getSchemaSnapshot();
         $selectedTypes = array_keys($service->getSnapshotTypeLabels());
 
         $availableTypes = $service->detectAvailableTypes($snapshot);
@@ -88,7 +88,7 @@ class SnapshotController extends Controller
             );
             Craft::$app->getSession()->setNotice($summary);
         } catch (\Throwable $e) {
-            Craft::error('Inspire Frontend import failed: ' . $e->getMessage(), __METHOD__);
+            Craft::error('Base Template import failed: ' . $e->getMessage(), __METHOD__);
             Craft::$app->getSession()->setError('Import failed: ' . $e->getMessage());
         }
 
@@ -100,7 +100,7 @@ class SnapshotController extends Controller
         $this->requirePostRequest();
         $this->requireCpRequest();
 
-        $service = Frontend::getInstance()->getSchemaSnapshot();
+        $service = BaseTemplate::getInstance()->getSchemaSnapshot();
         $selectedTypes = array_keys($service->getSnapshotTypeLabels());
 
         $snapshot = $service->getBundledSnapshot();
@@ -124,7 +124,7 @@ class SnapshotController extends Controller
             );
             Craft::$app->getSession()->setNotice($summary);
         } catch (\Throwable $e) {
-            Craft::error('Inspire Frontend apply default failed: ' . $e->getMessage(), __METHOD__);
+            Craft::error('Base Template apply default failed: ' . $e->getMessage(), __METHOD__);
             Craft::$app->getSession()->setError('Apply failed: ' . $e->getMessage());
         }
 

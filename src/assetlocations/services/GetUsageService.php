@@ -1,7 +1,7 @@
 <?php
-namespace Inspire\Frontend\assetlocations\services;
+namespace Kdgraphics\BaseTemplate\assetlocations\services;
 
-use Inspire\Frontend\Frontend;
+use Kdgraphics\BaseTemplate\BaseTemplate;
 
 use Craft;
 use craft\base\Component;
@@ -26,7 +26,7 @@ class GetUsageService extends Component
 	public function getUsage(AssetElement $asset): bool {
 
 		// Check Entries
-		$entries = Frontend::$plugin->assetLocationsElementService->getElements(Entry::class, $asset, $asset->siteId);
+		$entries = BaseTemplate::$plugin->assetLocationsElementService->getElements(Entry::class, $asset, $asset->siteId);
 
 		// If Entries isn't empty, return true
 		if (!empty($entries)) {
@@ -34,7 +34,7 @@ class GetUsageService extends Component
 		}
 
         // Check Links
-		$links = Frontend::$plugin->assetLocationsElementService->getLinks($asset, $asset->siteId);
+		$links = BaseTemplate::$plugin->assetLocationsElementService->getLinks($asset, $asset->siteId);
 
 		// If Links isn't empty, return true
 		if (!empty($links)) {
@@ -42,7 +42,7 @@ class GetUsageService extends Component
 		}
 
 		// Check Categories
-		$categories = Frontend::$plugin->assetLocationsElementService->getElements(
+		$categories = BaseTemplate::$plugin->assetLocationsElementService->getElements(
 			Category::class,
 			$asset, $asset->siteId
 		);
@@ -53,7 +53,7 @@ class GetUsageService extends Component
 		}
 
 		// Check Globals
-		$globals = Frontend::$plugin->assetLocationsElementService->getElements(GlobalSet::class, $asset, $asset->siteId);
+		$globals = BaseTemplate::$plugin->assetLocationsElementService->getElements(GlobalSet::class, $asset, $asset->siteId);
 
 		// If Globals isn't empty, return true
 		if (!empty($globals)) {

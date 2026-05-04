@@ -1,6 +1,6 @@
 <?php
 
-namespace Inspire\Frontend\embeddedvideos;
+namespace Kdgraphics\BaseTemplate\embeddedvideos;
 
 use Craft;
 use craft\base\Element;
@@ -19,22 +19,22 @@ use craft\services\Assets;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\View;
 use craft\events\TemplateEvent;
-use Inspire\Frontend\Frontend;
-use Inspire\Frontend\embeddedvideos\assetpreviews\EmbeddedVideo as EmbeddedVideoPreview;
-use Inspire\Frontend\assetbundles\EmbeddedVideosMainAsset;
-use Inspire\Frontend\embeddedvideos\behaviors\AssetBehavior;
-use Inspire\Frontend\embeddedvideos\models\EmbeddedVideo;
-use Inspire\Frontend\embeddedvideos\Variable;
+use Kdgraphics\BaseTemplate\BaseTemplate;
+use Kdgraphics\BaseTemplate\embeddedvideos\assetpreviews\EmbeddedVideo as EmbeddedVideoPreview;
+use Kdgraphics\BaseTemplate\assetbundles\EmbeddedVideosMainAsset;
+use Kdgraphics\BaseTemplate\embeddedvideos\behaviors\AssetBehavior;
+use Kdgraphics\BaseTemplate\embeddedvideos\models\EmbeddedVideo;
+use Kdgraphics\BaseTemplate\embeddedvideos\Variable;
 use yii\base\Event;
 use yii\i18n\PhpMessageSource;
 
 class Integration
 {
-    private Frontend $basePlugin;
+    private BaseTemplate $basePlugin;
     private string $defaultThumbnailUrl = '';
     private bool $cpResourcesRegistered = false;
 
-    public function __construct(Frontend $basePlugin)
+    public function __construct(BaseTemplate $basePlugin)
     {
         $this->basePlugin = $basePlugin;
     }
@@ -128,7 +128,7 @@ class Integration
                 $viewService = Craft::$app->getView();
                 $viewService->registerAssetBundle(EmbeddedVideosMainAsset::class);
                 $viewService->registerJs("EmbeddedVideos.preventNonWhitelistedUploads = $prevent");
-                $this->defaultThumbnailUrl = Craft::$app->getAssetManager()->getPublishedUrl('@inspire/embeddedvideos/resources/default-thumb.svg', true);
+                $this->defaultThumbnailUrl = Craft::$app->getAssetManager()->getPublishedUrl('@kdgraphics/base-template/embeddedvideos/resources/default-thumb.svg', true);
                 $this->cpResourcesRegistered = true;
             }
         );

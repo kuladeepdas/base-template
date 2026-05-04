@@ -1,13 +1,13 @@
 <?php
 
-namespace Inspire\Frontend\assetbundles;
+namespace Kdgraphics\BaseTemplate\assetbundles;
 
 use Craft;
 use craft\web\AssetBundle;
-use Inspire\Frontend\Frontend;
+use Kdgraphics\BaseTemplate\BaseTemplate;
 use JsonException;
 
-abstract class FrontendAsset extends AssetBundle
+abstract class BaseTemplateAsset extends AssetBundle
 {
     /** @var array|null */
     protected ?array $_manifest = null;
@@ -54,7 +54,7 @@ abstract class FrontendAsset extends AssetBundle
         if (is_null($this->_manifest)) {
             $this->_manifest = [];
 
-            $manifest = Craft::getAlias(Frontend::$plugin->getSettings()->manifestPath);
+            $manifest = Craft::getAlias(BaseTemplate::$plugin->getSettings()->manifestPath);
             if (file_exists($manifest)) {
                 try {
                     $decoded = json_decode(file_get_contents($manifest), true, 512, JSON_THROW_ON_ERROR);

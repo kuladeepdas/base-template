@@ -3,9 +3,9 @@
 <head>
 	<meta charset="utf-8">
 	<title>{{ embeddedVideo.title }}</title>
-	{% set previewCss = view.getAssetManager().getPublishedUrl('@inspire/frontend/resources/dist', true, 'css/embeddedvideos-preview.css') %}
+	{% set previewCss = view.getAssetManager().getPublishedUrl('@kdgraphics/base-template/resources/dist', true, 'css/embeddedvideos-preview.css') %}
 	<link rel="stylesheet" href="{{ previewCss }}">
-	{% set previewJs = view.getAssetManager().getPublishedUrl('@inspire/frontend/resources/dist', true, 'js/embeddedvideos-preview.js') %}
+	{% set previewJs = view.getAssetManager().getPublishedUrl('@kdgraphics/base-template/resources/dist', true, 'js/embeddedvideos-preview.js') %}
 	<script src="{{ previewJs }}"></script>
 	{% if callback is defined and callback %}
 		<script>EmbeddedVideosPreview.addCallback('{{ callback|e('js') }}')</script>
@@ -13,7 +13,7 @@
 </head>
 <body>
 
-	{% include 'inspire-frontend/embedded-videos/_components/embedded_video_preview' with {embeddedVideo: embeddedVideo} only %}
+	{% include 'base-template/embedded-videos/_components/embedded_video_preview' with {embeddedVideo: embeddedVideo} only %}
 
 	{% if embeddedVideo.isSafe() and embeddedVideo.code %}
 		<script>EmbeddedVideosPreview.applyRatio(document.getElementById('code'))</script>

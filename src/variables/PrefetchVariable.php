@@ -1,8 +1,8 @@
 <?php
 
-namespace Inspire\Frontend\variables;
+namespace Kdgraphics\BaseTemplate\variables;
 
-use Inspire\Frontend\Frontend;
+use Kdgraphics\BaseTemplate\BaseTemplate;
 
 class PrefetchVariable
 {
@@ -14,6 +14,6 @@ class PrefetchVariable
 	 */
     public function __call($name, $arguments)
     {
-        return Frontend::$plugin->prefetch->$name(...$arguments);
+        return BaseTemplate::$plugin->prefetch->$name(...$arguments);
     }
 }

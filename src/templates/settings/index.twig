@@ -1,7 +1,7 @@
 {% extends "_layouts/cp" %}
 {% import "_includes/forms" as forms %}
 
-{% set title = "Inspire Frontend Settings" %}
+{% set title = "Base Template Settings" %}
 {% set crumbs = [
     { label: 'Settings'|t('app'), url: url('settings') }
 ] %}
@@ -11,7 +11,7 @@
     'rebuild-assets': { title: 'Rebuild Assets' },
     'update-build-script': { title: 'Update Build Script' },
     'git-status': { title: 'Git Status' },
-    'inspire-fields': { title: 'Inspire Fields' },
+    'content-models': { title: 'Content Models' },
     'asset-locations': { title: 'Asset Locations' },
     'expanded-singles': { title: 'Expanded Singles' },
     'embedded-videos': { title: 'Embedded Videos' },
@@ -25,7 +25,7 @@
         <ul>
             {% for id, item in navItems %}
                 <li>
-                    <a href="{{ url('settings/plugins/inspire-frontend', { tab: id }) }}" class="tab {% if id == selectedTab %}sel{% endif %}">
+                    <a href="{{ url('settings/plugins/base-template', { tab: id }) }}" class="tab {% if id == selectedTab %}sel{% endif %}">
                         {{ item.title }}
                     </a>
                 </li>
@@ -141,22 +141,22 @@
                 <pre data-cli-log>[ready] waiting for command...</pre>
             </div>
         </section>
-    {% elseif selectedTab == 'inspire-fields' %}
-        <h2>Inspire Fields</h2>
-        <p class="light">Create and sync fields, entry types, and sections used for Inspire Frontend content models.</p>
+    {% elseif selectedTab == 'content-models' %}
+        <h2>Content Models</h2>
+        <p class="light">Create and sync fields, entry types, and sections used for Base Template content models.</p>
         <hr>
         <section class="frontend-task">
             <header class="frontend-task__header">
                 <div>
                     <h3>Default Template</h3>
-                    <p class="light">Apply the built-in Inspire Frontend field template to create and align core fields, entry types, and sections.</p>
+                    <p class="light">Apply the built-in Base Template field template to create and align core fields, entry types, and sections.</p>
                     <p class="warning">This action is destructive and replaces existing related config.</p>
                 </div>
             </header>
             <form method="post" accept-charset="UTF-8">
                 {{ csrfInput() }}
-                {{ actionInput('inspire-frontend/snapshot/apply-default') }}
-                {{ redirectInput('settings/plugins/inspire-frontend?tab=inspire-fields') }}
+                {{ actionInput('base-template/snapshot/apply-default') }}
+                {{ redirectInput('settings/plugins/base-template?tab=content-models') }}
                 <button type="submit" class="btn submit">Apply Default Template</button>
             </form>
         </section>
@@ -169,8 +169,8 @@
             </header>
             <form method="post" accept-charset="UTF-8">
                 {{ csrfInput() }}
-                {{ actionInput('inspire-frontend/snapshot/export') }}
-                {{ redirectInput('settings/plugins/inspire-frontend?tab=inspire-fields') }}
+                {{ actionInput('base-template/snapshot/export') }}
+                {{ redirectInput('settings/plugins/base-template?tab=content-models') }}
                 <button type="submit" class="btn submit">Export Snapshot</button>
             </form>
         </section>
@@ -184,8 +184,8 @@
             </header>
             <form method="post" accept-charset="UTF-8" enctype="multipart/form-data">
                 {{ csrfInput() }}
-                {{ actionInput('inspire-frontend/snapshot/import') }}
-                {{ redirectInput('settings/plugins/inspire-frontend?tab=inspire-fields') }}
+                {{ actionInput('base-template/snapshot/import') }}
+                {{ redirectInput('settings/plugins/base-template?tab=content-models') }}
                 <div style="max-width: 600px;">
                     {{ forms.fileField({
                         label: 'Snapshot JSON file',
@@ -201,19 +201,19 @@
         <form method="post" accept-charset="UTF-8">
             {{ csrfInput() }}
             {{ actionInput('plugins/save-plugin-settings') }}
-            {{ hiddenInput('pluginHandle', 'inspire-frontend') }}
-            {{ redirectInput('settings/plugins/inspire-frontend?tab=' ~ selectedTab) }}
+            {{ hiddenInput('pluginHandle', 'base-template') }}
+            {{ redirectInput('settings/plugins/base-template?tab=' ~ selectedTab) }}
 
             {% if selectedTab == 'logs' %}
                 <div class="frontend-page-header">
                     <h2>Image Resizer Logs</h2>
-                    <button type="button" class="btn" id="inspire-frontend-clear-logs">{{ 'Clear logs' | t('inspire-frontend') }}</button>
+                    <button type="button" class="btn" id="base-template-clear-logs">{{ 'Clear logs' | t('base-template') }}</button>
                 </div>
-                {% include 'inspire-frontend/settings/_panes/logs' ignore missing %}
+                {% include 'base-template/settings/_panes/logs' ignore missing %}
             {% elseif selectedTab == 'asset-locations' %}
                 <h2>Asset Locations</h2>
                 {% namespace 'settings' %}
-                    {% include 'inspire-frontend/settings/_panes/asset-locations' ignore missing %}
+                    {% include 'base-template/settings/_panes/asset-locations' ignore missing %}
                 {% endnamespace %}
                 <div style="margin-top: 16px;">
                     <button type="submit" class="btn submit">{{ 'Save'|t('app') }}</button>
@@ -221,7 +221,7 @@
             {% elseif selectedTab == 'expanded-singles' %}
                 <h2>Expanded Singles</h2>
                 {% namespace 'settings' %}
-                    {% include 'inspire-frontend/settings/_panes/expanded-singles' ignore missing %}
+                    {% include 'base-template/settings/_panes/expanded-singles' ignore missing %}
                 {% endnamespace %}
                 <div style="margin-top: 16px;">
                     <button type="submit" class="btn submit">{{ 'Save'|t('app') }}</button>
@@ -229,7 +229,7 @@
             {% elseif selectedTab == 'embedded-videos' %}
                 <h2>Embedded Videos</h2>
                 {% namespace 'settings' %}
-                    {% include 'inspire-frontend/settings/_panes/embedded-videos' ignore missing %}
+                    {% include 'base-template/settings/_panes/embedded-videos' ignore missing %}
                 {% endnamespace %}
                 <div style="margin-top: 16px;">
                     <button type="submit" class="btn submit">{{ 'Save'|t('app') }}</button>
@@ -237,14 +237,14 @@
             {% elseif selectedTab == 'image-resizer' %}
                 <h2>Image Resizer</h2>
                 {% namespace 'settings' %}
-                    {% include 'inspire-frontend/settings/_panes/image-resizer' ignore missing %}
+                    {% include 'base-template/settings/_panes/image-resizer' ignore missing %}
                 {% endnamespace %}
                 <div style="margin-top: 16px;">
                     <button type="submit" class="btn submit">{{ 'Save'|t('app') }}</button>
                 </div>
             {% elseif selectedTab == 'resize-bulk' %}
                 <h2>Bulk Image Resizer</h2>
-                {% include 'inspire-frontend/settings/_panes/resize-bulk' ignore missing %}
+                {% include 'base-template/settings/_panes/resize-bulk' ignore missing %}
             {% endif %}
         </form>
     {% endif %}
@@ -443,7 +443,7 @@
             setPanelState(updatePanel, 'npm outdated', 'Running...', '[info] checking package metadata...\n', 20);
 
             try {
-                const response = await Craft.sendActionRequest('POST', 'inspire-frontend/utility/check-npm-updates');
+                const response = await Craft.sendActionRequest('POST', 'base-template/utility/check-npm-updates');
                 const data = response?.data || {};
                 if (!data.success) {
                     await replayLogs(updatePanel, data.command || 'npm outdated', withCwd(data, '[error] unable to check updates'), 'Failed');
@@ -483,7 +483,7 @@
             setPanelState(updatePanel, 'npm update', 'Running...', '[info] installing package updates...\n', 25);
 
             try {
-                const response = await Craft.sendActionRequest('POST', 'inspire-frontend/utility/install-npm-updates');
+                const response = await Craft.sendActionRequest('POST', 'base-template/utility/install-npm-updates');
                 const data = response?.data || {};
                 if (!data.success) {
                     await replayLogs(updatePanel, data.command || 'npm update', withCwd(data, '[error] npm update failed'), 'Failed');
@@ -514,7 +514,7 @@
             reinstallButton.disabled = true;
             setPanelState(panel, 'npm ci', 'Running...', '[info] running reinstall...\n', 15);
             try {
-                const response = await Craft.sendActionRequest('POST', 'inspire-frontend/utility/reinstall-packages');
+                const response = await Craft.sendActionRequest('POST', 'base-template/utility/reinstall-packages');
                 const data = response?.data || {};
                 await replayLogs(panel, data.command || 'npm ci', withCwd(data, '[done] reinstall complete'), data.success ? 'Completed' : 'Failed');
             } catch (error) {
@@ -535,7 +535,7 @@
             rebuildButton.disabled = true;
             setPanelState(panel, 'npm run dev', 'Running...', '[info] running rebuild...\n', 15);
             try {
-                const response = await Craft.sendActionRequest('POST', 'inspire-frontend/utility/rebuild-assets');
+                const response = await Craft.sendActionRequest('POST', 'base-template/utility/rebuild-assets');
                 const data = response?.data || {};
                 await replayLogs(panel, data.command || 'npm run dev', withCwd(data, '[done] rebuild complete'), data.success ? 'Completed' : 'Failed');
             } catch (error) {
@@ -560,7 +560,7 @@
             buildScriptCheckButton.disabled = true;
             setPanelState(buildScriptPanel, 'check build script updates', 'Running...', '[info] checking build-script differences...\n', 20);
             try {
-                const response = await Craft.sendActionRequest('POST', 'inspire-frontend/utility/check-build-script-updates');
+                const response = await Craft.sendActionRequest('POST', 'base-template/utility/check-build-script-updates');
                 const data = response?.data || {};
                 if (!data.success) {
                     await replayLogs(buildScriptPanel, data.command || 'check build script updates', withCwd(data, '[error] check failed'), 'Failed');
@@ -598,7 +598,7 @@
             buildScriptApplyButton.disabled = true;
             setPanelState(buildScriptPanel, 'apply build script updates', 'Running...', '[info] applying build-script updates...\n', 25);
             try {
-                const response = await Craft.sendActionRequest('POST', 'inspire-frontend/utility/apply-build-script-updates');
+                const response = await Craft.sendActionRequest('POST', 'base-template/utility/apply-build-script-updates');
                 const data = response?.data || {};
                 await replayLogs(buildScriptPanel, data.command || 'apply build script updates', withCwd(data, '[done] apply complete'), data.success ? 'Completed' : 'Failed');
                 if (data.success) {
@@ -631,7 +631,7 @@
             gitStatusCheckButton.disabled = true;
             setPanelState(gitStatusPanel, 'git status --short', 'Running...', '[info] checking git status...\n', 20);
             try {
-                const response = await Craft.sendActionRequest('POST', 'inspire-frontend/utility/check-git-status');
+                const response = await Craft.sendActionRequest('POST', 'base-template/utility/check-git-status');
                 const data = response?.data || {};
                 if (!data.success) {
                     await replayLogs(gitStatusPanel, data.command || 'git status --short', withCwd(data, '[error] git status failed'), 'Failed');
@@ -669,7 +669,7 @@
             gitStatusCommitButton.disabled = true;
             setPanelState(gitStatusPanel, 'git add -A && git commit && git push', 'Running...', '[info] committing and pushing changes...\n', 20);
             try {
-                const response = await Craft.sendActionRequest('POST', 'inspire-frontend/utility/commit-and-push');
+                const response = await Craft.sendActionRequest('POST', 'base-template/utility/commit-and-push');
                 const data = response?.data || {};
                 await replayLogs(gitStatusPanel, data.command || 'git add -A && git commit && git push', withCwd(data, '[done] commit and push complete'), data.success ? 'Completed' : 'Failed');
                 if (data.success) {

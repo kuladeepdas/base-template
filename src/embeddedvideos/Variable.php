@@ -1,18 +1,18 @@
 <?php
 
-namespace Inspire\Frontend\embeddedvideos;
+namespace Kdgraphics\BaseTemplate\embeddedvideos;
 
 use Craft;
 use craft\elements\Asset;
 
-use Inspire\Frontend\embeddedvideos\models\EmbeddedVideo;
-use Inspire\Frontend\embeddedvideos\Plugin as EmbeddedVideos;
+use Kdgraphics\BaseTemplate\embeddedvideos\models\EmbeddedVideo;
+use Kdgraphics\BaseTemplate\embeddedvideos\Plugin as EmbeddedVideos;
 
 /**
  * Class Variable
  *
- * @package inspire\embeddedvideos
- * @author Inspire <craft@inspire.com.au>
+ * @package kdgraphics\base-template\embeddedvideos
+ * @author KD Graphics
  * @author Benjamin Fleming
  * @since 1.0.0
  */

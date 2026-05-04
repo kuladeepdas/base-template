@@ -1,6 +1,6 @@
 <?php
 
-namespace Inspire\Frontend\assetbundles;
+namespace Kdgraphics\BaseTemplate\assetbundles;
 
 use craft\web\AssetBundle;
 use craft\web\assets\cp\CpAsset;
@@ -8,15 +8,15 @@ use craft\web\assets\cp\CpAsset;
 /**
  * Class EmbeddedVideosMainAsset
  *
- * @package inspire\base\assetbundles
- * @author Inspire <plugins@inspire.com.au>
+ * @package kdgraphics\base-template\assetbundles
+ * @author KD Graphics
  * @since 3.1.0
  */
 class EmbeddedVideosMainAsset extends AssetBundle
 {
     public function init(): void
     {
-        $this->sourcePath = '@inspire/frontend/resources/dist';
+        $this->sourcePath = '@kdgraphics/base-template/resources/dist';
         $this->depends = [
             CpAsset::class,
         ];

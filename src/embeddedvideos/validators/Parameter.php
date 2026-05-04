@@ -1,6 +1,6 @@
 <?php
 
-namespace Inspire\Frontend\embeddedvideos\validators;
+namespace Kdgraphics\BaseTemplate\embeddedvideos\validators;
 
 use yii\validators\Validator;
 
@@ -13,8 +13,8 @@ use yii\validators\Validator;
  *     'value' -> string *
  * ]
  *
- * @package inspire\embeddedvideos\validators
- * @author Inspire <craft@inspire.com.au>
+ * @package kdgraphics\base-template\embeddedvideos\validators
+ * @author KD Graphics
  * @author Benjamin Fleming
  * @since 1.0.0
  */

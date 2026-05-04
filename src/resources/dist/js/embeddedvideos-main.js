@@ -271,7 +271,7 @@
       this.setState("requesting");
       this.previewHeight = 320;
       this.lastRequestedUrl = targetUrl;
-      this.iframeSrc = Craft.getActionUrl("inspire-frontend/embedded-videos/preview", {
+      this.iframeSrc = Craft.getActionUrl("base-template/embedded-videos/preview", {
         showContent: 1,
         callback: this.callbackId,
         url: targetUrl
@@ -295,7 +295,7 @@
       };
       this.setState("saving");
       Craft.queue.push(async () => await new Promise((resolve, reject) => {
-        Craft.sendActionRequest("POST", `inspire-frontend/embedded-videos/${this.replace ? "replace" : "save"}`, { data }).then((response) => {
+        Craft.sendActionRequest("POST", `base-template/embedded-videos/${this.replace ? "replace" : "save"}`, { data }).then((response) => {
           var _a, _b, _c;
           if (((_a = response.data) == null ? void 0 : _a.success) === true) {
             const payload = response.data.payload;

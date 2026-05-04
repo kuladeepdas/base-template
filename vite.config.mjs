@@ -15,8 +15,8 @@ export const targets = [
     entry: resolve(__dirname, 'src/resources/src/js/embeddedvideos/preview/preview.js'),
   },
   {
-    key: 'inspire-ui',
-    entry: resolve(__dirname, 'src/resources/src/js/inspire-ui.js'),
+    key: 'base-template-ui',
+    entry: resolve(__dirname, 'src/resources/src/js/base-template-ui.js'),
   },
   {
     key: 'image-resizer',
@@ -39,14 +39,14 @@ export const targets = [
 let didCleanDist = false;
 
 const buildRemainingTargetsPlugin = (options = {}) => ({
-  name: 'inspire-frontend-build-remaining-targets',
+  name: 'base-template-build-remaining-targets',
   async closeBundle() {
-    if (didCleanDist || process.env.INSPIRE_FRONTEND_INTERNAL_BUILD === '1' || options.watch) {
+    if (didCleanDist || process.env.BASE_TEMPLATE_INTERNAL_BUILD === '1' || options.watch) {
       return;
     }
 
     didCleanDist = true;
-    process.env.INSPIRE_FRONTEND_INTERNAL_BUILD = '1';
+    process.env.BASE_TEMPLATE_INTERNAL_BUILD = '1';
 
     try {
       for (const target of targets.slice(1)) {
@@ -61,7 +61,7 @@ const buildRemainingTargetsPlugin = (options = {}) => ({
         });
       }
     } finally {
-      delete process.env.INSPIRE_FRONTEND_INTERNAL_BUILD;
+      delete process.env.BASE_TEMPLATE_INTERNAL_BUILD;
     }
   },
 });
@@ -89,7 +89,7 @@ export const createTargetConfig = (target, options = {}) => ({
     ...(options.watch ? { watch: {} } : {}),
     lib: {
       entry: target.entry,
-      name: `InspireFrontend${target.key.replace(/(^|-)(\w)/g, (_m, _dash, c) => c.toUpperCase())}`,
+      name: `BaseTemplate${target.key.replace(/(^|-)(\w)/g, (_m, _dash, c) => c.toUpperCase())}`,
       formats: ['iife'],
       fileName: () => `js/${target.key}.js`,
     },

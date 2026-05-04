@@ -1,6 +1,6 @@
 <?php
 
-namespace Inspire\Frontend\embeddedvideos;
+namespace Kdgraphics\BaseTemplate\embeddedvideos;
 
 use Craft;
 use craft\elements\Asset;
@@ -13,8 +13,8 @@ use craft\helpers\Template;
 use craft\helpers\UrlHelper;
 use craft\models\VolumeFolder;
 use DOMDocument;
-use Inspire\Frontend\embeddedvideos\models\EmbeddedVideo;
-use Inspire\Frontend\embeddedvideos\Plugin as EmbeddedVideos;
+use Kdgraphics\BaseTemplate\embeddedvideos\models\EmbeddedVideo;
+use Kdgraphics\BaseTemplate\embeddedvideos\Plugin as EmbeddedVideos;
 use Twig\Markup as TwigMarkup;
 use yii\base\Component;
 use yii\base\ErrorException;
@@ -24,8 +24,8 @@ use yii\base\InvalidArgumentException;
 /**
  * Class Service
  *
- * @package inspire\embeddedvideos
- * @author Inspire <plugins@inspire.com.au>
+ * @package kdgraphics\base-template\embeddedvideos
+ * @author KD Graphics
  * @author Benjamin Fleming
  * @since 1.0.0
  */

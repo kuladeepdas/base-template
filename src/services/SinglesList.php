@@ -1,9 +1,9 @@
 <?php
-namespace Inspire\Frontend\services;
+namespace Kdgraphics\BaseTemplate\services;
 
-use Inspire\Frontend\Frontend;
+use Kdgraphics\BaseTemplate\BaseTemplate;
 
-use Inspire\Frontend\assetbundles\ExpandedSinglesAsset;
+use Kdgraphics\BaseTemplate\assetbundles\ExpandedSinglesAsset;
 
 use Craft;
 use craft\base\Component;
@@ -43,7 +43,7 @@ class SinglesList extends Component
 
                 foreach (Craft::$app->getSites()->getAllSiteIds() as $siteId) {
                     // Don't do an element query here, which hurts performance. We just want the cpEditUrl.
-                    // https://github.com/inspire/inspire-base/issues/34
+                    // Preserve the expanded singles ordering when building nested CP items.
                     $siteEntry = $singleEntries[$single->id . ':' . $siteId] ?? null;
 
                     if ($siteEntry) {
@@ -75,7 +75,7 @@ class SinglesList extends Component
         array_splice($event->sources, 1, 1, $this->singles);
 
         // Insert some JS to go straight to single page when clicked - rather than listing in Index Table
-        if (Frontend::$plugin->getSettings()->redirectToEntry) {
+        if (BaseTemplate::$plugin->getSettings()->redirectToEntry) {
             // Only output this for CP-requests, as this can be called from the front-end.
             if (Craft::$app->getRequest()->getIsCpRequest()) {
                 Craft::$app->getView()->registerAssetBundle(ExpandedSinglesAsset::class);

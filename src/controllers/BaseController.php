@@ -1,9 +1,9 @@
 <?php
-namespace Inspire\Frontend\controllers;
+namespace Kdgraphics\BaseTemplate\controllers;
 
-use Inspire\Frontend\Frontend;
+use Kdgraphics\BaseTemplate\BaseTemplate;
 
-use Inspire\Frontend\jobs\ImageResize;
+use Kdgraphics\BaseTemplate\jobs\ImageResize;
 use Craft;
 use craft\elements\Asset;
 use craft\web\Controller;
@@ -62,7 +62,7 @@ class BaseController extends Controller
 
         $taskId = $this->request->getParam('taskId');
 
-        $result = Frontend::$plugin->getLogs()->getLogsForTaskId($taskId);
+        $result = BaseTemplate::$plugin->getLogs()->getLogsForTaskId($taskId);
 
         $summary = [
             'success' => 0,

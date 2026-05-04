@@ -51,8 +51,8 @@
     {% endif %}
 
     {{ forms.lightswitchField({
-        label: 'Resize on upload' | t('inspire-frontend'),
-        instructions: 'Whether uploaded images should be automatically resized. This does not effect batch processing.' | t('inspire-frontend'),
+        label: 'Resize on upload' | t('base-template'),
+        instructions: 'Whether uploaded images should be automatically resized. This does not effect batch processing.' | t('base-template'),
         id: (not assetSource) ? 'allAssets' : enabledName,
         name: enabledName,
         on: enabledValue,
@@ -60,8 +60,8 @@
     }) }}
 
     {{ forms.textField({
-        label: 'Image Width' | t('inspire-frontend'),
-        instructions: 'The maximum width in pixels allowed for uploaded images.' | t('inspire-frontend'),
+        label: 'Image Width' | t('base-template'),
+        instructions: 'The maximum width in pixels allowed for uploaded images.' | t('base-template'),
         id: imageWidthName,
         name: imageWidthName,
         value: imageWidthValue,
@@ -70,8 +70,8 @@
     }) }}
 
     {{ forms.textField({
-        label: 'Image Height' | t('inspire-frontend'),
-        instructions: 'The maximum height in pixels allowed for uploaded images.' | t('inspire-frontend'),
+        label: 'Image Height' | t('base-template'),
+        instructions: 'The maximum height in pixels allowed for uploaded images.' | t('base-template'),
         id: imageHeightName,
         name: imageHeightName,
         value: imageHeightValue,
@@ -80,8 +80,8 @@
     }) }}
 
     {{ forms.textField({
-        label: 'Quality' | t('inspire-frontend'),
-        instructions: 'Enter a value from 0-100 for resized image quality.' | t('inspire-frontend'),
+        label: 'Quality' | t('base-template'),
+        instructions: 'Enter a value from 0-100 for resized image quality.' | t('base-template'),
         id: imageQualityName,
         name: imageQualityName,
         value: imageQualityValue,

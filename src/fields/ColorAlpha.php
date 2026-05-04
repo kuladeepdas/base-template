@@ -1,6 +1,6 @@
 <?php
 
-namespace Inspire\Frontend\fields;
+namespace Kdgraphics\BaseTemplate\fields;
 
 use Craft;
 use craft\base\CrossSiteCopyableFieldInterface;
@@ -9,9 +9,9 @@ use craft\base\Field;
 use craft\base\InlineEditableFieldInterface;
 use craft\base\MergeableFieldInterface;
 use craft\helpers\Html;
-use Inspire\Frontend\assetbundles\ColorAlphaInputAsset;
-use Inspire\Frontend\assetbundles\ColorAlphaSettingsAsset;
-use Inspire\Frontend\fields\data\ColorAlphaData;
+use Kdgraphics\BaseTemplate\assetbundles\ColorAlphaInputAsset;
+use Kdgraphics\BaseTemplate\assetbundles\ColorAlphaSettingsAsset;
+use Kdgraphics\BaseTemplate\fields\data\ColorAlphaData;
 use yii\db\Schema;
 
 class ColorAlpha extends Field implements InlineEditableFieldInterface, MergeableFieldInterface, CrossSiteCopyableFieldInterface
@@ -94,7 +94,7 @@ class ColorAlpha extends Field implements InlineEditableFieldInterface, Mergeabl
         $hex = $value?->getHex() ?? '#ffffff';
         $opacity = $value?->getOpacity() ?? 100;
 
-        return Craft::$app->getView()->renderTemplate('inspire-frontend/_fields/color-alpha/input', [
+        return Craft::$app->getView()->renderTemplate('base-template/_fields/color-alpha/input', [
             'id' => $id,
             'name' => $this->handle,
             'hex' => $hex,
@@ -107,7 +107,7 @@ class ColorAlpha extends Field implements InlineEditableFieldInterface, Mergeabl
     public function getSettingsHtml(): ?string
     {
         Craft::$app->getView()->registerAssetBundle(ColorAlphaSettingsAsset::class);
-        return Craft::$app->getView()->renderTemplate('inspire-frontend/_fields/color-alpha/settings', [
+        return Craft::$app->getView()->renderTemplate('base-template/_fields/color-alpha/settings', [
             'field' => $this,
         ]);
     }

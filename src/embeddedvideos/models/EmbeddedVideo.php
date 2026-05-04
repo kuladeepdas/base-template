@@ -1,6 +1,6 @@
 <?php
 
-namespace Inspire\Frontend\embeddedvideos\models;
+namespace Kdgraphics\BaseTemplate\embeddedvideos\models;
 
 use Craft;
 
@@ -10,16 +10,16 @@ use craft\helpers\Template;
 use craft\validators\StringValidator;
 use craft\validators\UrlValidator;
 use JsonSerializable;
-use Inspire\Frontend\embeddedvideos\Plugin as EmbeddedVideos;
-use Inspire\Frontend\embeddedvideos\validators\TwigMarkup as TwigMarkupValidator;
+use Kdgraphics\BaseTemplate\embeddedvideos\Plugin as EmbeddedVideos;
+use Kdgraphics\BaseTemplate\embeddedvideos\validators\TwigMarkup as TwigMarkupValidator;
 use Twig\Markup as TwigMarkup;
 use yii\base\Exception;
 
 /**
  * Class EmbeddedVideo
  *
- * @package Inspire\Frontend\embeddedvideos\models
- * @author Inspire <craft@inspire.com.au>
+ * @package Kdgraphics\BaseTemplate\embeddedvideos\models
+ * @author KD Graphics
  * @author Benjamin Fleming
  * @since 1.0.0
  */

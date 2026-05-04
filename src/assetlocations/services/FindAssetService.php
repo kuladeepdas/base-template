@@ -1,7 +1,7 @@
 <?php
-namespace Inspire\Frontend\assetlocations\services;
+namespace Kdgraphics\BaseTemplate\assetlocations\services;
 
-use Inspire\Frontend\Frontend;
+use Kdgraphics\BaseTemplate\BaseTemplate;
 
 use Craft;
 use craft\base\Component;
@@ -298,7 +298,7 @@ class FindAssetService extends Component
 			'cpUrl' => $this->resolveEntryCpUrl($entry),
 			'url' => $this->resolveEntryUrl($entry),
 			'status' => $entry->status,
-			'section' => Frontend::$plugin->assetLocationsSection->getSectionName($entry),
+			'section' => BaseTemplate::$plugin->assetLocationsSection->getSectionName($entry),
 			'location' => $location,
 			'locations' => $location ? [$location] : [],
 			'isActive' => $isActive,

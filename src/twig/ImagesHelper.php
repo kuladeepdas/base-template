@@ -1,6 +1,6 @@
 <?php
 
-namespace Inspire\Frontend\twig;
+namespace Kdgraphics\BaseTemplate\twig;
 
 use Craft;
 use Twig\Error\LoaderError;

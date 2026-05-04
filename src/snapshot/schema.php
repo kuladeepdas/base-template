@@ -301,7 +301,7 @@ return array (
                   'tip' => NULL,
                   'title' => NULL,
                   'translatable' => false,
-                  'type' => 'Inspire\\Frontend\\assetlocations\\fieldlayoutelements\\AssetLocationsField',
+                  'type' => 'Kdgraphics\\BaseTemplate\\assetlocations\\fieldlayoutelements\\AssetLocationsField',
                   'uid' => '9f63ae79-50c5-40c3-a550-049a7fbd6ae7',
                   'userCondition' => NULL,
                   'warning' => NULL,

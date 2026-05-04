@@ -1,16 +1,16 @@
 <?php
 
-namespace Inspire\Frontend\embeddedvideos\assetpreviews;
+namespace Kdgraphics\BaseTemplate\embeddedvideos\assetpreviews;
 
 use Craft;
 use craft\base\AssetPreviewHandler;
-use Inspire\Frontend\embeddedvideos\Plugin as EmbeddedVideos;
+use Kdgraphics\BaseTemplate\embeddedvideos\Plugin as EmbeddedVideos;
 
 /**
  * Asset preview handler for Embedded Videos.
  *
- * @package inspire\embeddedvideos\assetpreviews
- * @author Inspire <plugins@inspire.com.au>
+ * @package kdgraphics\base-template\embeddedvideos\assetpreviews
+ * @author KD Graphics
  * @since 2.2.2
  */
 class EmbeddedVideo extends AssetPreviewHandler
@@ -23,7 +23,7 @@ class EmbeddedVideo extends AssetPreviewHandler
         $embeddedVideo = EmbeddedVideos::$plugin->methods->getEmbeddedVideo($this->asset);
 
         if ($embeddedVideo !== null) {
-            return Craft::$app->getView()->renderTemplate('inspire-frontend/embedded-videos/_previews/default', [
+            return Craft::$app->getView()->renderTemplate('base-template/embedded-videos/_previews/default', [
                 'embeddedVideo' => $embeddedVideo,
                 'showContent' => false,
                 'inIframe' => false,

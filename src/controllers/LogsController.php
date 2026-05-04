@@ -1,5 +1,5 @@
 <?php
-namespace Inspire\Frontend\controllers;
+namespace Kdgraphics\BaseTemplate\controllers;
 
 use craft\web\Controller;
 
@@ -12,19 +12,19 @@ class LogsController extends Controller
 
     public function actionLogs(): Response
     {
-        return $this->redirect('settings/plugins/inspire-frontend?tab=logs');
+        return $this->redirect('settings/plugins/base-template?tab=logs');
     }
 
     public function actionClear(): Response
     {
         $this->requirePostRequest();
 
-        \Inspire\Frontend\Frontend::$plugin->getLogs()->clear();
+        \Kdgraphics\BaseTemplate\BaseTemplate::$plugin->getLogs()->clear();
 
         if ($this->request->getAcceptsJson()) {
             return $this->asJson(['success' => true]);
         }
 
-        return $this->redirect('settings/plugins/inspire-frontend?tab=logs');
+        return $this->redirect('settings/plugins/base-template?tab=logs');
     }
 }

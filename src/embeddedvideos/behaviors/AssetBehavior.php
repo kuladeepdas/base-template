@@ -1,10 +1,10 @@
 <?php
 
-namespace Inspire\Frontend\embeddedvideos\behaviors;
+namespace Kdgraphics\BaseTemplate\embeddedvideos\behaviors;
 
 use craft\elements\Asset;
-use Inspire\Frontend\embeddedvideos\models\EmbeddedVideo;
-use Inspire\Frontend\embeddedvideos\Plugin as EmbeddedVideos;
+use Kdgraphics\BaseTemplate\embeddedvideos\models\EmbeddedVideo;
+use Kdgraphics\BaseTemplate\embeddedvideos\Plugin as EmbeddedVideos;
 use yii\base\Behavior;
 
 class AssetBehavior extends Behavior

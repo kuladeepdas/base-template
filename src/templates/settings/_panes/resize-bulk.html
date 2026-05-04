@@ -1,6 +1,6 @@
-{% do view.registerAssetBundle('Inspire\\Frontend\\assetbundles\\ImageResizerAsset') %}
+{% do view.registerAssetBundle('Kdgraphics\\BaseTemplate\\assetbundles\\ImageResizerAsset') %}
 
-<p>{{ 'For any Asset folder below, click on Bulk Resize to automatically resize all assets within.' | t('inspire-frontend') }}</p>
+<p>{{ 'For any Asset folder below, click on Bulk Resize to automatically resize all assets within.' | t('base-template') }}</p>
 
 <table class="data fullwidth bulk-resize-table">
     <tbody>
@@ -9,7 +9,7 @@
             <td>{{ item.label }}</td>
             <td>
                 <button type="button" class="btn bulk-resize-btn" data-id="{{ item.value }}" data-name="{{ item.label | e('html_attr') }}">
-                    {{ 'Resize Bulk' | t('inspire-frontend') }}
+                    {{ 'Resize Bulk' | t('base-template') }}
                 </button>
             </td>
         </tr>
@@ -18,5 +18,5 @@
 </table>
 
 {% js %}
-    new Craft.InspireFrontend.BulkResizeAssetFolder('{{ settings.imageWidth }}', '{{ settings.imageHeight }}');
+    new Craft.BaseTemplate.BulkResizeAssetFolder('{{ settings.imageWidth }}', '{{ settings.imageHeight }}');
 {% endjs %}
